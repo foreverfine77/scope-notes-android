@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +18,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.InputFilter;
 import android.text.format.DateFormat;
 import android.util.LruCache;
 import android.view.Gravity;
@@ -27,10 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.text.TextUtils;
 import android.view.ViewOutlineProvider;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.FrameLayout;
@@ -41,6 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,7 +76,7 @@ public final class GalleryActivity extends Activity {
     private boolean selecting;
     private EarSide filteredEar;
     private Dialog mediaDialog;
-    private SharedPreferences photoNotes;
+    private Dialog markupDialog;
     private File[] captures = {};
     private final ArrayList<File> photosInProfile = new ArrayList<>();
     private final Set<File> selected = new LinkedHashSet<>();
@@ -95,7 +93,6 @@ public final class GalleryActivity extends Activity {
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
-        photoNotes = getSharedPreferences("photo-notes", MODE_PRIVATE);
         CareProfiles profiles = new CareProfiles(this);
         profile = profiles.resolve(getIntent().getStringExtra(CareProfiles.EXTRA));
         if (state != null) {
@@ -238,6 +235,7 @@ public final class GalleryActivity extends Activity {
 
     @Override
     protected void onStop() {
+        if (markupDialog != null) markupDialog.dismiss();
         if (mediaDialog != null) mediaDialog.dismiss();
         super.onStop();
     }
@@ -424,9 +422,6 @@ public final class GalleryActivity extends Activity {
             String stamp = stamp(file);
             EarSide side = isVideo(file) ? EarSide.NONE : EarSide.read(GalleryActivity.this, file);
             tile.caption.setText(side == EarSide.NONE ? stamp : side.label(GalleryActivity.this) + " · " + stamp);
-            String note = isVideo(file) ? "" : photoNote(file);
-            tile.note.setText(note);
-            tile.note.setVisibility(note.isEmpty() ? View.GONE : View.VISIBLE);
             boolean checked = selected.contains(file);
             tile.check.setVisibility(selecting ? View.VISIBLE : View.GONE);
             tile.check.setText(checked ? "✓" : "○");
@@ -435,7 +430,6 @@ public final class GalleryActivity extends Activity {
             tile.setBackground(style.shape(checked ? 0x397dd3fc : 0x16ffffff, 19,
                     checked ? ACCENT : 0x30ffffff));
             tile.setContentDescription(label(file) + " " + stamp
-                    + (note.isEmpty() ? "" : " " + note)
                     + (selecting ? " " + getString(checked ? R.string.selected_description : R.string.not_selected_description) : ""));
             Thumbnail thumbnail = thumbnails.get(file);
             tile.image.setImageBitmap(thumbnail == null ? null : thumbnail.bitmap);
@@ -454,7 +448,6 @@ public final class GalleryActivity extends Activity {
         final TextView duration = new TextView(GalleryActivity.this);
         final TextView check = new TextView(GalleryActivity.this);
         final TextView caption = new TextView(GalleryActivity.this);
-        final TextView note = new TextView(GalleryActivity.this);
         final android.graphics.drawable.Drawable circleBackground = style.shape(0xff0a0f16, 100, 0);
 
         Tile() {
@@ -487,12 +480,6 @@ public final class GalleryActivity extends Activity {
             caption.setMaxLines(2);
             caption.setPadding(dp(2), dp(5), dp(2), 0);
             addView(caption);
-            note.setTextColor(TEXT);
-            note.setTextSize(12);
-            note.setSingleLine(true);
-            note.setEllipsize(TextUtils.TruncateAt.END);
-            note.setPadding(dp(2), dp(3), dp(2), 0);
-            addView(note);
         }
 
         @Override
@@ -604,11 +591,9 @@ public final class GalleryActivity extends Activity {
         date.setGravity(Gravity.CENTER);
         style.add(content, date, 8);
         if (!video) {
-            Button note = style.button(photoNoteLabel(file));
-            note.setMaxLines(3);
-            note.setEllipsize(TextUtils.TruncateAt.END);
-            note.setOnClickListener(view -> editPhotoNote(file, note));
-            style.add(content, note, 8);
+            Button markup = style.button(getString(R.string.markup));
+            markup.setOnClickListener(view -> editMarkup(file, dialog));
+            style.add(content, markup, 8);
         }
         PlaybackControls controls = playback == null ? null : new PlaybackControls(playback.player);
         if (controls != null) style.add(content, controls, 14);
@@ -648,47 +633,114 @@ public final class GalleryActivity extends Activity {
                 }).setNegativeButton(android.R.string.cancel, null).show();
     }
 
-    private static String photoNoteKey(File file) {
-        return file.getParentFile().getName() + "/" + file.getName();
-    }
-
-    private String photoNote(File file) {
-        return photoNotes.getString(photoNoteKey(file), "");
-    }
-
-    private String photoNoteLabel(File file) {
-        String note = photoNote(file);
-        return note.isEmpty() ? getString(R.string.add_photo_note) : getString(R.string.photo_note_label, note);
-    }
-
-    private void editPhotoNote(File file, Button button) {
-        EditText field = new EditText(this);
-        field.setSingleLine(true);
-        field.setFilters(new InputFilter[]{new InputFilter.LengthFilter(160)});
-        field.setHint(R.string.photo_note_hint);
-        field.setText(photoNote(file));
-        field.setSelection(field.length());
-        LinearLayout form = new LinearLayout(this);
-        form.setPadding(dp(20), 0, dp(20), 0);
-        form.addView(field, new LinearLayout.LayoutParams(-1, -2));
-        AlertDialog editor = new AlertDialog.Builder(this)
-                .setTitle(R.string.edit_photo_note)
-                .setView(form)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.save, (dialog, which) -> {
-                    if (!file.isFile()) return;
-                    String note = field.getText().toString().trim();
-                    SharedPreferences.Editor changes = photoNotes.edit();
-                    String key = photoNoteKey(file);
-                    if (note.isEmpty()) changes.remove(key);
-                    else changes.putString(key, note);
-                    changes.apply();
-                    button.setText(photoNoteLabel(file));
-                    tiles.notifyDataSetChanged();
-                }).create();
-        field.requestFocus();
-        editor.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+    private void editMarkup(File file, Dialog details) {
+        Bitmap photo = BitmapFactory.decodeFile(file.getPath());
+        if (photo == null) {
+            Toast.makeText(this, R.string.markup_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        boolean fullFrame = CaptureProvider.isMacro(file);
+        String owner = profile;
+        EarSide side = EarSide.read(this, file);
+        Dialog editor = new Dialog(this);
+        LinearLayout page = style.page();
+        page.setPadding(dp(16), dp(12), dp(16), dp(16));
+        LinearLayout tools = new LinearLayout(this);
+        tools.setGravity(Gravity.CENTER);
+        Button circle = style.button(getString(R.string.markup_circle));
+        Button arrow = style.button(getString(R.string.markup_arrow));
+        Button undo = style.button(getString(R.string.markup_undo));
+        tools.addView(circle);
+        tools.addView(arrow);
+        tools.addView(undo);
+        page.addView(tools);
+        Button cancel = style.button(getString(R.string.cancel));
+        Button save = style.button(getString(R.string.markup_save_copy));
+        PhotoMarkup drawing = new PhotoMarkup(this, photo, !fullFrame, getString(R.string.markup_hint), changed -> {
+            undo.setEnabled(changed);
+            save.setEnabled(changed);
+        });
+        circle.setEnabled(false);
+        circle.setOnClickListener(view -> {
+            drawing.setArrow(false);
+            circle.setEnabled(false);
+            arrow.setEnabled(true);
+        });
+        arrow.setOnClickListener(view -> {
+            drawing.setArrow(true);
+            circle.setEnabled(true);
+            arrow.setEnabled(false);
+        });
+        undo.setEnabled(false);
+        undo.setOnClickListener(view -> drawing.undo());
+        page.addView(drawing, new LinearLayout.LayoutParams(-1, 0, 1));
+        TextView hint = style.label(getString(R.string.markup_hint), 13, ScopeUi.MUTED);
+        hint.setGravity(Gravity.CENTER);
+        page.addView(hint);
+        LinearLayout actions = new LinearLayout(this);
+        actions.setGravity(Gravity.CENTER);
+        actions.addView(cancel);
+        actions.addView(save);
+        style.add(page, actions, 8);
+        cancel.setOnClickListener(view -> editor.dismiss());
+        save.setEnabled(false);
+        save.setOnClickListener(view -> {
+            Bitmap copy = drawing.createCopy();
+            if (copy == null) {
+                Toast.makeText(this, R.string.markup_error, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            drawing.setEnabled(false);
+            for (Button button : new Button[]{circle, arrow, undo, cancel, save}) button.setEnabled(false);
+            editor.setCancelable(false);
+            new Thread(() -> {
+                boolean saved = saveMarkupCopy(copy, owner, fullFrame, side);
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    Toast.makeText(this, saved ? R.string.markup_saved : R.string.markup_error, Toast.LENGTH_SHORT).show();
+                    if (saved) {
+                        editor.dismiss();
+                        details.dismiss();
+                        load();
+                    } else {
+                        editor.setCancelable(true);
+                        drawing.setEnabled(true);
+                        circle.setEnabled(drawing.isArrow());
+                        arrow.setEnabled(!drawing.isArrow());
+                        undo.setEnabled(true);
+                        cancel.setEnabled(true);
+                        save.setEnabled(true);
+                    }
+                });
+            }, "earclean-markup").start();
+        });
+        editor.setContentView(page);
+        editor.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        markupDialog = editor;
+        editor.setOnDismissListener(window -> {
+            if (markupDialog == editor) markupDialog = null;
+        });
         editor.show();
+        editor.getWindow().setLayout(-1, -1);
+    }
+
+    private boolean saveMarkupCopy(Bitmap copy, String owner, boolean fullFrame, EarSide side) {
+        File partial = null;
+        try {
+            File file = CaptureProvider.newFile(this, owner, fullFrame ? "marked-macro" : "marked-photo", "jpg");
+            partial = new File(file.getPath() + ".part");
+            try (FileOutputStream output = new FileOutputStream(partial)) {
+                if (!copy.compress(Bitmap.CompressFormat.JPEG, 94, output)) return false;
+            }
+            if (file.exists() || !partial.renameTo(file)) return false;
+            side.save(this, file);
+            return true;
+        } catch (IOException | RuntimeException error) {
+            return false;
+        } finally {
+            copy.recycle();
+            if (partial != null) partial.delete();
+        }
     }
 
     private void chooseComparison() {
@@ -900,10 +952,7 @@ public final class GalleryActivity extends Activity {
                     int failures = 0;
                     for (File file : files) {
                         if (file.delete() || !file.exists()) {
-                            if (!isVideo(file)) {
-                                EarSide.NONE.save(this, file);
-                                photoNotes.edit().remove(photoNoteKey(file)).apply();
-                            }
+                            if (!isVideo(file)) EarSide.NONE.save(this, file);
                             revokeUriPermission(CaptureProvider.uri(file), Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             thumbnails.remove(file);
                             selected.remove(file);
@@ -920,6 +969,7 @@ public final class GalleryActivity extends Activity {
 
     private String label(File file) {
         if (isVideo(file)) return getString(R.string.video);
+        if (file.getName().startsWith("marked-")) return getString(R.string.markup_copy);
         if (CaptureProvider.isMacro(file)) return getString(R.string.macro_photo);
         return getString(R.string.photo);
     }

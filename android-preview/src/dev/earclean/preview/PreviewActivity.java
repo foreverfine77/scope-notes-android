@@ -83,11 +83,13 @@ public final class PreviewActivity extends Activity {
     private Button earSideButton;
     private EarSide earSide = EarSide.NONE;
     private boolean macro;
+    private boolean macroRotated;
     private TextView videoLabel;
     private View videoButton;
     private View recordMark;
     private View shutter;
     private Button freezeButton;
+    private Button rotateMacroButton;
     private Button disconnect;
     private Button profileButton;
     private CareProfiles profiles;
@@ -122,6 +124,7 @@ public final class PreviewActivity extends Activity {
         profiles = new CareProfiles(this);
         profile = profiles.current();
         if (state != null) {
+            macroRotated = state.getBoolean("macroRotated");
             previewRequested = state.getBoolean("previewRequested");
             selectedEar = EarWifi.Device.read(state.getString("selectedEar", ""));
             if (profile.equals(state.getString("profile"))) {
@@ -222,6 +225,14 @@ public final class PreviewActivity extends Activity {
             updateCaptureControls();
         });
         screen.addView(freezeButton, new FrameLayout.LayoutParams(-2, dp(44), Gravity.TOP | Gravity.END));
+        rotateMacroButton = style.button(getString(R.string.macro_rotate_preview));
+        rotateMacroButton.setBackground(style.pill(0xee242333, 22, ScopeUi.EDGE));
+        rotateMacroButton.setOnClickListener(view -> {
+            macroRotated = !macroRotated;
+            preview.resetZoom();
+            updateCaptureControls();
+        });
+        screen.addView(rotateMacroButton, new FrameLayout.LayoutParams(-2, dp(44), Gravity.BOTTOM | Gravity.END));
 
         connectionActions = new LinearLayout(this);
         connectionActions.setGravity(Gravity.CENTER);
@@ -405,6 +416,8 @@ public final class PreviewActivity extends Activity {
         freezeButton.setVisibility(live ? View.VISIBLE : View.GONE);
         freezeButton.setEnabled(live && !active && !finishingVideo);
         freezeButton.setText(frozen ? R.string.resume_preview : R.string.freeze_preview);
+        rotateMacroButton.setVisibility(live && macro ? View.VISIBLE : View.GONE);
+        rotateMacroButton.setText(macroRotated ? R.string.macro_restore_preview : R.string.macro_rotate_preview);
         shutter.setEnabled(canCapture);
         ((View) shutter.getParent()).setAlpha(canCapture ? 1f : .45f);
         String text = active ? getString(R.string.stop_recording) : finishingVideo ? getString(R.string.saving) : getString(R.string.video);
@@ -465,6 +478,7 @@ public final class PreviewActivity extends Activity {
                 .setPositiveButton(macro ? R.string.macro_disable : R.string.macro_enable, (dialog, which) -> {
                     preview.setFrozen(false);
                     macro = !macro;
+                    macroRotated = false;
                     getPreferences(MODE_PRIVATE).edit().putBoolean("macro", macro).apply();
                     if (session != null) session.setStabilize(!macro && preview.stabilize);
                     preview.resetReference();
@@ -561,6 +575,7 @@ public final class PreviewActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle state) {
         state.putBoolean("previewRequested", previewRequested);
+        state.putBoolean("macroRotated", macroRotated);
         if (selectedEar != null) state.putString("selectedEar", selectedEar.key());
         state.putString("profile", profile);
         state.putInt("earSide", earSide.ordinal());
@@ -1132,9 +1147,13 @@ public final class PreviewActivity extends Activity {
         void setFrozen(boolean frozen) {
             if (frozen == isFrozen()) return;
             frozenImage = frozen ? currentImage() : null;
+            setContentDescription(getString(isFrozen() ? R.string.frozen_image_description : R.string.preview_description));
+            resetZoom();
+        }
+
+        void resetZoom() {
             zoom = 1f;
             panX = panY = 0;
-            setContentDescription(getString(isFrozen() ? R.string.frozen_image_description : R.string.preview_description));
             invalidate();
         }
 
@@ -1152,9 +1171,11 @@ public final class PreviewActivity extends Activity {
         private void clampPan() {
             if (macro) {
                 Bitmap frame = frozenImage.frame;
-                float scale = Math.min((float) getWidth() / frame.getWidth(), (float) getHeight() / frame.getHeight());
-                float maxX = Math.max(0, (frame.getWidth() * scale * zoom - getWidth()) / 2);
-                float maxY = Math.max(0, (frame.getHeight() * scale * zoom - getHeight()) / 2);
+                int width = macroRotated ? frame.getHeight() : frame.getWidth();
+                int height = macroRotated ? frame.getWidth() : frame.getHeight();
+                float scale = Math.min((float) getWidth() / width, (float) getHeight() / height);
+                float maxX = Math.max(0, (width * scale * zoom - getWidth()) / 2);
+                float maxY = Math.max(0, (height * scale * zoom - getHeight()) / 2);
                 panX = Math.max(-maxX, Math.min(maxX, panX));
                 panY = Math.max(-maxY, Math.min(maxY, panY));
             } else {
@@ -1188,7 +1209,9 @@ public final class PreviewActivity extends Activity {
                 canvas.clipRect(0, 0, getWidth(), getHeight());
                 canvas.translate(panX, panY);
                 canvas.scale(zoom, zoom, centerX, centerY);
-                capture.renderFull(canvas, centerX, centerY, getWidth(), getHeight(), paint, bounds);
+                if (macroRotated) canvas.rotate(90, centerX, centerY);
+                capture.renderFull(canvas, centerX, centerY, macroRotated ? getHeight() : getWidth(),
+                        macroRotated ? getWidth() : getHeight(), paint, bounds);
                 canvas.restore();
                 if (SystemClock.uptimeMillis() < flashUntil) canvas.drawColor(0x55ffffff);
                 return;
