@@ -103,6 +103,10 @@
     <string name="select">"Select"</string>
     <string name="media_title">"Media history"</string>
     <string name="photo">"Photo"</string>
+    <string name="add_photo_note">"Add note"</string>
+    <string name="edit_photo_note">"Photo note"</string>
+    <string name="photo_note_label">"Note · %1$s"</string>
+    <string name="photo_note_hint">"Write a note (clear and save to delete)"</string>
     <string name="share">"Share"</string>
     <string name="delete">"Delete"</string>
     <string name="empty_videos">"No videos in this profile"</string>

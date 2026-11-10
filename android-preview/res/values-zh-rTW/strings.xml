@@ -103,6 +103,10 @@
     <string name="select">"選擇"</string>
     <string name="media_title">"影像記錄"</string>
     <string name="photo">"圖片"</string>
+    <string name="add_photo_note">"新增備註"</string>
+    <string name="edit_photo_note">"照片備註"</string>
+    <string name="photo_note_label">"備註 · %1$s"</string>
+    <string name="photo_note_hint">"寫一句備註（清空後儲存可刪除）"</string>
     <string name="share">"分享"</string>
     <string name="delete">"刪除"</string>
     <string name="empty_videos">"這個檔案還沒有錄影"</string>
