@@ -4,6 +4,7 @@
 
 - [项目历史](HISTORY.md)区分了样机实测、导入时的实现状态和后续计划。
 - [硬件简报](硬件简报.md)记录样机能力、通信方式和待验证命令。
+- [电量观察记录](电量观察记录.md)保存待补充的剩余电量和分钟数读数。
 - [Issues](https://github.com/foreverfine77/scope-notes-android/issues)记录任务、验收条件和测试证据。[Projects](https://github.com/users/foreverfine77/projects/3)跟踪任务进度。
 
 ## 构建与试用
