@@ -20,6 +20,11 @@ final class CaptureImage {
 
     void render(Canvas canvas, float centerX, float centerY, float diameter,
                 Paint paint, Path mask, RectF bounds) {
+        render(canvas, centerX, centerY, diameter, paint, mask, bounds, 1f, 0, 0);
+    }
+
+    void render(Canvas canvas, float centerX, float centerY, float diameter,
+                Paint paint, Path mask, RectF bounds, float zoom, float panX, float panY) {
         float scale = diameter / Math.min(frame.getWidth(), frame.getHeight());
         float halfWidth = frame.getWidth() * scale / 2;
         float halfHeight = frame.getHeight() * scale / 2;
@@ -28,7 +33,8 @@ final class CaptureImage {
         mask.rewind();
         mask.addCircle(centerX, centerY, diameter / 2, Path.Direction.CW);
         canvas.clipPath(mask);
-        canvas.translate(centerX, centerY);
+        canvas.translate(centerX + panX, centerY + panY);
+        canvas.scale(zoom, zoom);
         if (mirror) canvas.scale(-1, 1);
         canvas.rotate(rotation);
         canvas.drawBitmap(frame, null, bounds, paint);

@@ -97,6 +97,9 @@
     <string name="test_log_name">"耳鏡診斷"</string>
     <string name="test_copied">"已復制診斷日志"</string>
     <string name="preview_description">"耳鏡實時畫面"</string>
+    <string name="freeze_preview">"定格"</string>
+    <string name="resume_preview">"已定格 · 恢復即時畫面"</string>
+    <string name="frozen_image_description">"已定格的耳鏡畫面，可雙指放大或拖動"</string>
     <string name="select">"選擇"</string>
     <string name="media_title">"影像記錄"</string>
     <string name="photo">"圖片"</string>

@@ -97,6 +97,9 @@
     <string name="test_log_name">"Device diagnostic"</string>
     <string name="test_copied">"Diagnostic log copied"</string>
     <string name="preview_description">"Live image from the device"</string>
+    <string name="freeze_preview">"Freeze"</string>
+    <string name="resume_preview">"Frozen · Resume live"</string>
+    <string name="frozen_image_description">"Frozen camera image. Pinch to zoom or drag to pan."</string>
     <string name="select">"Select"</string>
     <string name="media_title">"Media history"</string>
     <string name="photo">"Photo"</string>

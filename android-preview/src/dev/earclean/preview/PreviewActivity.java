@@ -29,7 +29,10 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.InputFilter;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.text.TextUtils;
 import android.view.WindowManager;
@@ -81,6 +84,7 @@ public final class PreviewActivity extends Activity {
     private View videoButton;
     private View recordMark;
     private View shutter;
+    private Button freezeButton;
     private Button disconnect;
     private Button profileButton;
     private CareProfiles profiles;
@@ -206,6 +210,14 @@ public final class PreviewActivity extends Activity {
         screen.addView(recordingTime, timer);
         screen.addOnLayoutChangeListener((view, left, top, right, bottom, a, b, c, d) ->
                 recordingTime.setTranslationY(Math.min(right - left, bottom - top) * .34f));
+        freezeButton = style.button(getString(R.string.freeze_preview));
+        freezeButton.setBackground(style.pill(0xee242333, 22, ScopeUi.EDGE));
+        freezeButton.setOnClickListener(view -> {
+            finishPhotoBurst();
+            preview.setFrozen(!preview.isFrozen());
+            updateCaptureControls();
+        });
+        screen.addView(freezeButton, new FrameLayout.LayoutParams(-2, dp(44), Gravity.TOP | Gravity.END));
 
         connectionActions = new LinearLayout(this);
         connectionActions.setGravity(Gravity.CENTER);
@@ -230,8 +242,10 @@ public final class PreviewActivity extends Activity {
         Switch mirror = imageSwitch(getString(R.string.mirror));
         mirror.setOnCheckedChangeListener((button, enabled) -> {
             finishPhotoBurst();
+            preview.setFrozen(false);
             preview.mirror = enabled;
             preview.invalidate();
+            updateCaptureControls();
         });
         imageOptions.addView(stabilizeButton);
         LinearLayout.LayoutParams mirrorSize = new LinearLayout.LayoutParams(-2, dp(44));
@@ -292,7 +306,7 @@ public final class PreviewActivity extends Activity {
         LinearLayout.LayoutParams disconnectSize = new LinearLayout.LayoutParams(-2, dp(44));
         disconnectSize.gravity = Gravity.CENTER_HORIZONTAL;
         page.addView(disconnect, disconnectSize);
-        updateVideoControl();
+        updateCaptureControls();
         showConnection(getString(R.string.disconnected), getString(R.string.connect_hint));
         if (state == null) showWirelessReminder();
     }
@@ -351,14 +365,13 @@ public final class PreviewActivity extends Activity {
         connectionTitle.setText(state);
         connectionHint.setText(detail);
         empty.setVisibility(live ? View.GONE : View.VISIBLE);
+        if (!live) preview.setFrozen(false);
         imageOptions.setVisibility(live ? View.VISIBLE : View.GONE);
         stabilizeButton.setVisibility(macro ? View.GONE : View.VISIBLE);
         earSideButton.setVisibility(macro ? View.GONE : View.VISIBLE);
         connectionActions.setVisibility(live ? View.GONE : View.VISIBLE);
         disconnect.setVisibility(live ? View.VISIBLE : View.INVISIBLE);
-        shutter.setEnabled(live);
-        ((View) shutter.getParent()).setAlpha(live ? 1f : .45f);
-        updateVideoControl();
+        updateCaptureControls();
         if (!live) showBattery("—", 0);
         if (testStarted < 0) guide.setText(live
                 ? (macro ? getString(R.string.macro_hint) : getString(R.string.recording_for, profiles.name(profile)))
@@ -376,9 +389,17 @@ public final class PreviewActivity extends Activity {
         setLeadingIcon(batteryStatus, style.symbol("battery", percent), 20);
     }
 
-    private void updateVideoControl() {
+    private void updateCaptureControls() {
+        boolean live = empty.getVisibility() == View.GONE;
+        boolean frozen = preview.isFrozen();
         boolean active = recorder != null;
-        boolean canRecord = empty.getVisibility() == View.GONE || active;
+        boolean canCapture = live && !frozen;
+        boolean canRecord = canCapture || active;
+        freezeButton.setVisibility(live ? View.VISIBLE : View.GONE);
+        freezeButton.setEnabled(live && !active && !finishingVideo);
+        freezeButton.setText(frozen ? R.string.resume_preview : R.string.freeze_preview);
+        shutter.setEnabled(canCapture);
+        ((View) shutter.getParent()).setAlpha(canCapture ? 1f : .45f);
         ((View) videoButton.getParent()).setVisibility(macro ? View.GONE : View.VISIBLE);
         String text = active ? getString(R.string.stop_recording) : finishingVideo ? getString(R.string.saving) : getString(R.string.video);
         videoButton.setContentDescription(text);
@@ -436,6 +457,7 @@ public final class PreviewActivity extends Activity {
         new AlertDialog.Builder(this).setTitle(R.string.macro_mode)
                 .setMessage(R.string.macro_explanation)
                 .setPositiveButton(macro ? R.string.macro_disable : R.string.macro_enable, (dialog, which) -> {
+                    preview.setFrozen(false);
                     macro = !macro;
                     getPreferences(MODE_PRIVATE).edit().putBoolean("macro", macro).apply();
                     if (session != null) session.setStabilize(!macro && preview.stabilize);
@@ -750,7 +772,9 @@ public final class PreviewActivity extends Activity {
     private void setStabilize(boolean enabled) {
         if (enabled != preview.stabilize) {
             finishPhotoBurst();
+            preview.setFrozen(false);
             preview.resetReference();
+            updateCaptureControls();
         }
         preview.stabilize = enabled;
         if (session != null) session.setStabilize(!macro && enabled);
@@ -870,10 +894,10 @@ public final class PreviewActivity extends Activity {
             recorder = null;
             finishingVideo = false;
             hideRecordingTime();
-            updateVideoControl();
+            updateCaptureControls();
             showMessage(error == null ? getString(R.string.video_saved) : getString(R.string.video_error, error));
         }));
-        updateVideoControl();
+        updateCaptureControls();
         recordingStarted = SystemClock.elapsedRealtime();
         recordingTime.setVisibility(View.VISIBLE);
         updateRecordingTime();
@@ -887,7 +911,7 @@ public final class PreviewActivity extends Activity {
         recorder.stop();
         recorder = null;
         hideRecordingTime();
-        updateVideoControl();
+        updateCaptureControls();
     }
 
     private void updateRecordingTime() {
@@ -1000,6 +1024,8 @@ public final class PreviewActivity extends Activity {
     }
 
     private final class ImagePreview extends View {
+        private static final float MAX_ZOOM = 4f;
+        private static final float CIRCLE_RADIUS_RATIO = .885f;
         private final Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
         private final Paint circle = new Paint(Paint.ANTI_ALIAS_FLAG);
         private final Path mask = new Path();
@@ -1010,16 +1036,110 @@ public final class PreviewActivity extends Activity {
         private boolean stabilize;
         private boolean mirror;
         private float reference = Float.NaN;
+        private CaptureImage frozenImage;
+        private float zoom = 1f;
+        private float panX;
+        private float panY;
+        private final ScaleGestureDetector pinch;
+        private final GestureDetector drag;
 
         ImagePreview() {
             super(PreviewActivity.this);
             setContentDescription(getString(R.string.preview_description));
+            pinch = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                private float lastX;
+                private float lastY;
+
+                @Override
+                public boolean onScaleBegin(ScaleGestureDetector detector) {
+                    lastX = detector.getFocusX();
+                    lastY = detector.getFocusY();
+                    return true;
+                }
+
+                @Override
+                public boolean onScale(ScaleGestureDetector detector) {
+                    float nextZoom = Math.max(1f, Math.min(MAX_ZOOM, zoom * detector.getScaleFactor()));
+                    float ratio = nextZoom / zoom;
+                    float centerX = getWidth() / 2f;
+                    float centerY = getHeight() / 2f;
+                    float focusX = detector.getFocusX();
+                    float focusY = detector.getFocusY();
+                    panX = focusX - centerX + (panX + centerX - lastX) * ratio;
+                    panY = focusY - centerY + (panY + centerY - lastY) * ratio;
+                    zoom = nextZoom;
+                    lastX = focusX;
+                    lastY = focusY;
+                    clampPan();
+                    invalidate();
+                    return true;
+                }
+            });
+            pinch.setQuickScaleEnabled(false);
+            drag = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDown(MotionEvent event) {
+                    return true;
+                }
+
+                @Override
+                public boolean onScroll(MotionEvent start, MotionEvent event, float dx, float dy) {
+                    if (event.getPointerCount() != 1 || pinch.isInProgress()) return false;
+                    panX -= dx;
+                    panY -= dy;
+                    clampPan();
+                    invalidate();
+                    return true;
+                }
+            });
         }
 
         void setFrame(Bitmap frame, float angle) {
             image = frame;
             rotation = angle;
+            if (!isFrozen()) invalidate();
+        }
+
+        boolean isFrozen() {
+            return frozenImage != null;
+        }
+
+        void setFrozen(boolean frozen) {
+            if (frozen == isFrozen()) return;
+            frozenImage = frozen ? currentImage() : null;
+            zoom = 1f;
+            panX = panY = 0;
+            setContentDescription(getString(isFrozen() ? R.string.frozen_image_description : R.string.preview_description));
             invalidate();
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            if (!isFrozen()) return super.onTouchEvent(event);
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                getParent().requestDisallowInterceptTouchEvent(true);
+            }
+            pinch.onTouchEvent(event);
+            drag.onTouchEvent(event);
+            return true;
+        }
+
+        private void clampPan() {
+            if (macro) {
+                Bitmap frame = frozenImage.frame;
+                float scale = Math.min((float) getWidth() / frame.getWidth(), (float) getHeight() / frame.getHeight());
+                float maxX = Math.max(0, (frame.getWidth() * scale * zoom - getWidth()) / 2);
+                float maxY = Math.max(0, (frame.getHeight() * scale * zoom - getHeight()) / 2);
+                panX = Math.max(-maxX, Math.min(maxX, panX));
+                panY = Math.max(-maxY, Math.min(maxY, panY));
+            } else {
+                float max = (zoom - 1f) * Math.min(getWidth(), getHeight()) / 2f * CIRCLE_RADIUS_RATIO;
+                float distance = (float) Math.hypot(panX, panY);
+                if (distance > max) {
+                    panX *= max / distance;
+                    panY *= max / distance;
+                }
+            }
         }
 
         void resetReference() {
@@ -1035,25 +1155,31 @@ public final class PreviewActivity extends Activity {
 
         @Override
         protected void onDraw(Canvas canvas) {
-            if (macro && image != null) {
-                currentImage().renderFull(canvas, getWidth() / 2f, getHeight() / 2f,
-                        getWidth(), getHeight(), paint, bounds);
+            CaptureImage capture = isFrozen() ? frozenImage : currentImage();
+            float centerX = getWidth() / 2f;
+            float centerY = getHeight() / 2f;
+            if (macro && capture != null) {
+                canvas.save();
+                canvas.clipRect(0, 0, getWidth(), getHeight());
+                canvas.translate(panX, panY);
+                canvas.scale(zoom, zoom, centerX, centerY);
+                capture.renderFull(canvas, centerX, centerY, getWidth(), getHeight(), paint, bounds);
+                canvas.restore();
                 if (SystemClock.uptimeMillis() < flashUntil) canvas.drawColor(0x55ffffff);
                 return;
             }
             float outer = Math.min(getWidth(), getHeight()) / 2f;
-            float radius = outer * .885f;
+            float radius = outer * CIRCLE_RADIUS_RATIO;
             if (radius <= 0) return;
-            float centerX = getWidth() / 2f;
-            float centerY = getHeight() / 2f;
             circle.setColor(0x197dd3fc);
             canvas.drawCircle(centerX, centerY, outer * .96f, circle);
             circle.setColor(0x38ffffff);
             canvas.drawCircle(centerX, centerY, radius + outer * .045f, circle);
             circle.setColor(0xff0a0f16);
             canvas.drawCircle(centerX, centerY, radius, circle);
-            CaptureImage capture = currentImage();
-            if (capture != null) capture.render(canvas, centerX, centerY, 2 * radius, paint, mask, bounds);
+            if (capture != null) {
+                capture.render(canvas, centerX, centerY, 2 * radius, paint, mask, bounds, zoom, panX, panY);
+            }
             if (SystemClock.uptimeMillis() < flashUntil) {
                 circle.setColor(0xbfffffff);
                 canvas.drawCircle(centerX, centerY, radius, circle);
