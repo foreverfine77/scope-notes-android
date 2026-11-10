@@ -44,6 +44,7 @@ import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.List;
+import java.util.ArrayList;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,6 +56,8 @@ public final class PreviewActivity extends Activity {
     private final ScopeUi style = new ScopeUi(this);
     private static final int TEST_SECONDS = 30;
     private static final int WIFI_PERMISSIONS = 20;
+    private static final int PHOTO_BURST_FRAMES = 5;
+    private static final int PHOTO_BURST_MS = 250;
     private CameraStream session;
     private EarWifi earWifi;
     private EarWifi.Device selectedEar;
@@ -86,6 +89,7 @@ public final class PreviewActivity extends Activity {
     private VideoCapture recorder;
     private boolean finishingVideo;
     private boolean savingPicture;
+    private PhotoBurst photoBurst;
     private long recordingStarted;
     private final Handler ui = new Handler(Looper.getMainLooper());
     private final StringBuilder report = new StringBuilder();
@@ -95,6 +99,7 @@ public final class PreviewActivity extends Activity {
     private String savedReport = "";
     private final Runnable testTick = this::updateTest;
     private final Runnable recordingTick = this::updateRecordingTime;
+    private final Runnable photoBurstTimeout = this::finishPhotoBurst;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -224,6 +229,7 @@ public final class PreviewActivity extends Activity {
         stabilizeButton.setOnCheckedChangeListener((button, enabled) -> setStabilize(enabled));
         Switch mirror = imageSwitch(getString(R.string.mirror));
         mirror.setOnCheckedChangeListener((button, enabled) -> {
+            finishPhotoBurst();
             preview.mirror = enabled;
             preview.invalidate();
         });
@@ -553,6 +559,7 @@ public final class PreviewActivity extends Activity {
                         record(message);
                         lastStatus = message;
                     }
+                    finishPhotoBurst();
                     preview.resetReference();
                     preview.setFrame(null, 0);
                     showConnection(message, getString(R.string.waiting_image));
@@ -576,7 +583,14 @@ public final class PreviewActivity extends Activity {
                         record("进入实时预览");
                     }
                     preview.setFrame(image, rotation);
-                    if (recorder != null) recorder.offer(preview.currentImage());
+                    if (recorder != null || photoBurst != null) {
+                        CaptureImage capture = preview.currentImage();
+                        if (recorder != null) recorder.offer(capture);
+                        if (photoBurst != null) {
+                            photoBurst.frames.add(capture);
+                            if (photoBurst.frames.size() >= PHOTO_BURST_FRAMES) finishPhotoBurst();
+                        }
+                    }
                 });
             }
 
@@ -630,6 +644,7 @@ public final class PreviewActivity extends Activity {
 
     private void stopPreview() {
         record("用户停止预览");
+        finishPhotoBurst();
         stopVideo();
         if (session != null) session.stop();
         session = null;
@@ -733,7 +748,10 @@ public final class PreviewActivity extends Activity {
     }
 
     private void setStabilize(boolean enabled) {
-        if (enabled != preview.stabilize) preview.resetReference();
+        if (enabled != preview.stabilize) {
+            finishPhotoBurst();
+            preview.resetReference();
+        }
         preview.stabilize = enabled;
         if (session != null) session.setStabilize(!macro && enabled);
         if (stabilizeButton.isChecked() != enabled) stabilizeButton.setChecked(enabled);
@@ -755,26 +773,34 @@ public final class PreviewActivity extends Activity {
     }
 
     private void savePicture() {
+        if (savingPicture) return;
         CaptureImage capture = preview.currentImage();
         if (capture == null) {
             showMessage(getString(R.string.wait_for_preview));
             return;
         }
-        if (savingPicture) return;
         savingPicture = true;
+        photoBurst = new PhotoBurst(capture, profile, macro, macro ? EarSide.NONE : earSide);
+        ui.postDelayed(photoBurstTimeout, PHOTO_BURST_MS);
         preview.flashUntil = SystemClock.uptimeMillis() + 130;
         preview.invalidate();
         preview.postInvalidateDelayed(130);
-        String owner = profile;
-        boolean fullFrame = macro;
-        EarSide photoSide = fullFrame ? EarSide.NONE : earSide;
+    }
+
+    private void finishPhotoBurst() {
+        PhotoBurst burst = photoBurst;
+        if (burst == null) return;
+        photoBurst = null;
+        ui.removeCallbacks(photoBurstTimeout);
         new Thread(() -> {
-            File file = CaptureProvider.newFile(this, owner, fullFrame ? "macro" : "photo", "jpg");
-            File partial = new File(file.getPath() + ".part");
+            File partial = null;
             String result;
             try {
+                CaptureImage capture = burst.bestImage();
+                File file = CaptureProvider.newFile(this, burst.owner, burst.fullFrame ? "macro" : "photo", "jpg");
+                partial = new File(file.getPath() + ".part");
                 try (FileOutputStream output = new FileOutputStream(partial)) {
-                    Bitmap image = fullFrame ? capture.createFullPhoto() : capture.createScreenshot();
+                    Bitmap image = burst.fullFrame ? capture.createFullPhoto() : capture.createScreenshot();
                     try {
                         if (!image.compress(Bitmap.CompressFormat.JPEG, 94, output)) {
                             throw new IOException("图片编码失败");
@@ -784,19 +810,53 @@ public final class PreviewActivity extends Activity {
                     }
                 }
                 if (!partial.renameTo(file)) throw new IOException("无法保存图片");
-                photoSide.save(this, file);
+                burst.side.save(this, file);
                 result = getString(R.string.photo_saved);
             } catch (IOException | RuntimeException error) {
                 result = getString(R.string.photo_error);
             } finally {
-                partial.delete();
+                if (partial != null) partial.delete();
             }
             String message = result;
             runOnUiThread(() -> {
                 savingPicture = false;
-                showMessage(message);
+                if (!isDestroyed()) showMessage(message);
             });
         }, "earclean-photo").start();
+    }
+
+    private static final class PhotoBurst {
+        final List<CaptureImage> frames = new ArrayList<>(PHOTO_BURST_FRAMES);
+        final String owner;
+        final boolean fullFrame;
+        final EarSide side;
+
+        PhotoBurst(CaptureImage first, String owner, boolean fullFrame, EarSide side) {
+            frames.add(first);
+            this.owner = owner;
+            this.fullFrame = fullFrame;
+            this.side = side;
+        }
+
+        CaptureImage bestImage() {
+            CaptureImage best = frames.get(0);
+            if (frames.size() == 1) return best;
+            double bestScore = -1;
+            int[] pixels = new int[0];
+            for (CaptureImage candidate : frames) {
+                Bitmap frame = candidate.frame;
+                int width = frame.getWidth();
+                int height = frame.getHeight();
+                if (pixels.length < width * height) pixels = new int[width * height];
+                frame.getPixels(pixels, 0, width, 0, 0, width, height);
+                double score = PhotoQuality.score(pixels, width, height, fullFrame);
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = candidate;
+                }
+            }
+            return best;
+        }
     }
 
     private void startVideo() {
