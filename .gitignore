@@ -1,0 +1,8 @@
+/.android-tools/
+/android-preview/.build/
+*.apk
+*.jks
+*.keystore
+__pycache__/
+/earclean-frame-*.jpg
+/earclean-result.txt
