@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Outline;
 import android.graphics.Typeface;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,7 +35,6 @@ import android.widget.SectionIndexer;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -556,13 +556,9 @@ public final class GalleryActivity extends Activity {
 
     private void open(File file) {
         boolean video = isVideo(file);
-        View media;
-        VideoView player = video ? new VideoView(this) : null;
-        if (player != null) {
-            media = player;
-        } else {
-            media = photoView(file);
-        }
+        VideoPlayback playback = video ? new VideoPlayback(this, CaptureProvider.uri(file),
+                !CaptureProvider.isMacro(file), () -> Toast.makeText(this, R.string.playback_error, Toast.LENGTH_SHORT).show()) : null;
+        View media = playback == null ? photoView(file) : playback;
         Dialog dialog = new Dialog(this);
         LinearLayout content = style.page();
         content.setPadding(dp(16), dp(12), dp(16), dp(16));
@@ -590,7 +586,7 @@ public final class GalleryActivity extends Activity {
         TextView date = style.label(stamp(file), 17, TEXT);
         date.setGravity(Gravity.CENTER);
         style.add(content, date, 8);
-        PlaybackControls controls = player == null ? null : new PlaybackControls(player);
+        PlaybackControls controls = playback == null ? null : new PlaybackControls(playback.player);
         if (controls != null) style.add(content, controls, 14);
         Button delete = style.button(getString(R.string.delete));
         delete.setTextColor(0xffffb4ae);
@@ -608,10 +604,10 @@ public final class GalleryActivity extends Activity {
         dialog.setOnDismissListener(window -> {
             if (mediaDialog == dialog) mediaDialog = null;
             if (controls != null) controls.close();
+            if (playback != null) playback.close();
         });
         dialog.show();
         dialog.getWindow().setLayout(-1, -1);
-        if (player != null) player.setVideoURI(CaptureProvider.uri(file));
     }
 
     private void chooseSide(File file, Button button) {
@@ -699,7 +695,7 @@ public final class GalleryActivity extends Activity {
     }
 
     private final class PlaybackControls extends LinearLayout {
-        private final VideoView player;
+        private final MediaPlayer player;
         private final SeekBar position = new SeekBar(GalleryActivity.this);
         private final TextView time = new TextView(GalleryActivity.this);
         private final Button play = style.button(getString(R.string.play));
@@ -709,7 +705,7 @@ public final class GalleryActivity extends Activity {
         private boolean ended;
         private final Runnable refresh = this::update;
 
-        PlaybackControls(VideoView player) {
+        PlaybackControls(MediaPlayer player) {
             super(GalleryActivity.this);
             this.player = player;
             setOrientation(VERTICAL);
@@ -805,7 +801,6 @@ public final class GalleryActivity extends Activity {
 
         void close() {
             handler.removeCallbacks(refresh);
-            player.stopPlayback();
         }
     }
 
@@ -854,8 +849,9 @@ public final class GalleryActivity extends Activity {
     }
 
     private String label(File file) {
+        if (isVideo(file)) return getString(R.string.video);
         if (CaptureProvider.isMacro(file)) return getString(R.string.macro_photo);
-        return isVideo(file) ? getString(R.string.video) : getString(R.string.photo);
+        return getString(R.string.photo);
     }
 
     private static boolean isVideo(File file) {

@@ -59,12 +59,15 @@ public final class PreviewActivity extends Activity {
     private final ScopeUi style = new ScopeUi(this);
     private static final int TEST_SECONDS = 30;
     private static final int WIFI_PERMISSIONS = 20;
+    private static final int GALLERY_REQUEST = 21;
+    private static final long GALLERY_PREVIEW_GRACE_MS = 60_000;
     private static final int PHOTO_BURST_FRAMES = 5;
     private static final int PHOTO_BURST_MS = 250;
     private CameraStream session;
     private EarWifi earWifi;
     private EarWifi.Device selectedEar;
     private boolean previewRequested;
+    private boolean galleryOpen;
     private String status;
     private TextView batteryStatus;
     private LinearLayout empty;
@@ -104,6 +107,7 @@ public final class PreviewActivity extends Activity {
     private final Runnable testTick = this::updateTest;
     private final Runnable recordingTick = this::updateRecordingTime;
     private final Runnable photoBurstTimeout = this::finishPhotoBurst;
+    private final Runnable galleryPreviewTimeout = this::stopPreview;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -277,8 +281,11 @@ public final class PreviewActivity extends Activity {
             if (recorder != null || finishingVideo || savingPicture) {
                 showMessage(getString(R.string.finish_recording_first));
             } else {
-                startActivity(new Intent(this, GalleryActivity.class)
-                        .putExtra(CareProfiles.EXTRA, profile));
+                preview.setFrozen(false);
+                updateCaptureControls();
+                galleryOpen = true;
+                startActivityForResult(new Intent(this, GalleryActivity.class)
+                        .putExtra(CareProfiles.EXTRA, profile), GALLERY_REQUEST);
             }
         });
 
@@ -400,7 +407,6 @@ public final class PreviewActivity extends Activity {
         freezeButton.setText(frozen ? R.string.resume_preview : R.string.freeze_preview);
         shutter.setEnabled(canCapture);
         ((View) shutter.getParent()).setAlpha(canCapture ? 1f : .45f);
-        ((View) videoButton.getParent()).setVisibility(macro ? View.GONE : View.VISIBLE);
         String text = active ? getString(R.string.stop_recording) : finishingVideo ? getString(R.string.saving) : getString(R.string.video);
         videoButton.setContentDescription(text);
         videoLabel.setText(text);
@@ -546,6 +552,7 @@ public final class PreviewActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        ui.removeCallbacks(galleryPreviewTimeout);
         String activeProfile = profiles.current();
         if (!activeProfile.equals(profile)) selectProfile(activeProfile);
         if (previewRequested) startPreview();
@@ -563,8 +570,26 @@ public final class PreviewActivity extends Activity {
     @Override
     protected void onStop() {
         if (testStarted >= 0) finishTest(getString(R.string.test_left));
-        stopPreview();
+        if (galleryOpen && session != null && !isFinishing() && !isChangingConfigurations()) {
+            // Keep the current network request across short visits to the in-app gallery.
+            ui.postDelayed(galleryPreviewTimeout, GALLERY_PREVIEW_GRACE_MS);
+        } else {
+            stopPreview();
+        }
         super.onStop();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GALLERY_REQUEST) galleryOpen = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        ui.removeCallbacks(galleryPreviewTimeout);
+        if (session != null) stopPreview();
+        super.onDestroy();
     }
 
     private void startPreview() {
@@ -889,8 +914,8 @@ public final class PreviewActivity extends Activity {
             showMessage(getString(R.string.wait_for_preview));
             return;
         }
-        File file = CaptureProvider.newFile(this, profile, "video", "mp4");
-        recorder = new VideoCapture(file, error -> runOnUiThread(() -> {
+        File file = CaptureProvider.newFile(this, profile, macro ? "macro-video" : "video", "mp4");
+        recorder = new VideoCapture(file, image, macro, error -> runOnUiThread(() -> {
             recorder = null;
             finishingVideo = false;
             hideRecordingTime();

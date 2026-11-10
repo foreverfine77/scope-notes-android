@@ -140,11 +140,11 @@
     <string name="all_photos">"全部"</string>
     <string name="filter_title">"按耳别筛选照片"</string>
     <string name="macro_photo">"微距照片"</string>
-    <string name="macro_hint">"微距模式 · 全画幅拍照"</string>
+    <string name="macro_hint">"微距模式 · 全画幅拍照和录像"</string>
     <string name="macro_mode">"微距模式"</string>
-    <string name="macro_on">"全画幅拍照 · 已开启"</string>
-    <string name="macro_off">"全画幅拍照 · 已关闭"</string>
-    <string name="macro_explanation">"使用耳镜传来的完整矩形画面拍照。照片保存在当前档案，按普通图片回看。"</string>
+    <string name="macro_on">"全画幅拍摄 · 已开启"</string>
+    <string name="macro_off">"全画幅拍摄 · 已关闭"</string>
+    <string name="macro_explanation">"使用耳镜传来的完整矩形画面拍照和录像，保存到当前档案。"</string>
     <string name="macro_enable">"开启微距模式"</string>
     <string name="macro_disable">"关闭微距模式"</string>
     <string name="macro_test_hint">"请关闭微距模式，再测试画面稳向"</string>

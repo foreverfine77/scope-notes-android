@@ -140,11 +140,11 @@
     <string name="all_photos">"All"</string>
     <string name="filter_title">"Filter photos by ear"</string>
     <string name="macro_photo">"Macro photo"</string>
-    <string name="macro_hint">"Macro mode · Full-frame photos"</string>
+    <string name="macro_hint">"Macro mode · Full-frame photos and videos"</string>
     <string name="macro_mode">"Macro mode"</string>
     <string name="macro_on">"Full-frame photos · On"</string>
     <string name="macro_off">"Full-frame photos · Off"</string>
-    <string name="macro_explanation">"Take photos using the full rectangular image from the device. Photos appear in the current profile."</string>
+    <string name="macro_explanation">"Take photos and videos using the full rectangular image from the device. Captures are saved in the current profile."</string>
     <string name="macro_enable">"Enable macro mode"</string>
     <string name="macro_disable">"Disable macro mode"</string>
     <string name="macro_test_hint">"Turn off macro mode before testing stabilization"</string>

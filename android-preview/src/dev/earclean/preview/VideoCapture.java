@@ -1,6 +1,10 @@
 package dev.earclean.preview;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.media.Image;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
@@ -21,14 +25,20 @@ final class VideoCapture {
 
     private final File destination;
     private final Completion completion;
+    private final boolean fullFrame;
+    private final int width;
+    private final int height;
     private final ArrayBlockingQueue<TimedImage> pending = new ArrayBlockingQueue<>(1);
     private volatile boolean stopped;
     private long lastFrameTimeUs = -1;
     private final long startUs = SystemClock.elapsedRealtimeNanos() / 1000;
 
-    VideoCapture(File destination, Completion completion) {
+    VideoCapture(File destination, CaptureImage first, boolean fullFrame, Completion completion) {
         this.destination = destination;
         this.completion = completion;
+        this.fullFrame = fullFrame;
+        width = fullFrame ? (first.frame.getWidth() & ~1) : CaptureImage.SIZE;
+        height = fullFrame ? (first.frame.getHeight() & ~1) : CaptureImage.SIZE;
     }
 
     void start() {
@@ -61,9 +71,8 @@ final class VideoCapture {
     }
 
     private void encodeFile(File partial) throws IOException {
-        int size = CaptureImage.SIZE;
         String mime = MediaFormat.MIMETYPE_VIDEO_AVC;
-        MediaFormat format = MediaFormat.createVideoFormat(mime, size, size);
+        MediaFormat format = MediaFormat.createVideoFormat(mime, width, height);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT,
                 MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Flexible);
         format.setInteger(MediaFormat.KEY_BIT_RATE, 1_400_000);
@@ -90,7 +99,20 @@ final class VideoCapture {
     }
 
     private void writeFrames(MediaCodec codec, MediaMuxer muxer) throws IOException {
-        int[] pixels = new int[CaptureImage.SIZE * CaptureImage.SIZE];
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        try {
+            writeFrames(codec, muxer, bitmap);
+        } finally {
+            bitmap.recycle();
+        }
+    }
+
+    private void writeFrames(MediaCodec codec, MediaMuxer muxer, Bitmap bitmap) throws IOException {
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
+        RectF bounds = new RectF();
+        Path mask = new Path();
+        int[] pixels = new int[width * height];
         MediaCodec.BufferInfo output = new MediaCodec.BufferInfo();
         int track = -1;
         int samples = 0;
@@ -153,7 +175,14 @@ final class VideoCapture {
             int capacity = buffer.capacity();
             Image input = codec.getInputImage(index);
             if (input == null) throw new IOException("设备编码器不支持图像输入");
-            fillImage(input, frame.image, pixels);
+            canvas.drawColor(0xff0a1115);
+            if (fullFrame) {
+                frame.image.renderFull(canvas, width / 2f, height / 2f, width, height, paint, bounds);
+            } else {
+                frame.image.render(canvas, width / 2f, height / 2f, width, paint, mask, bounds);
+            }
+            bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+            fillImage(input, pixels);
             codec.queueInputBuffer(index, 0, capacity, frame.timeUs, 0);
             lastPts = frame.timeUs;
         }
@@ -161,24 +190,17 @@ final class VideoCapture {
         muxer.stop();
     }
 
-    private static void fillImage(Image input, CaptureImage image, int[] pixels) {
-        int size = CaptureImage.SIZE;
-        Bitmap bitmap = image.createScreenshot();
-        try {
-            bitmap.getPixels(pixels, 0, size, 0, 0, size, size);
-        } finally {
-            bitmap.recycle();
-        }
+    private void fillImage(Image input, int[] pixels) {
         Image.Plane[] planes = input.getPlanes();
         ByteBuffer y = planes[0].getBuffer();
         ByteBuffer u = planes[1].getBuffer();
         ByteBuffer v = planes[2].getBuffer();
-        for (int row = 0; row < size; row++) {
+        for (int row = 0; row < height; row++) {
             int yRow = y.position() + row * planes[0].getRowStride();
             int uRow = u.position() + (row / 2) * planes[1].getRowStride();
             int vRow = v.position() + (row / 2) * planes[2].getRowStride();
-            for (int col = 0; col < size; col++) {
-                int color = pixels[row * size + col];
+            for (int col = 0; col < width; col++) {
+                int color = pixels[row * width + col];
                 int r = (color >>> 16) & 255;
                 int g = (color >>> 8) & 255;
                 int b = color & 255;

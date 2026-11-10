@@ -26,7 +26,7 @@ public final class CaptureProvider extends ContentProvider {
     }
 
     static boolean isCapture(String name) {
-        return name.matches("(photo|snapshot|video)-[0-9-]+\\.(jpg|mp4)|macro-[0-9-]+\\.jpg");
+        return name.matches("(photo|snapshot|video)-[0-9-]+\\.(jpg|mp4)|macro-[0-9-]+\\.jpg|macro-video-[0-9-]+\\.mp4");
     }
 
     static boolean isMacro(File file) {
