@@ -64,9 +64,6 @@ public final class GalleryActivity extends Activity {
     private TextView selectionCount;
     private Button picturesTab;
     private Button videosTab;
-    private Button compareButton;
-    private Button earFilter;
-    private Button monthIndex;
     private Button selectAll;
     private Button selectButton;
     private Button shareButton;
@@ -75,10 +72,13 @@ public final class GalleryActivity extends Activity {
     private boolean videos;
     private boolean selecting;
     private EarSide filteredEar;
+    private int filteredYear;
+    private int filteredMonth;
+    private Button filterButton;
+    private TextView filterSummary;
     private Dialog mediaDialog;
     private Dialog markupDialog;
     private File[] captures = {};
-    private final ArrayList<File> photosInProfile = new ArrayList<>();
     private final Set<File> selected = new LinkedHashSet<>();
     private final LruCache<File, Thumbnail> thumbnails = new LruCache<>(36);
     private final Set<File> loading = new HashSet<>();
@@ -97,6 +97,8 @@ public final class GalleryActivity extends Activity {
         profile = profiles.resolve(getIntent().getStringExtra(CareProfiles.EXTRA));
         if (state != null) {
             videos = state.getBoolean("videos");
+            filteredYear = state.getInt("filterYear");
+            filteredMonth = state.getInt("filterMonth");
             profile = profiles.resolve(state.getString("profile", profile));
             int filter = state.getInt("earFilter", -1);
             if (filter >= 0 && filter < EarSide.values().length) filteredEar = EarSide.values()[filter];
@@ -138,15 +140,8 @@ public final class GalleryActivity extends Activity {
         });
         header.addView(selectButton);
         page.addView(header);
-        TextView title = style.label(getString(R.string.media_title), 30, TEXT);
-        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        LinearLayout titleRow = new LinearLayout(this);
-        titleRow.setGravity(Gravity.CENTER_VERTICAL);
-        titleRow.addView(title, new LinearLayout.LayoutParams(0, -2, 1));
-        compareButton = style.button(getString(R.string.ear_compare));
-        compareButton.setOnClickListener(view -> chooseComparison());
-        titleRow.addView(compareButton);
-        style.add(page, titleRow, 18);
+        LinearLayout controls = new LinearLayout(this);
+        controls.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout tabs = new LinearLayout(this);
         tabs.setPadding(dp(3), dp(3), dp(3), dp(3));
         tabs.setBackground(style.shape(ScopeUi.GLASS, 23, ScopeUi.EDGE));
@@ -156,18 +151,16 @@ public final class GalleryActivity extends Activity {
         videosTab.setOnClickListener(view -> showTab(true));
         tabs.addView(picturesTab, new LinearLayout.LayoutParams(0, dp(40), 1));
         tabs.addView(videosTab, new LinearLayout.LayoutParams(0, dp(40), 1));
-        style.add(page, tabs, 12);
-        LinearLayout filters = new LinearLayout(this);
-        earFilter = style.button("");
-        earFilter.setOnClickListener(view -> chooseEarFilter());
-        filters.addView(earFilter, new LinearLayout.LayoutParams(0, dp(42), 1));
-        monthIndex = style.button(getString(R.string.month_index));
-        monthIndex.setOnClickListener(view -> new AlertDialog.Builder(this)
-                .setTitle(R.string.month_index).setItems(tiles.months(), (dialog, index) ->
-                        list.setSelection(tiles.getPositionForSection(index)))
-                .setNegativeButton(R.string.cancel, null).show());
-        filters.addView(monthIndex, new LinearLayout.LayoutParams(-2, dp(42)));
-        style.add(page, filters, 6);
+        controls.addView(tabs, new LinearLayout.LayoutParams(0, -2, 1));
+        filterButton = style.iconButton("filter", getString(R.string.filter_title));
+        filterButton.setOnClickListener(view -> chooseFilters());
+        LinearLayout.LayoutParams filterSize = new LinearLayout.LayoutParams(dp(48), dp(48));
+        filterSize.leftMargin = dp(10);
+        controls.addView(filterButton, filterSize);
+        style.add(page, controls, 12);
+        filterSummary = style.label("", 12, ScopeUi.MUTED);
+        filterSummary.setPadding(dp(6), dp(6), dp(6), dp(4));
+        page.addView(filterSummary);
         empty = style.label("", 15, ScopeUi.MUTED);
         empty.setGravity(Gravity.CENTER);
         empty.setLineSpacing(dp(5), 1);
@@ -194,9 +187,9 @@ public final class GalleryActivity extends Activity {
             updateSelection();
         });
         selectionActions.addView(selectAll);
-        shareButton = style.button(getString(R.string.share));
+        shareButton = style.iconButton("share", getString(R.string.share));
         shareButton.setOnClickListener(view -> share(selected.toArray(new File[0])));
-        deleteButton = style.button(getString(R.string.delete));
+        deleteButton = style.iconButton("delete", getString(R.string.delete));
         deleteButton.setBackground(style.pill(0x58ff453a, 22, 0));
         deleteButton.setTextColor(0xffffb4ae);
         deleteButton.setOnClickListener(view -> confirmDelete(selected.toArray(new File[0])));
@@ -217,6 +210,8 @@ public final class GalleryActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle state) {
         state.putBoolean("videos", videos);
+        state.putInt("filterYear", filteredYear);
+        state.putInt("filterMonth", filteredMonth);
         state.putString("profile", profile);
         state.putInt("earFilter", filteredEar == null ? -1 : filteredEar.ordinal());
         super.onSaveInstanceState(state);
@@ -246,54 +241,145 @@ public final class GalleryActivity extends Activity {
         super.onDestroy();
     }
 
-    private void load() {
+    private File[] profileFiles() {
         File[] files = CaptureProvider.directory(this, profile).listFiles(
                 file -> file.isFile() && CaptureProvider.isCapture(file.getName()));
-        if (files == null) files = new File[0];
+        return files == null ? new File[0] : files;
+    }
+
+    private boolean matchesFilters(File file) {
+        EarSide side = isVideo(file) ? EarSide.NONE : EarSide.read(this, file);
+        if (filteredEar != null && side != filteredEar) return false;
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(file.lastModified());
+        return (filteredYear == 0 || date.get(Calendar.YEAR) == filteredYear)
+                && (filteredMonth == 0 || date.get(Calendar.MONTH) + 1 == filteredMonth);
+    }
+
+    private void load() {
         ArrayList<File> visible = new ArrayList<>();
-        photosInProfile.clear();
         int videoCount = 0;
-        for (File file : files) {
+        int photoCount = 0;
+        for (File file : profileFiles()) {
+            if (!matchesFilters(file)) continue;
             boolean video = isVideo(file);
             if (video) videoCount++;
-            else photosInProfile.add(file);
-            if (video == videos && (video || filteredEar == null
-                    || EarSide.read(this, file) == filteredEar)) visible.add(file);
+            else photoCount++;
+            if (video == videos) visible.add(file);
         }
         captures = visible.toArray(new File[0]);
-        picturesTab.setText(getString(R.string.photos_count, files.length - videoCount));
+        picturesTab.setText(getString(R.string.photos_count, photoCount));
         videosTab.setText(getString(R.string.videos_count, videoCount));
         Arrays.sort(captures, (left, right) -> Long.compare(right.lastModified(), left.lastModified()));
         selected.retainAll(Arrays.asList(captures));
-        empty.setText(!videos && filteredEar != null ? getString(R.string.no_filter_results)
-                : (videos ? getString(R.string.empty_videos) : getString(R.string.empty_photos))
-                        + "\n" + getString(R.string.empty_capture_hint));
+        String summary = filterDescription();
+        empty.setText(summary.isEmpty() ? (videos ? getString(R.string.empty_videos) : getString(R.string.empty_photos))
+                + "\n" + getString(R.string.empty_capture_hint) : getString(R.string.no_filter_results));
         empty.setVisibility(captures.length == 0 ? View.VISIBLE : View.GONE);
+        filterSummary.setText(summary);
+        filterSummary.setVisibility(summary.isEmpty() ? View.GONE : View.VISIBLE);
+        style.setIcon(filterButton, summary.isEmpty() ? "filter" : "filter-active",
+                getString(R.string.filter_title) + (summary.isEmpty() ? "" : " · " + summary));
         styleTab(picturesTab, !videos);
         styleTab(videosTab, videos);
-        compareButton.setVisibility(videos ? View.GONE : View.VISIBLE);
-        earFilter.setVisibility(videos ? View.GONE : View.VISIBLE);
-        earFilter.setText(getString(R.string.ear_filter,
-                filteredEar == null ? getString(R.string.all_photos) : filteredEar.label(this)));
         tiles.group();
-        monthIndex.setEnabled(captures.length > 0);
         updateSelection();
     }
 
-    private void chooseEarFilter() {
-        EarSide[] sides = EarSide.values();
-        String[] options = {getString(R.string.all_photos), sides[1].label(this),
-                sides[2].label(this), sides[0].label(this)};
-        EarSide[] values = {null, EarSide.LEFT, EarSide.RIGHT, EarSide.NONE};
-        new AlertDialog.Builder(this).setTitle(R.string.filter_title)
-                .setSingleChoiceItems(options, Arrays.asList(values).indexOf(filteredEar), (dialog, which) -> {
-                    filteredEar = values[which];
-                    selected.clear();
-                    selecting = false;
-                    load();
-                    list.setSelection(0);
-                    dialog.dismiss();
-                }).setNegativeButton(R.string.cancel, null).show();
+    private String filterDescription() {
+        ArrayList<String> parts = new ArrayList<>();
+        if (filteredYear != 0) parts.add(String.valueOf(filteredYear));
+        if (filteredMonth != 0) parts.add(getString(R.string.filter_month_value, filteredMonth));
+        if (filteredEar != null) parts.add(filteredEar.label(this));
+        return TextUtils.join(" · ", parts);
+    }
+
+    private void applyFilters(Button year, Button month, Button ear) {
+        year.setText(getString(R.string.filter_year) + " · "
+                + (filteredYear == 0 ? getString(R.string.all_photos) : String.valueOf(filteredYear)));
+        month.setText(getString(R.string.filter_month) + " · "
+                + (filteredMonth == 0 ? getString(R.string.all_photos) : getString(R.string.filter_month_value, filteredMonth)));
+        ear.setText(getString(R.string.ear_choose) + " · "
+                + (filteredEar == null ? getString(R.string.all_photos) : filteredEar.label(this)));
+        selected.clear();
+        selecting = false;
+        load();
+        list.setSelection(0);
+    }
+
+    private void chooseFilters() {
+        Dialog sheet = new Dialog(this);
+        LinearLayout page = style.page();
+        page.setPadding(dp(20), dp(20), dp(20), dp(24));
+        page.addView(style.label(getString(R.string.filter_title), 22, TEXT));
+        Button year = style.button("");
+        Button month = style.button("");
+        Button ear = style.button("");
+        style.add(page, year, 16);
+        style.add(page, month, 8);
+        style.add(page, ear, 8);
+        year.setOnClickListener(view -> {
+            java.util.TreeSet<Integer> years = new java.util.TreeSet<>(java.util.Collections.reverseOrder());
+            for (File file : profileFiles()) {
+                Calendar date = Calendar.getInstance();
+                date.setTimeInMillis(file.lastModified());
+                years.add(date.get(Calendar.YEAR));
+            }
+            if (filteredYear != 0) years.add(filteredYear);
+            ArrayList<Integer> values = new ArrayList<>();
+            values.add(0);
+            values.addAll(years);
+            String[] labels = new String[values.size()];
+            labels[0] = getString(R.string.all_photos);
+            for (int i = 1; i < labels.length; i++) labels[i] = String.valueOf(values.get(i));
+            new AlertDialog.Builder(this).setTitle(R.string.filter_year)
+                    .setSingleChoiceItems(labels, values.indexOf(filteredYear), (dialog, which) -> {
+                        filteredYear = values.get(which);
+                        applyFilters(year, month, ear);
+                        dialog.dismiss();
+                    }).setNegativeButton(R.string.cancel, null).show();
+        });
+        month.setOnClickListener(view -> {
+            String[] labels = new String[13];
+            labels[0] = getString(R.string.all_photos);
+            for (int i = 1; i <= 12; i++) labels[i] = getString(R.string.filter_month_value, i);
+            new AlertDialog.Builder(this).setTitle(R.string.filter_month)
+                    .setSingleChoiceItems(labels, filteredMonth, (dialog, which) -> {
+                        filteredMonth = which;
+                        applyFilters(year, month, ear);
+                        dialog.dismiss();
+                    }).setNegativeButton(R.string.cancel, null).show();
+        });
+        ear.setOnClickListener(view -> {
+            EarSide[] values = {null, EarSide.LEFT, EarSide.RIGHT, EarSide.NONE};
+            String[] labels = {getString(R.string.all_photos), EarSide.LEFT.label(this),
+                    EarSide.RIGHT.label(this), EarSide.NONE.label(this)};
+            new AlertDialog.Builder(this).setTitle(R.string.ear_choose)
+                    .setSingleChoiceItems(labels, Arrays.asList(values).indexOf(filteredEar), (dialog, which) -> {
+                        filteredEar = values[which];
+                        applyFilters(year, month, ear);
+                        dialog.dismiss();
+                    }).setNegativeButton(R.string.cancel, null).show();
+        });
+        LinearLayout actions = new LinearLayout(this);
+        actions.setGravity(Gravity.END);
+        Button clear = style.button(getString(R.string.clear_filters));
+        clear.setOnClickListener(view -> {
+            filteredYear = filteredMonth = 0;
+            filteredEar = null;
+            applyFilters(year, month, ear);
+        });
+        Button done = style.button(getString(R.string.done));
+        done.setOnClickListener(view -> sheet.dismiss());
+        actions.addView(clear);
+        actions.addView(done);
+        style.add(page, actions, 18);
+        applyFilters(year, month, ear);
+        sheet.setContentView(page);
+        sheet.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        sheet.show();
+        sheet.getWindow().setGravity(Gravity.BOTTOM);
+        sheet.getWindow().setLayout(-1, -2);
     }
 
     private void showTab(boolean showVideos) {
@@ -575,7 +661,7 @@ public final class GalleryActivity extends Activity {
         TextView type = style.label(label(file), 16, TEXT);
         type.setGravity(Gravity.CENTER);
         header.addView(type, new LinearLayout.LayoutParams(0, -2, 1));
-        Button share = style.button(getString(R.string.share));
+        Button share = style.iconButton("share", getString(R.string.share));
         share.setOnClickListener(view -> share(file));
         header.addView(share);
         content.addView(header);
@@ -591,19 +677,19 @@ public final class GalleryActivity extends Activity {
         date.setGravity(Gravity.CENTER);
         style.add(content, date, 8);
         if (!video) {
-            Button markup = style.button(getString(R.string.markup));
+            Button markup = style.iconButton("markup", getString(R.string.markup));
             markup.setOnClickListener(view -> editMarkup(file, dialog));
             style.add(content, markup, 8);
         }
         PlaybackControls controls = playback == null ? null : new PlaybackControls(playback.player);
         if (controls != null) style.add(content, controls, 14);
-        Button delete = style.button(getString(R.string.delete));
+        Button delete = style.iconButton("delete", getString(R.string.delete));
         delete.setTextColor(0xffffb4ae);
         delete.setOnClickListener(view -> {
             dialog.dismiss();
             confirmDelete(file);
         });
-        LinearLayout.LayoutParams deleteSize = new LinearLayout.LayoutParams(-2, dp(44));
+        LinearLayout.LayoutParams deleteSize = new LinearLayout.LayoutParams(dp(48), dp(48));
         deleteSize.gravity = Gravity.CENTER_HORIZONTAL;
         deleteSize.topMargin = dp(12);
         content.addView(delete, deleteSize);
@@ -647,32 +733,42 @@ public final class GalleryActivity extends Activity {
         page.setPadding(dp(16), dp(12), dp(16), dp(16));
         LinearLayout tools = new LinearLayout(this);
         tools.setGravity(Gravity.CENTER);
-        Button circle = style.button(getString(R.string.markup_circle));
-        Button arrow = style.button(getString(R.string.markup_arrow));
-        Button undo = style.button(getString(R.string.markup_undo));
-        tools.addView(circle);
-        tools.addView(arrow);
-        tools.addView(undo);
+        Button circle = style.iconButton("circle", getString(R.string.markup_circle));
+        Button arrow = style.iconButton("arrow", getString(R.string.markup_arrow));
+        Button color = style.iconButton("color", getString(R.string.markup_color));
+        style.setColorIcon(color, 0xffff6545, getString(R.string.markup_color) + " · " + getString(R.string.color_vermilion));
+        Button undo = style.iconButton("undo", getString(R.string.markup_undo));
+        Button redo = style.iconButton("redo", getString(R.string.markup_redo));
+        for (Button tool : new Button[]{circle, arrow, color, undo, redo}) {
+            LinearLayout.LayoutParams spacing = new LinearLayout.LayoutParams(dp(48), dp(48));
+            spacing.setMargins(dp(4), 0, dp(4), 0);
+            tools.addView(tool, spacing);
+        }
         page.addView(tools);
-        Button cancel = style.button(getString(R.string.cancel));
-        Button save = style.button(getString(R.string.markup_save_copy));
-        PhotoMarkup drawing = new PhotoMarkup(this, photo, !fullFrame, getString(R.string.markup_hint), changed -> {
+        Button cancel = style.iconButton("cancel", getString(R.string.cancel));
+        Button save = style.iconButton("save", getString(R.string.markup_save_copy));
+        PhotoMarkup drawing = new PhotoMarkup(this, photo, !fullFrame, getString(R.string.markup_hint), (changed, canRedo) -> {
             undo.setEnabled(changed);
+            redo.setEnabled(canRedo);
             save.setEnabled(changed);
         });
-        circle.setEnabled(false);
+        color.setOnClickListener(view -> chooseMarkupColor(drawing, color));
+        style.selectIcon(circle, true);
+        style.selectIcon(arrow, false);
         circle.setOnClickListener(view -> {
             drawing.setArrow(false);
-            circle.setEnabled(false);
-            arrow.setEnabled(true);
+            style.selectIcon(circle, true);
+            style.selectIcon(arrow, false);
         });
         arrow.setOnClickListener(view -> {
             drawing.setArrow(true);
-            circle.setEnabled(true);
-            arrow.setEnabled(false);
+            style.selectIcon(circle, false);
+            style.selectIcon(arrow, true);
         });
         undo.setEnabled(false);
+        redo.setEnabled(false);
         undo.setOnClickListener(view -> drawing.undo());
+        redo.setOnClickListener(view -> drawing.redo());
         page.addView(drawing, new LinearLayout.LayoutParams(-1, 0, 1));
         TextView hint = style.label(getString(R.string.markup_hint), 13, ScopeUi.MUTED);
         hint.setGravity(Gravity.CENTER);
@@ -680,7 +776,9 @@ public final class GalleryActivity extends Activity {
         LinearLayout actions = new LinearLayout(this);
         actions.setGravity(Gravity.CENTER);
         actions.addView(cancel);
-        actions.addView(save);
+        LinearLayout.LayoutParams saveSpacing = new LinearLayout.LayoutParams(dp(48), dp(48));
+        saveSpacing.leftMargin = dp(12);
+        actions.addView(save, saveSpacing);
         style.add(page, actions, 8);
         cancel.setOnClickListener(view -> editor.dismiss());
         save.setEnabled(false);
@@ -691,7 +789,7 @@ public final class GalleryActivity extends Activity {
                 return;
             }
             drawing.setEnabled(false);
-            for (Button button : new Button[]{circle, arrow, undo, cancel, save}) button.setEnabled(false);
+            for (Button button : new Button[]{circle, arrow, color, undo, redo, cancel, save}) button.setEnabled(false);
             editor.setCancelable(false);
             new Thread(() -> {
                 boolean saved = saveMarkupCopy(copy, owner, fullFrame, side);
@@ -705,9 +803,11 @@ public final class GalleryActivity extends Activity {
                     } else {
                         editor.setCancelable(true);
                         drawing.setEnabled(true);
-                        circle.setEnabled(drawing.isArrow());
-                        arrow.setEnabled(!drawing.isArrow());
+                        circle.setEnabled(true);
+                        arrow.setEnabled(true);
                         undo.setEnabled(true);
+                        redo.setEnabled(drawing.canRedo());
+                        color.setEnabled(true);
                         cancel.setEnabled(true);
                         save.setEnabled(true);
                     }
@@ -743,56 +843,31 @@ public final class GalleryActivity extends Activity {
         }
     }
 
-    private void chooseComparison() {
-        EarSide[] sides = {EarSide.LEFT, EarSide.RIGHT};
-        new AlertDialog.Builder(this).setTitle(R.string.ear_compare)
-                .setItems(new String[]{sides[0].label(this), sides[1].label(this)}, (dialog, which) -> {
-                    EarSide side = sides[which];
-                    ArrayList<File> photos = new ArrayList<>();
-                    for (File file : photosInProfile) {
-                        if (EarSide.read(this, file) == side) photos.add(file);
-                    }
-                    photos.sort((left, right) -> Long.compare(right.lastModified(), left.lastModified()));
-                    if (photos.size() < 2) {
-                        new AlertDialog.Builder(this).setMessage(R.string.ear_compare_need_two)
-                                .setPositiveButton(android.R.string.ok, null).show();
-                    } else {
-                        pickComparisonPhoto(side, photos, null);
-                    }
-                }).setNegativeButton(android.R.string.cancel, null).show();
-    }
-
-    private void pickComparisonPhoto(EarSide side, ArrayList<File> photos, File first) {
-        String[] dates = new String[photos.size()];
-        for (int i = 0; i < dates.length; i++) dates[i] = stamp(photos.get(i));
-        new AlertDialog.Builder(this)
-                .setTitle(first == null ? R.string.ear_compare_first : R.string.ear_compare_second)
-                .setItems(dates, (dialog, which) -> {
-                    File picked = photos.remove(which);
-                    if (first == null) pickComparisonPhoto(side, photos, picked);
-                    else showComparison(side, first, picked);
-                }).setNegativeButton(android.R.string.cancel, null).show();
-    }
-
-    private void showComparison(EarSide side, File first, File second) {
-        File older = first.lastModified() <= second.lastModified() ? first : second;
-        File newer = older.equals(first) ? second : first;
-        LinearLayout row = new LinearLayout(this);
-        row.setPadding(dp(12), dp(8), dp(12), 0);
-        for (File file : new File[]{older, newer}) {
-            LinearLayout column = new LinearLayout(this);
-            column.setOrientation(LinearLayout.VERTICAL);
-            column.setPadding(dp(4), 0, dp(4), 0);
-            ImageView image = photoView(file);
-            image.setContentDescription(stamp(file));
-            column.addView(image, new LinearLayout.LayoutParams(-1, dp(170)));
-            TextView date = style.label(stamp(file), 13, TEXT);
-            date.setGravity(Gravity.CENTER);
-            column.addView(date);
-            row.addView(column, new LinearLayout.LayoutParams(0, -2, 1));
+    private void chooseMarkupColor(PhotoMarkup drawing, Button current) {
+        int[] colors = {0xffff6545, 0xffffc857, 0xff5dd9cf, 0xfff4f5f7};
+        int[] names = {R.string.color_vermilion, R.string.color_amber, R.string.color_teal, R.string.color_white};
+        Dialog palette = new Dialog(this);
+        LinearLayout page = style.page();
+        page.setPadding(dp(20), dp(20), dp(20), dp(20));
+        page.addView(style.label(getString(R.string.markup_color), 18, TEXT));
+        LinearLayout swatches = new LinearLayout(this);
+        swatches.setGravity(Gravity.CENTER);
+        for (int i = 0; i < colors.length; i++) {
+            int color = colors[i];
+            String name = getString(names[i]);
+            Button swatch = style.iconButton("color", name);
+            style.setColorIcon(swatch, color, name);
+            swatch.setOnClickListener(view -> {
+                drawing.setColor(color);
+                style.setColorIcon(current, color, getString(R.string.markup_color) + " · " + name);
+                palette.dismiss();
+            });
+            swatches.addView(swatch, new LinearLayout.LayoutParams(dp(52), dp(52)));
         }
-        new AlertDialog.Builder(this).setTitle(getString(R.string.ear_compare_side, side.label(this)))
-                .setView(row).setPositiveButton(android.R.string.ok, null).show();
+        style.add(page, swatches, 14);
+        palette.setContentView(page);
+        palette.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        palette.show();
     }
 
     private ImageView photoView(File file) {

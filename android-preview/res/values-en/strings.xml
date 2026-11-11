@@ -146,10 +146,10 @@
     <string name="month_index">"Timeline"</string>
     <string name="select_all">"Select all"</string>
     <string name="clear_selection">"Deselect all"</string>
-    <string name="no_filter_results">"No photos match this filter"</string>
+    <string name="no_filter_results">"No matching media"</string>
     <string name="ear_filter">"Ear side · %1$s"</string>
     <string name="all_photos">"All"</string>
-    <string name="filter_title">"Filter photos by ear"</string>
+    <string name="filter_title">"Filter"</string>
     <string name="macro_photo">"Macro photo"</string>
     <string name="macro_hint">"Macro mode · Full-frame photos and videos"</string>
     <string name="macro_mode">"Macro mode"</string>
@@ -159,4 +159,16 @@
     <string name="macro_enable">"Enable macro mode"</string>
     <string name="macro_disable">"Disable macro mode"</string>
     <string name="macro_test_hint">"Turn off macro mode before testing stabilization"</string>
+    <string name="filter_year">"Year"</string>
+    <string name="filter_month">"Month"</string>
+    <string name="filter_month_value">"Month %1$d"</string>
+    <string name="clear_filters">"Clear filters"</string>
+    <string name="markup_redo">"Redo"</string>
+    <string name="markup_color">"Color"</string>
+    <string name="color_vermilion">"Vermilion"</string>
+    <string name="color_amber">"Amber"</string>
+    <string name="color_teal">"Teal"</string>
+    <string name="color_white">"White"</string>
+    <string name="disconnect_device">"Disconnect"</string>
+    <string name="frozen_status">"Frozen"</string>
 </resources>

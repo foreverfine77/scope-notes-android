@@ -9,7 +9,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -42,7 +41,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.Locale;
@@ -76,7 +74,8 @@ public final class PreviewActivity extends Activity {
     private TextView guide;
     private TextView recordingTime;
     private Button previewButton;
-    private Switch stabilizeButton;
+    private Button stabilizeButton;
+    private Button mirrorButton;
     private Button wifiButton;
     private LinearLayout connectionActions;
     private LinearLayout imageOptions;
@@ -84,13 +83,11 @@ public final class PreviewActivity extends Activity {
     private EarSide earSide = EarSide.NONE;
     private boolean macro;
     private boolean macroRotated;
-    private TextView videoLabel;
     private View videoButton;
     private View recordMark;
     private View shutter;
     private Button freezeButton;
     private Button rotateMacroButton;
-    private Button disconnect;
     private Button profileButton;
     private CareProfiles profiles;
     private String profile;
@@ -207,7 +204,7 @@ public final class PreviewActivity extends Activity {
         connectionHint = label("", 13, MUTED);
         connectionHint.setGravity(Gravity.CENTER);
         style.add(empty, connectionHint, 5);
-        screen.addView(empty, new FrameLayout.LayoutParams(-2, -2, Gravity.CENTER));
+        screen.addView(empty, new FrameLayout.LayoutParams(-1, -2, Gravity.CENTER));
         recordingTime = label("", 14, TEXT);
         recordingTime.setBackground(style.shape(0xdd242333, 17, ScopeUi.EDGE));
         recordingTime.setPadding(dp(12), dp(5), dp(12), dp(5));
@@ -217,56 +214,57 @@ public final class PreviewActivity extends Activity {
         screen.addView(recordingTime, timer);
         screen.addOnLayoutChangeListener((view, left, top, right, bottom, a, b, c, d) ->
                 recordingTime.setTranslationY(Math.min(right - left, bottom - top) * .34f));
-        freezeButton = style.button(getString(R.string.freeze_preview));
+        freezeButton = style.iconButton("pause", getString(R.string.freeze_preview));
         freezeButton.setBackground(style.pill(0xee242333, 22, ScopeUi.EDGE));
         freezeButton.setOnClickListener(view -> {
             finishPhotoBurst();
             preview.setFrozen(!preview.isFrozen());
             updateCaptureControls();
         });
-        screen.addView(freezeButton, new FrameLayout.LayoutParams(-2, dp(44), Gravity.TOP | Gravity.END));
-        rotateMacroButton = style.button(getString(R.string.macro_rotate_preview));
-        rotateMacroButton.setBackground(style.pill(0xee242333, 22, ScopeUi.EDGE));
+        screen.addView(freezeButton, new FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP | Gravity.END));
+        rotateMacroButton = style.iconButton("expand", getString(R.string.macro_rotate_preview));
+        rotateMacroButton.setBackground(style.pill(0x66070b12, 24, 0x30ffffff));
         rotateMacroButton.setOnClickListener(view -> {
             macroRotated = !macroRotated;
+            rotateMacroButton.animate().rotationBy(90).setDuration(180).start();
             preview.resetZoom();
             updateCaptureControls();
         });
-        screen.addView(rotateMacroButton, new FrameLayout.LayoutParams(-2, dp(44), Gravity.BOTTOM | Gravity.END));
+        screen.addView(rotateMacroButton, new FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP | Gravity.LEFT));
+        preview.addOnLayoutChangeListener((view, l, t, r, b, a, c, d, e) -> preview.positionMacroButton());
 
         connectionActions = new LinearLayout(this);
         connectionActions.setGravity(Gravity.CENTER);
-        wifiButton = style.button(getString(R.string.choose_device));
+        wifiButton = style.iconButton("device", getString(R.string.choose_device));
         wifiButton.setOnClickListener(view -> chooseEar(true));
-        previewButton = style.button(getString(R.string.connect_device));
+        previewButton = style.iconButton("connect", getString(R.string.connect_device));
         previewButton.setBackground(style.pill(0x487dd3fc, 24, 0x757dd3fc));
         previewButton.setOnClickListener(view -> {
             if (previewRequested) stopRequestedPreview();
             else connectEar();
         });
         connectionActions.addView(wifiButton);
-        LinearLayout.LayoutParams connectSize = new LinearLayout.LayoutParams(-2, dp(46));
+        LinearLayout.LayoutParams connectSize = new LinearLayout.LayoutParams(dp(48), dp(48));
         connectSize.leftMargin = dp(8);
         connectionActions.addView(previewButton, connectSize);
-        page.addView(connectionActions);
 
         imageOptions = new LinearLayout(this);
         imageOptions.setGravity(Gravity.CENTER);
-        stabilizeButton = imageSwitch(getString(R.string.stabilize));
-        stabilizeButton.setOnCheckedChangeListener((button, enabled) -> setStabilize(enabled));
-        Switch mirror = imageSwitch(getString(R.string.mirror));
-        mirror.setOnCheckedChangeListener((button, enabled) -> {
+        stabilizeButton = style.iconButton("stabilize", getString(R.string.stabilize));
+        stabilizeButton.setOnClickListener(view -> setStabilize(!preview.stabilize));
+        mirrorButton = style.iconButton("mirror", getString(R.string.mirror));
+        mirrorButton.setOnClickListener(view -> {
             finishPhotoBurst();
             preview.setFrozen(false);
-            preview.mirror = enabled;
+            preview.mirror = !preview.mirror;
             preview.invalidate();
             updateCaptureControls();
         });
-        imageOptions.addView(stabilizeButton);
-        LinearLayout.LayoutParams mirrorSize = new LinearLayout.LayoutParams(-2, dp(44));
-        mirrorSize.leftMargin = dp(12);
-        imageOptions.addView(mirror, mirrorSize);
-        earSideButton = style.button("");
+        imageOptions.addView(stabilizeButton, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        LinearLayout.LayoutParams mirrorSize = new LinearLayout.LayoutParams(dp(48), dp(48));
+        mirrorSize.setMargins(dp(12), 0, dp(12), 0);
+        imageOptions.addView(mirrorButton, mirrorSize);
+        earSideButton = style.iconButton("tag", getString(R.string.ear_choose));
         setEarSide(earSide);
         earSideButton.setOnClickListener(view -> new AlertDialog.Builder(this)
                 .setTitle(R.string.ear_choose)
@@ -274,7 +272,7 @@ public final class PreviewActivity extends Activity {
                     setEarSide(EarSide.values()[which]);
                     dialog.dismiss();
                 }).setNegativeButton(android.R.string.cancel, null).show());
-        imageOptions.addView(earSideButton);
+        imageOptions.addView(earSideButton, new LinearLayout.LayoutParams(dp(48), dp(48)));
         page.addView(imageOptions);
 
         guide = label("", 13, MUTED);
@@ -311,41 +309,20 @@ public final class PreviewActivity extends Activity {
         videoButton = new View(this);
         videoButton.setBackground(style.pill(ScopeUi.GLASS, 32, ScopeUi.EDGE));
         recordMark = new View(this);
-        videoLabel = addCapture(captureBar, videoButton, recordMark, getString(R.string.video), 64, 80, () -> {
+        addCapture(captureBar, videoButton, recordMark, getString(R.string.video), 64, 80, () -> {
             if (recorder != null) stopVideo();
             else if (!finishingVideo) startVideo();
         });
         style.add(page, captureBar, 18);
-        disconnect = style.button(getString(R.string.stop_preview));
-        disconnect.setBackground(style.pill(0, 22, 0));
-        disconnect.setTextColor(MUTED);
-        disconnect.setTextSize(12);
-        disconnect.setOnClickListener(view -> stopRequestedPreview());
-        LinearLayout.LayoutParams disconnectSize = new LinearLayout.LayoutParams(-2, dp(44));
-        disconnectSize.gravity = Gravity.CENTER_HORIZONTAL;
-        page.addView(disconnect, disconnectSize);
+        LinearLayout.LayoutParams connectionRow = new LinearLayout.LayoutParams(-1, dp(48));
+        connectionRow.topMargin = dp(12);
+        page.addView(connectionActions, connectionRow);
         updateCaptureControls();
         showConnection(getString(R.string.disconnected), getString(R.string.connect_hint));
         if (state == null) showWirelessReminder();
     }
 
-    private Switch imageSwitch(String title) {
-        Switch toggle = new Switch(this);
-        toggle.setText(title);
-        toggle.setTextColor(TEXT);
-        toggle.setTextSize(14);
-        toggle.setMinimumHeight(dp(44));
-        toggle.setSwitchPadding(dp(8));
-        toggle.setPadding(dp(12), 0, dp(10), 0);
-        toggle.setBackground(style.pill(ScopeUi.GLASS, 22, ScopeUi.EDGE));
-        toggle.setTrackTintList(new ColorStateList(
-                new int[][]{{android.R.attr.state_checked}, {}},
-                new int[]{0xff38c478, 0xff71819b}));
-        toggle.setThumbTintList(ColorStateList.valueOf(TEXT));
-        return toggle;
-    }
-
-    private TextView addCapture(LinearLayout bar, View control, View symbol, String name,
+    private void addCapture(LinearLayout bar, View control, View symbol, String name,
                                 int diameter, int columnWidth, Runnable action) {
         LinearLayout column = new LinearLayout(this);
         column.setOrientation(LinearLayout.VERTICAL);
@@ -356,14 +333,10 @@ public final class PreviewActivity extends Activity {
         int size = diameter == 80 ? 64 : diameter == 64 ? 34 : 36;
         ring.addView(symbol, new FrameLayout.LayoutParams(dp(size), dp(size), Gravity.CENTER));
         control.setContentDescription(name);
+        if (Build.VERSION.SDK_INT >= 26) control.setTooltipText(name);
         control.setOnClickListener(view -> action.run());
         column.addView(ring, new LinearLayout.LayoutParams(-1, dp(80)));
-        TextView title = label(name, 12, MUTED);
-        title.setGravity(Gravity.CENTER);
-        title.setPadding(0, dp(5), 0, 0);
-        column.addView(title);
         bar.addView(column, new LinearLayout.LayoutParams(dp(columnWidth), -2));
-        return title;
     }
 
     private void selectProfile(String id) {
@@ -384,11 +357,6 @@ public final class PreviewActivity extends Activity {
         connectionHint.setText(detail);
         empty.setVisibility(live ? View.GONE : View.VISIBLE);
         if (!live) preview.setFrozen(false);
-        imageOptions.setVisibility(live ? View.VISIBLE : View.GONE);
-        stabilizeButton.setVisibility(macro ? View.GONE : View.VISIBLE);
-        earSideButton.setVisibility(macro ? View.GONE : View.VISIBLE);
-        connectionActions.setVisibility(live ? View.GONE : View.VISIBLE);
-        disconnect.setVisibility(live ? View.VISIBLE : View.INVISIBLE);
         updateCaptureControls();
         if (!live) showBattery("—", 0);
         if (testStarted < 0) guide.setText(live
@@ -413,16 +381,29 @@ public final class PreviewActivity extends Activity {
         boolean active = recorder != null;
         boolean canCapture = live && !frozen;
         boolean canRecord = canCapture || active;
+        if (testStarted < 0) guide.setText(frozen ? getString(R.string.frozen_status) : live
+                ? (macro ? getString(R.string.macro_hint) : getString(R.string.recording_for, profiles.name(profile))) : "");
         freezeButton.setVisibility(live ? View.VISIBLE : View.GONE);
         freezeButton.setEnabled(live && !active && !finishingVideo);
-        freezeButton.setText(frozen ? R.string.resume_preview : R.string.freeze_preview);
+        style.setIcon(freezeButton, frozen ? "play" : "pause",
+                getString(frozen ? R.string.resume_preview : R.string.freeze_preview));
+        freezeButton.setBackground(style.pill(frozen ? 0xb3152635 : 0x66070b12, 24, frozen ? ACCENT : 0x30ffffff));
+        stabilizeButton.setEnabled(live && !macro);
+        mirrorButton.setEnabled(live);
+        earSideButton.setEnabled(live && !macro);
+        style.selectIcon(stabilizeButton, preview.stabilize);
+        style.selectIcon(mirrorButton, preview.mirror);
+        style.setIcon(previewButton, previewRequested ? (live ? "disconnect" : "cancel") : "connect",
+                getString(previewRequested ? (live ? R.string.disconnect_device : R.string.stop_connecting) : R.string.connect_device));
         rotateMacroButton.setVisibility(live && macro ? View.VISIBLE : View.GONE);
-        rotateMacroButton.setText(macroRotated ? R.string.macro_restore_preview : R.string.macro_rotate_preview);
+        style.setIcon(rotateMacroButton, macroRotated ? "collapse" : "expand",
+                getString(macroRotated ? R.string.macro_restore_preview : R.string.macro_rotate_preview));
+        preview.positionMacroButton();
         shutter.setEnabled(canCapture);
         ((View) shutter.getParent()).setAlpha(canCapture ? 1f : .45f);
         String text = active ? getString(R.string.stop_recording) : finishingVideo ? getString(R.string.saving) : getString(R.string.video);
         videoButton.setContentDescription(text);
-        videoLabel.setText(text);
+        if (Build.VERSION.SDK_INT >= 26) videoButton.setTooltipText(text);
         videoButton.setEnabled(canRecord && !finishingVideo);
         ((View) videoButton.getParent()).setAlpha(canRecord ? 1f : .45f);
         int size = active ? 24 : 34;
@@ -625,7 +606,6 @@ public final class PreviewActivity extends Activity {
                     preview.resetReference();
                     preview.setFrame(null, 0);
                     showConnection(message, getString(R.string.waiting_image));
-                    wifiButton.setVisibility(message.contains("Wi-Fi") ? View.VISIBLE : View.GONE);
                 });
             }
 
@@ -684,7 +664,6 @@ public final class PreviewActivity extends Activity {
                 });
             }
         });
-        previewButton.setText(getString(R.string.stop_connecting));
         showConnection(getString(R.string.connecting), getString(R.string.waiting_image));
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         session.setStabilize(!macro && preview.stabilize);
@@ -713,8 +692,6 @@ public final class PreviewActivity extends Activity {
         earWifi.stop();
         preview.resetReference();
         preview.setFrame(null, 0);
-        wifiButton.setVisibility(View.VISIBLE);
-        previewButton.setText(getString(R.string.connect_device));
         showConnection(getString(R.string.disconnected), getString(R.string.connect_hint));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -814,19 +791,19 @@ public final class PreviewActivity extends Activity {
             finishPhotoBurst();
             preview.setFrozen(false);
             preview.resetReference();
-            updateCaptureControls();
         }
         preview.stabilize = enabled;
         if (session != null) session.setStabilize(!macro && enabled);
-        if (stabilizeButton.isChecked() != enabled) stabilizeButton.setChecked(enabled);
+        updateCaptureControls();
         preview.invalidate();
         record(enabled ? "稳向开启" : "稳向关闭");
     }
 
     private void setEarSide(EarSide side) {
         earSide = side;
-        earSideButton.setText(side.label(this));
-        earSideButton.setContentDescription(getString(R.string.ear_current, side.label(this)));
+        String kind = side == EarSide.LEFT ? "tag-left" : side == EarSide.RIGHT ? "tag-right" : "tag";
+        style.setIcon(earSideButton, kind, getString(R.string.ear_current, side.label(this)));
+        style.selectIcon(earSideButton, side != EarSide.NONE);
     }
 
     private void showWirelessReminder() {
@@ -1135,8 +1112,11 @@ public final class PreviewActivity extends Activity {
         }
 
         void setFrame(Bitmap frame, float angle) {
+            boolean resized = image == null || frame == null
+                    || image.getWidth() != frame.getWidth() || image.getHeight() != frame.getHeight();
             image = frame;
             rotation = angle;
+            if (resized) positionMacroButton();
             if (!isFrozen()) invalidate();
         }
 
@@ -1154,7 +1134,19 @@ public final class PreviewActivity extends Activity {
         void resetZoom() {
             zoom = 1f;
             panX = panY = 0;
+            positionMacroButton();
             invalidate();
+        }
+
+        void positionMacroButton() {
+            if (rotateMacroButton == null || image == null || !macro) return;
+            int width = macroRotated ? image.getHeight() : image.getWidth();
+            int height = macroRotated ? image.getWidth() : image.getHeight();
+            float scale = Math.min((float) getWidth() / width, (float) getHeight() / height);
+            float right = (getWidth() + width * scale) / 2;
+            float bottom = (getHeight() + height * scale) / 2;
+            rotateMacroButton.setX(right - dp(56));
+            rotateMacroButton.setY(bottom - dp(56));
         }
 
         @Override

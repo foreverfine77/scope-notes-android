@@ -72,7 +72,13 @@ final class ScopeUi {
     }
 
     Button button(String text) {
-        Button button = new Button(context);
+        Button button = new Button(context) {
+            @Override
+            protected void drawableStateChanged() {
+                super.drawableStateChanged();
+                setAlpha(isEnabled() ? 1f : .4f);
+            }
+        };
         button.setText(text);
         button.setAllCaps(false);
         button.setTextColor(TEXT);
@@ -84,6 +90,39 @@ final class ScopeUi {
         button.setPadding(dp(12), 0, dp(12), 0);
         button.setBackground(pill(GLASS, 24, EDGE));
         return button;
+    }
+
+    Button iconButton(String kind, String label) {
+        Button button = button("");
+        setIcon(button, kind, label);
+        return button;
+    }
+
+    void setIcon(Button button, String kind, String label) {
+        Drawable icon = symbol(kind, 0);
+        icon.setBounds(0, 0, dp(24), dp(24));
+        button.setText("");
+        button.setCompoundDrawables(icon, null, null, null);
+        button.setCompoundDrawablePadding(0);
+        button.setGravity(Gravity.CENTER);
+        button.setPadding(dp(12), 0, dp(12), 0);
+        button.setMinimumWidth(dp(48));
+        button.setMinimumHeight(dp(48));
+        button.setContentDescription(label);
+        button.setAlpha(button.isEnabled() ? 1f : .4f);
+        if (Build.VERSION.SDK_INT >= 26) button.setTooltipText(label);
+    }
+
+    void setColorIcon(Button button, int color, String label) {
+        setIcon(button, "color", label);
+        Drawable swatch = symbol("color", color);
+        swatch.setBounds(0, 0, dp(24), dp(24));
+        button.setCompoundDrawables(swatch, null, null, null);
+    }
+
+    void selectIcon(Button button, boolean selected) {
+        button.setSelected(selected);
+        button.setBackground(pill(selected ? 0x337dd3fc : GLASS, 24, selected ? ACCENT : EDGE));
     }
 
     Drawable avatar(String name) {
@@ -139,6 +178,155 @@ final class ScopeUi {
                     canvas.drawArc(3, 11, 21, 27, 222, 96, false, paint);
                     paint.setStyle(Paint.Style.FILL);
                     canvas.drawCircle(12, 18, 1.3f, paint);
+                } else if ("device".equals(kind)) {
+                    canvas.save();
+                    canvas.rotate(22, 10, 12);
+                    canvas.drawRoundRect(6, 9, 12, 22, 2, 2, paint);
+                    canvas.drawLine(7, 9, 8, 6, paint);
+                    canvas.drawLine(11, 9, 10, 6, paint);
+                    canvas.drawLine(9, 6, 9, 1, paint);
+                    canvas.drawLine(8, 1, 9, .5f, paint);
+                    canvas.drawLine(9, 16, 9, 18, paint);
+                    canvas.restore();
+                    canvas.drawCircle(18, 7, 3, paint);
+                    canvas.drawLine(20.2f, 9.2f, 23, 12, paint);
+                } else if ("share".equals(kind)) {
+                    canvas.drawCircle(5, 12, 2.5f, paint);
+                    canvas.drawCircle(19, 4, 2.5f, paint);
+                    canvas.drawCircle(19, 20, 2.5f, paint);
+                    canvas.drawLine(7.2f, 10.8f, 16.8f, 5.2f, paint);
+                    canvas.drawLine(7.2f, 13.2f, 16.8f, 18.8f, paint);
+                } else if ("expand".equals(kind) || "collapse".equals(kind)) {
+                    boolean expand = "expand".equals(kind);
+                    float a = expand ? 4 : 10;
+                    float b = expand ? 10 : 4;
+                    canvas.drawLine(a, a, b, b, paint);
+                    canvas.drawLine(a, a, a, a + (expand ? 5 : -5), paint);
+                    canvas.drawLine(a, a, a + (expand ? 5 : -5), a, paint);
+                    canvas.drawLine(24 - a, 24 - a, 24 - b, 24 - b, paint);
+                    canvas.drawLine(24 - a, 24 - a, 24 - a, 24 - a - (expand ? 5 : -5), paint);
+                    canvas.drawLine(24 - a, 24 - a, 24 - a - (expand ? 5 : -5), 24 - a, paint);
+                } else if ("circle".equals(kind)) {
+                    canvas.drawOval(3, 5, 21, 19, paint);
+                } else if ("arrow".equals(kind)) {
+                    canvas.drawLine(4, 20, 20, 4, paint);
+                    canvas.drawLine(12, 4, 20, 4, paint);
+                    canvas.drawLine(20, 4, 20, 12, paint);
+                } else if ("undo".equals(kind) || "redo".equals(kind)) {
+                    if ("redo".equals(kind)) canvas.scale(-1, 1, 12, 12);
+                    canvas.drawLine(4, 8, 10, 3, paint);
+                    canvas.drawLine(4, 8, 10, 13, paint);
+                    path.reset();
+                    path.moveTo(4, 8);
+                    path.lineTo(14, 8);
+                    path.cubicTo(23, 8, 23, 21, 13, 21);
+                    canvas.drawPath(path, paint);
+                } else if ("cancel".equals(kind)) {
+                    canvas.drawLine(6, 6, 18, 18, paint);
+                    canvas.drawLine(18, 6, 6, 18, paint);
+                } else if ("save".equals(kind)) {
+                    canvas.drawRoundRect(3, 3, 21, 21, 2, 2, paint);
+                    canvas.drawRect(7, 3, 16, 9, paint);
+                    canvas.drawRect(7, 15, 17, 21, paint);
+                } else if ("markup".equals(kind)) {
+                    path.reset();
+                    path.moveTo(4, 15);
+                    path.lineTo(15, 4);
+                    path.lineTo(20, 9);
+                    path.lineTo(9, 20);
+                    path.lineTo(3, 21);
+                    path.close();
+                    canvas.drawPath(path, paint);
+                    canvas.drawLine(12, 7, 17, 12, paint);
+                } else if ("delete".equals(kind)) {
+                    canvas.drawLine(3, 6, 21, 6, paint);
+                    canvas.drawLine(9, 3, 15, 3, paint);
+                    canvas.drawRoundRect(6, 6, 18, 22, 2, 2, paint);
+                    canvas.drawLine(10, 10, 10, 18, paint);
+                    canvas.drawLine(14, 10, 14, 18, paint);
+                } else if ("pause".equals(kind)) {
+                    paint.setStyle(Paint.Style.FILL);
+                    canvas.drawRoundRect(6, 4, 10, 20, 1, 1, paint);
+                    canvas.drawRoundRect(14, 4, 18, 20, 1, 1, paint);
+                } else if ("play".equals(kind)) {
+                    paint.setStyle(Paint.Style.FILL);
+                    path.reset();
+                    path.moveTo(7, 3);
+                    path.lineTo(21, 12);
+                    path.lineTo(7, 21);
+                    path.close();
+                    canvas.drawPath(path, paint);
+                } else if ("stabilize".equals(kind)) {
+                    canvas.drawLine(3, 9, 3, 3, paint);
+                    canvas.drawLine(3, 3, 9, 3, paint);
+                    canvas.drawLine(15, 3, 21, 3, paint);
+                    canvas.drawLine(21, 3, 21, 9, paint);
+                    canvas.drawLine(21, 15, 21, 21, paint);
+                    canvas.drawLine(21, 21, 15, 21, paint);
+                    canvas.drawLine(9, 21, 3, 21, paint);
+                    canvas.drawLine(3, 21, 3, 15, paint);
+                    canvas.drawLine(7, 12, 17, 12, paint);
+                    canvas.drawCircle(12, 12, 2, paint);
+                } else if ("mirror".equals(kind)) {
+                    canvas.drawLine(12, 2, 12, 6, paint);
+                    canvas.drawLine(12, 9, 12, 15, paint);
+                    canvas.drawLine(12, 18, 12, 22, paint);
+                    path.reset();
+                    path.moveTo(2, 7);
+                    path.lineTo(8, 4);
+                    path.lineTo(8, 20);
+                    path.lineTo(2, 17);
+                    path.close();
+                    canvas.drawPath(path, paint);
+                    canvas.save();
+                    canvas.scale(-1, 1, 12, 12);
+                    canvas.drawPath(path, paint);
+                    canvas.restore();
+                } else if ("tag".equals(kind) || "tag-left".equals(kind) || "tag-right".equals(kind)) {
+                    path.reset();
+                    path.moveTo(3, 3);
+                    path.lineTo(14, 3);
+                    path.lineTo(22, 12);
+                    path.lineTo(12, 22);
+                    path.lineTo(3, 13);
+                    path.close();
+                    canvas.drawPath(path, paint);
+                    canvas.drawCircle(7, 7, 1.3f, paint);
+                    if (!"tag".equals(kind)) {
+                        paint.setStyle(Paint.Style.FILL);
+                        paint.setTypeface(Typeface.DEFAULT_BOLD);
+                        paint.setTextAlign(Paint.Align.CENTER);
+                        paint.setTextSize(9);
+                        canvas.drawText("tag-left".equals(kind) ? "L" : "R", 13, 15.5f, paint);
+                    }
+                } else if ("connect".equals(kind) || "disconnect".equals(kind)) {
+                    canvas.drawArc(2, 3, 14, 15, 100, 260, false, paint);
+                    canvas.drawArc(10, 9, 22, 21, -80, 260, false, paint);
+                    if ("disconnect".equals(kind)) {
+                        paint.setColor(RED);
+                        canvas.drawLine(4, 21, 21, 4, paint);
+                    } else {
+                        canvas.drawLine(8, 16, 16, 8, paint);
+                    }
+                } else if ("stop".equals(kind)) {
+                    paint.setStyle(Paint.Style.FILL);
+                    canvas.drawRoundRect(6, 6, 18, 18, 2, 2, paint);
+                } else if ("filter".equals(kind) || "filter-active".equals(kind)) {
+                    canvas.drawLine(3, 6, 21, 6, paint);
+                    canvas.drawLine(6, 12, 18, 12, paint);
+                    canvas.drawLine(10, 18, 14, 18, paint);
+                    if ("filter-active".equals(kind)) {
+                        paint.setStyle(Paint.Style.FILL);
+                        paint.setColor(ACCENT);
+                        canvas.drawCircle(21, 3, 2.5f, paint);
+                    }
+                } else if ("color".equals(kind)) {
+                    paint.setColor(battery);
+                    paint.setStyle(Paint.Style.FILL);
+                    canvas.drawCircle(12, 12, 8, paint);
+                    paint.setColor(TEXT);
+                    paint.setStyle(Paint.Style.STROKE);
+                    canvas.drawCircle(12, 12, 9, paint);
                 } else {
                     canvas.drawRoundRect(2.5f, 4, 21.5f, 20, 3, 3, paint);
                     canvas.drawCircle(8.5f, 9, 1.35f, paint);

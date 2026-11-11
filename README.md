@@ -1,8 +1,9 @@
 # 微镜记 · Scope Notes
 
-连接 Wi-Fi 可视耳镜的 Android 预览与影像记录工具。支持实时预览、拍照、无声录像、分人档案和同侧照片对比。
+连接 Wi-Fi 可视耳镜的 Android 预览与影像记录工具。支持实时预览、拍照、无声录像、分人档案、年月与耳侧筛选，以及照片标注副本。
 
 - [项目历史](HISTORY.md)区分了样机实测、导入时的实现状态和后续计划。
+- [UI 设计规范](UI规范.md)统一图标、固定布局、交互状态和验收要求。
 - [硬件简报](硬件简报.md)记录样机能力、通信方式和待验证命令。
 - [电量观察记录](电量观察记录.md)保存待补充的剩余电量和分钟数读数。
 - [Issues](https://github.com/foreverfine77/scope-notes-android/issues)记录任务、验收条件和测试证据。[Projects](https://github.com/users/foreverfine77/projects/3)跟踪任务进度。

@@ -146,10 +146,10 @@
     <string name="month_index">"时间索引"</string>
     <string name="select_all">"全选"</string>
     <string name="clear_selection">"取消全选"</string>
-    <string name="no_filter_results">"当前筛选没有照片"</string>
+    <string name="no_filter_results">"没有符合条件的影像"</string>
     <string name="ear_filter">"耳别 · %1$s"</string>
     <string name="all_photos">"全部"</string>
-    <string name="filter_title">"按耳别筛选照片"</string>
+    <string name="filter_title">"筛选"</string>
     <string name="macro_photo">"微距照片"</string>
     <string name="macro_hint">"微距模式 · 全画幅拍照和录像"</string>
     <string name="macro_mode">"微距模式"</string>
@@ -159,4 +159,16 @@
     <string name="macro_enable">"开启微距模式"</string>
     <string name="macro_disable">"关闭微距模式"</string>
     <string name="macro_test_hint">"请关闭微距模式，再测试画面稳向"</string>
+    <string name="filter_year">"年份"</string>
+    <string name="filter_month">"月份"</string>
+    <string name="filter_month_value">"%1$d月"</string>
+    <string name="clear_filters">"清除筛选"</string>
+    <string name="markup_redo">"重做"</string>
+    <string name="markup_color">"颜色"</string>
+    <string name="color_vermilion">"朱红"</string>
+    <string name="color_amber">"琥珀黄"</string>
+    <string name="color_teal">"青色"</string>
+    <string name="color_white">"白色"</string>
+    <string name="disconnect_device">"断开连接"</string>
+    <string name="frozen_status">"已定格"</string>
 </resources>

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 final class PhotoMarkup extends View {
     interface Changes {
-        void changed(boolean hasMarks);
+        void changed(boolean hasMarks, boolean canRedo);
     }
 
     private final Bitmap photo;
@@ -24,8 +24,10 @@ final class PhotoMarkup extends View {
     private final Path mask = new Path();
     private final RectF photoBounds;
     private final ArrayList<Mark> marks = new ArrayList<>();
+    private final ArrayList<Mark> undone = new ArrayList<>();
     private Mark draft;
     private boolean arrow;
+    private int color = 0xffff6545;
     private float scale;
     private float left;
     private float top;
@@ -39,7 +41,6 @@ final class PhotoMarkup extends View {
         setContentDescription(description);
         float diameter = Math.min(photo.getWidth(), photo.getHeight());
         mask.addCircle(photo.getWidth() / 2f, photo.getHeight() / 2f, diameter / 2f, Path.Direction.CW);
-        ink.setColor(0xffff6545);
         ink.setStyle(Paint.Style.STROKE);
         ink.setStrokeWidth(Math.max(3f, diameter / 85f));
         ink.setStrokeCap(Paint.Cap.ROUND);
@@ -49,14 +50,25 @@ final class PhotoMarkup extends View {
         this.arrow = arrow;
     }
 
-    boolean isArrow() {
-        return arrow;
+    void setColor(int color) {
+        this.color = color;
+    }
+
+    boolean canRedo() {
+        return !undone.isEmpty();
     }
 
     void undo() {
         if (marks.isEmpty()) return;
-        marks.remove(marks.size() - 1);
-        changes.changed(!marks.isEmpty());
+        undone.add(marks.remove(marks.size() - 1));
+        changes.changed(!marks.isEmpty(), true);
+        invalidate();
+    }
+
+    void redo() {
+        if (undone.isEmpty()) return;
+        marks.add(undone.remove(undone.size() - 1));
+        changes.changed(true, !undone.isEmpty());
         invalidate();
     }
 
@@ -94,6 +106,7 @@ final class PhotoMarkup extends View {
     }
 
     private void drawMark(Canvas canvas, Mark mark) {
+        ink.setColor(mark.color);
         if (!mark.arrow) {
             canvas.drawOval(Math.min(mark.x, mark.endX), Math.min(mark.y, mark.endY),
                     Math.max(mark.x, mark.endX), Math.max(mark.y, mark.endY), ink);
@@ -124,7 +137,7 @@ final class PhotoMarkup extends View {
                 if (x < 0 || y < 0 || x >= photo.getWidth() || y >= photo.getHeight()) return false;
                 if (circular && Math.hypot(x - photo.getWidth() / 2f, y - photo.getHeight() / 2f)
                         > Math.min(photo.getWidth(), photo.getHeight()) / 2f) return false;
-                draft = new Mark(x, y, arrow);
+                draft = new Mark(x, y, arrow, color);
                 break;
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_UP:
@@ -136,7 +149,8 @@ final class PhotoMarkup extends View {
                     float dy = Math.abs(draft.endY - draft.y);
                     if (draft.arrow ? Math.hypot(dx, dy) >= 3 : dx >= 3 && dy >= 3) {
                         marks.add(draft);
-                        changes.changed(true);
+                        undone.clear();
+                        changes.changed(true, false);
                     }
                     draft = null;
                 }
@@ -155,13 +169,15 @@ final class PhotoMarkup extends View {
         final float x;
         final float y;
         final boolean arrow;
+        final int color;
         float endX;
         float endY;
 
-        Mark(float x, float y, boolean arrow) {
+        Mark(float x, float y, boolean arrow, int color) {
             this.x = endX = x;
             this.y = endY = y;
             this.arrow = arrow;
+            this.color = color;
         }
     }
 }
