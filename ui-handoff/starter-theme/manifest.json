@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "themeId": "starter-neutral",
+  "name": "中性骨架 · 非最终视觉",
+  "files": {"tokens": "tokens.json", "icons": "icons.svg", "decisions": "design-decisions.json"},
+  "placeholderIcons": true,
+  "requiredScreens": ["capture:live", "capture:disconnected", "capture:connected-idle", "capture:macro-idle", "capture:frozen", "capture:macro-expanded", "gallery", "photo", "markup", "filters", "ear-picker", "settings", "help", "privacy", "delete-confirm", "profile-edit", "device-picker"],
+  "nativeTarget": "Android Java Views",
+  "notes": "这是供 Claude 克隆的槽位模板。当前图标为占位图形。最终交付必须重绘并将 placeholderIcons 改为 false。"
+}

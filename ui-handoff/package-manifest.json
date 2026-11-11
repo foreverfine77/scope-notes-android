@@ -1,0 +1,231 @@
+{
+  "schemaVersion": "1.0",
+  "entry": "index.html",
+  "files": [
+    {
+      "path": "CLAUDE_START.txt",
+      "bytes": 5021,
+      "sha256": "bfe92067cb184114bbd235aab7974e00296336b4e465eb2ec443c80d2afbf141"
+    },
+    {
+      "path": "CODEX_RETURN.txt",
+      "bytes": 1721,
+      "sha256": "5de6914003a2e8ce36b10b6a9af1b306866dc90b53f66aa67f84cdc3d395cab5"
+    },
+    {
+      "path": "contracts/android-mapping.json",
+      "bytes": 29991,
+      "sha256": "1deee477a3e6075700bda4a7aebc8d595a677ac15bca96e62b6d8ef3f40174e0"
+    },
+    {
+      "path": "contracts/layout.contract.json",
+      "bytes": 3181,
+      "sha256": "68ef36faf7a13f9301563370fa6569a2fa22563c6847355c0f82479c553fe859"
+    },
+    {
+      "path": "contracts/required-icons.json",
+      "bytes": 825,
+      "sha256": "9b45e047e874e69fa2c7cd3e9504ad9e19f8c96a43b562583bccf87fbcb50816"
+    },
+    {
+      "path": "contracts/return-checklist.json",
+      "bytes": 1001,
+      "sha256": "c52383264bdb552e14f7ac63c7323483aacf2a74f0387be1e1c0e526f271ccf4"
+    },
+    {
+      "path": "contracts/review-export.schema.json",
+      "bytes": 895,
+      "sha256": "fd3099b45a4c0f6c4df795ee3712b387a0da848bdea1f9e3783b1ff59f6bbc89"
+    },
+    {
+      "path": "contracts/theme-interface.json",
+      "bytes": 1182,
+      "sha256": "ddf0b5fa9a52409cee078f7f126091a4a72e02b15a55625f27883f7fcff879c2"
+    },
+    {
+      "path": "index.html",
+      "bytes": 2176,
+      "sha256": "ead21b9f3009a45c54486d519810cd97694f9bf62cc47129c888b4b96f07acf0"
+    },
+    {
+      "path": "inventory.js",
+      "bytes": 158763,
+      "sha256": "04906e128d4dc5c1508d7bc6557a0492a36a4e6ce79463ed956dbe1bb66bdfc7"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 211100,
+      "sha256": "e1d6925bfb9539923587202d5173bc68d6aa472acc05de7a4b1faa4a0667d6e3"
+    },
+    {
+      "path": "previews/00-review-workbench.png",
+      "bytes": 142437,
+      "sha256": "58058a4bb3361486564fd6991b9f4898a8f7b96bba226a86c64071bcf338dd84"
+    },
+    {
+      "path": "previews/01-macro-skeleton.png",
+      "bytes": 40730,
+      "sha256": "968bc903b8db9ceec9ba167905c296d6ce5a992cffe42986cbb36a00c2140b15"
+    },
+    {
+      "path": "previews/02-help-skeleton.png",
+      "bytes": 30634,
+      "sha256": "7172d6b225c6ce7cb1901f5ba562d322504b5b5b027eb670ebc14e9c7eac68eb"
+    },
+    {
+      "path": "previews/03-ear-picker-skeleton.png",
+      "bytes": 21523,
+      "sha256": "298e0205e66b6ff033c4bd6437b2e14039c078a2438a74d20637776a313a5f39"
+    },
+    {
+      "path": "previews/04-markup-skeleton.png",
+      "bytes": 22221,
+      "sha256": "a24df7ac8d520cbf10f612e72c692a78e117679d325d89e70f1728a1f155dfef"
+    },
+    {
+      "path": "previews/05-connected-idle-skeleton.png",
+      "bytes": 41701,
+      "sha256": "4073009677fa460360ba3d732cadd52be901f741cb05d85943227963ab33336a"
+    },
+    {
+      "path": "QA_REPORT.md",
+      "bytes": 1940,
+      "sha256": "df1fc9887400869b80d8c950ebb996b4be5ea86687aa3578981293260802e482"
+    },
+    {
+      "path": "references/current-source/AndroidManifest.xml",
+      "bytes": 1682,
+      "sha256": "58c3e42e339ad1502d0022ea0758490262acd17373fa0f7709291f55a8e567ba"
+    },
+    {
+      "path": "references/current-source/GalleryActivity.java",
+      "bytes": 49679,
+      "sha256": "a96cbfd630d79db7c71ee5b8577be3601d6076dc27d8e96c0d00b15769c9f044"
+    },
+    {
+      "path": "references/current-source/PhotoMarkup.java",
+      "bytes": 6468,
+      "sha256": "538eb1a7562ce92deae1ddbba95876f3d9c6370a5cdd94c25a82c3634a97a4f8"
+    },
+    {
+      "path": "references/current-source/PreviewActivity.java",
+      "bytes": 56844,
+      "sha256": "13dd4cccc8d7d90163719b8d13ad0f860591f0fb150a145a62efdae93a756848"
+    },
+    {
+      "path": "references/current-source/ScopeUi.java",
+      "bytes": 22846,
+      "sha256": "4809908dbfa1e9d7e95c7b19bba33a27132f97b1cf8bea9bc8ecea50d13cf6e7"
+    },
+    {
+      "path": "references/current-source/values-en-strings.xml",
+      "bytes": 12557,
+      "sha256": "89111dad53ac5834184091cad70945f9fea0d25e77b5144b6a91f6e5c36646f9"
+    },
+    {
+      "path": "references/current-source/values-strings.xml",
+      "bytes": 12285,
+      "sha256": "274c2c680c4858a4fd57b903e4ffab58ca3f79047044cbd9baa5731e5fcbdf58"
+    },
+    {
+      "path": "references/current-source/values-zh-rTW-strings.xml",
+      "bytes": 12294,
+      "sha256": "3eb00b7dbd39b1946573a885dc2c929ca858832dcd2b1483e7dc3ad9b4577896"
+    },
+    {
+      "path": "references/current-source/VideoPlayback.java",
+      "bytes": 3647,
+      "sha256": "41ba3a1f068da1714ee0ebda1d54d26bbe32fafe4e12affd213d2ede396deefe"
+    },
+    {
+      "path": "references/device-phone.png",
+      "bytes": 24762,
+      "sha256": "6696df857d5301b202a3582402a928b9794466a9f5493183a51498a040d971a1"
+    },
+    {
+      "path": "references/device.png",
+      "bytes": 5972,
+      "sha256": "971e8125a8ec6ea259e9ca1ded384d3b13f59938f87c184c60564040652015da"
+    },
+    {
+      "path": "review.css",
+      "bytes": 14304,
+      "sha256": "fc4dfa488529856fe109fe2fe282251db3b964a3b3e3d6375a4b4f0dba883290"
+    },
+    {
+      "path": "review.js",
+      "bytes": 50121,
+      "sha256": "1a4f65b7588ac6ecc30134f5bdc42077080381b2e0f1a66cb48cb97e0d3dc977"
+    },
+    {
+      "path": "starter-theme/design-decisions.json",
+      "bytes": 712,
+      "sha256": "b6deec161cb74e0a08de8b83a4c5822d7485fd36df05ba4ebdac3a8e6a0a0aac"
+    },
+    {
+      "path": "starter-theme/icons.svg",
+      "bytes": 9529,
+      "sha256": "d442e0512daf1f49dd802dfe5f4952f2c7765ddc0057062c2302eb413b906fa8"
+    },
+    {
+      "path": "starter-theme/manifest.json",
+      "bytes": 713,
+      "sha256": "db9fb5fd02718dc4ae3862e7f6deccb863e9b111cb6f4add647a636a6bb260f2"
+    },
+    {
+      "path": "starter-theme/theme.js",
+      "bytes": 926,
+      "sha256": "f388e623a2688dd4e6cbaa7b450da7cb2f9ac432b62804892d4e0a348f730d41"
+    },
+    {
+      "path": "starter-theme/tokens.json",
+      "bytes": 1031,
+      "sha256": "9c6c53c5e3ce40f337d927479014de25723e912674168712a2a2735f6541733f"
+    },
+    {
+      "path": "tools/build_inventory.py",
+      "bytes": 27283,
+      "sha256": "80f9176351c5bb6ad4318038cc072b050e8056896aaf5ba819c6d704aa103f7d"
+    },
+    {
+      "path": "tools/check_theme.py",
+      "bytes": 7013,
+      "sha256": "dc13d0d8fcc521e5303471e719112fe06d108e33178afc6015c6011fc6772bd8"
+    },
+    {
+      "path": "tools/csv_to_review.py",
+      "bytes": 2238,
+      "sha256": "5323456f714dfd8d15ca0ad2000567a50ea3e651a1e72695797d3bd5c27fc1be"
+    },
+    {
+      "path": "tools/package.py",
+      "bytes": 1399,
+      "sha256": "d4aa63472bb81edf4ef6509568c273e1e45aa648930770e354ad82cd7ab5f9fd"
+    },
+    {
+      "path": "tools/qa_browser.mjs",
+      "bytes": 13141,
+      "sha256": "c6cdfdc658d086a4c3b19f562abf75233252d0b35722e5b8d9fe0f1d5c1d001f"
+    },
+    {
+      "path": "tools/qa_contracts.py",
+      "bytes": 3327,
+      "sha256": "b60eaa46e3d77b962d9eec609c86f6011c694e57d04d2d628a25be3609dc3856"
+    },
+    {
+      "path": "交付说明.md",
+      "bytes": 4485,
+      "sha256": "d04e7a5963d0258bc88803b38633ed7acbdcdaf5fa31435e43ca5e5eb4c1c6cd"
+    },
+    {
+      "path": "文案审核.csv",
+      "bytes": 61584,
+      "sha256": "703fab61435477a3683cd53a54891a84eeb583e4de15d07511d0e13f0b8a611b"
+    },
+    {
+      "path": "连接与取景流程.md",
+      "bytes": 2655,
+      "sha256": "e3b15d4bfc00e8e9af604bc7ae9c0724ddc230886385d8b5f78cdb3a5b7afb26"
+    }
+  ]
+}

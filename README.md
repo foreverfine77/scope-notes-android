@@ -4,6 +4,7 @@
 
 - [项目历史](HISTORY.md)区分了样机实测、导入时的实现状态和后续计划。
 - [UI 设计规范](UI规范.md)统一图标、固定布局、交互状态和验收要求。
+- [UI 骨架与逐项审核台](ui-handoff/index.html)用于审核布局、按钮和全部文案，并向 Claude 交接主题设计。[交付说明](ui-handoff/交付说明.md)包含回交接口和检查方法。
 - [硬件简报](硬件简报.md)记录样机能力、通信方式和待验证命令。
 - [电量观察记录](电量观察记录.md)保存待补充的剩余电量和分钟数读数。
 - [Issues](https://github.com/foreverfine77/scope-notes-android/issues)记录任务、验收条件和测试证据。[Projects](https://github.com/users/foreverfine77/projects/3)跟踪任务进度。

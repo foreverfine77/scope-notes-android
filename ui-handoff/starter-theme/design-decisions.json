@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "decisions": [
+    {"id": "edge.preview-session", "status": "pending", "proposal": "连接后显示电量与盖板，点开取景、边缘把手收起，底部槽位保持", "reason": "连接与取景分离是用户要求；盖板外观与把手位置待审核，灯光联动待实测"},
+    {"id": "edge.freeze", "status": "pending", "proposal": "工具栏首位的定格动作，重绘画框类图标", "reason": "用户要求重新考虑图标和位置"},
+    {"id": "edge.rotation", "status": "preserve", "proposal": "保留旋转放大按钮的动画与实际图像右下角锚定", "reason": "用户明确喜欢现有动画"}
+  ],
+  "copyChanges": [],
+  "layoutChanges": []
+}

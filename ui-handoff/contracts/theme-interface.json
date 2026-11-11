@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "sourceOfTruth": "starter-theme/tokens.json 与 tools/check_theme.py",
+  "files": ["tokens.json", "icons.svg", "manifest.json", "design-decisions.json"],
+  "colors": "#RRGGBB；字段完全沿用模板，主要文字与其背景至少 4.5:1",
+  "radii": {"button": [0, 28], "panel": [0, 32], "sheet": [0, 36]},
+  "sizes": {"touch": [48, 64], "icon": [20, 28], "gap": [8, 16], "pagePadding": [12, 24]},
+  "type": {"body": [14, 18], "title": [18, 26], "caption": [12, 15]},
+  "motion": {"rotationMs": [180, 180], "stateMs": [100, 250]},
+  "effects": {
+    "backgroundMode": ["solid", "linear"],
+    "gradientEnd": "#RRGGBB",
+    "gradientAngle": [0, 360],
+    "surfaceOpacity": [0.15, 1],
+    "borderWidth": [0, 2],
+    "shadowBlur": [0, 20],
+    "shadowOpacity": [0, 0.25]
+  },
+  "annotation": ["vermilion", "amber", "teal", "white"],
+  "icons": "只使用 required-icons.json 的 symbol ID，viewBox 固定，绘制风格可重新设计",
+  "nativeMapping": "android-mapping.json",
+  "visualLimits": "透明表面与渐变需要逐场景看实际对比度。检查器只验证列出的基础颜色对；最终视觉和真机检查仍必须完成。"
+}

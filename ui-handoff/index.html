@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>微镜记 · UI 骨架与审核台</title>
+  <link rel="stylesheet" href="review.css">
+</head>
+<body>
+  <header class="workbench-header">
+    <div><strong>微镜记 / UI 交接与审核台</strong><span id="snapshot" class="muted"></span></div>
+    <div class="header-actions">
+      <button id="import-review">导入审核</button>
+      <button id="export-review" class="primary">导出审核 JSON</button>
+      <input id="review-file" type="file" accept=".json" hidden>
+    </div>
+  </header>
+  <div id="notice" role="status" hidden></div>
+  <div class="workspace">
+    <aside class="navigation">
+      <p class="eyebrow">逐项审核</p>
+      <nav id="tabs" aria-label="审核类别">
+        <button data-tab="overview" class="active">开始与交接</button>
+        <button data-tab="screens">手机页面骨架</button>
+        <button data-tab="actions">按钮与图标</button>
+        <button data-tab="copy">全部提示语</button>
+        <button data-tab="surfaces">弹窗与系统边界</button>
+        <button data-tab="edges">边角与待决策</button>
+        <button data-tab="theme">载入 Claude 主题</button>
+      </nav>
+      <p id="progress"></p>
+      <p class="muted small">所有建议默认待审核。审核记录保存在当前浏览器，导出 JSON 后可交回 Codex。示例姓名、缩略图和画面均为占位。</p>
+      <a href="文案审核.csv" download>下载全文案 CSV</a>
+      <a href="CLAUDE_START.txt">给 Claude 的提示语</a>
+      <a href="CODEX_RETURN.txt">交回 Codex 的提示语</a>
+      <a href="contracts/layout.contract.json">布局与行为契约</a>
+    </aside>
+    <main id="main"></main>
+    <aside class="inspector">
+      <p class="eyebrow">当前审核项</p>
+      <div id="inspector"><p class="muted">选择页面、按钮或文案。</p></div>
+    </aside>
+  </div>
+  <div id="svg-sprite" hidden></div>
+  <script src="inventory.js"></script>
+  <script src="starter-theme/theme.js"></script>
+  <script src="review.js"></script>
+</body>
+</html>

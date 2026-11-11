@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0",
+  "requiredFiles": ["tokens.json", "icons.svg", "manifest.json", "design-decisions.json"],
+  "reviewExport": "review-decisions.json",
+  "checks": [
+    "覆盖 connected-idle 与 macro-idle，盖板开合保留连接和电量；灯光联动不能标为已验证",
+    "同一主题覆盖页面、App 弹窗、表单、空状态、错误和长文",
+    "全部语义图标 ID 存在，设备图标与定格图标单独给出放大预览",
+    "普通文字与背景对比度至少 4.5:1；触摸范围至少 48dp",
+    "选中、禁用、连接中、定格、录像、保存中都有可见区别",
+    "旋转动画保留；连接按钮在各种状态占相同槽位",
+    "至少检查 360×800、390×844、412×915 和横屏",
+    "长英文、繁体、键盘、字体放大、长帮助和隐私说明不裁切",
+    "用户未批准的布局和文案调整只记录在决策文件",
+    "HTML 是审核与视觉回归用，Android 接入由 Codex 按映射完成"
+  ]
+}

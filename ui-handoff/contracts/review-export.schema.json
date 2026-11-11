@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Scope Notes review export",
+  "type": "object",
+  "required": ["schemaVersion", "snapshot", "exportedAt", "decisions"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "snapshot": {"type": "string"},
+    "exportedAt": {"type": "string"},
+    "themeName": {"type": "string"},
+    "freezePlacement": {"enum": ["tools", "viewport-left", "current-top"]},
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "proposal", "note"],
+        "properties": {
+          "id": {"type": "string"},
+          "status": {"enum": ["pending", "approve", "revise", "drop"]},
+          "proposal": {"type": "string"},
+          "note": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
