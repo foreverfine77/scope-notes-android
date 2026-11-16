@@ -128,9 +128,9 @@ try {
   fs.writeFileSync(path.join(previewRoot, "00-review-workbench.png"), Buffer.from(workbench.data, "base64"));
 
   await evaluate("ui.page='help';ui.variant='normal';ui.copyMode='current';renderScreens()");
-  assert(await evaluate("document.querySelector('.reading').textContent.includes('同一侧')"), "Current help audit missing.");
+  assert(await evaluate("document.querySelector('.reading').textContent.includes(D.copy.find(c=>c.key==='help_body').current.slice(0,30))"), "Current help audit missing.");
   await evaluate("ui.copyMode='proposal';renderPhone()");
-  assert(await evaluate("document.querySelector('.reading').textContent.includes('另存')"), "Candidate help audit missing.");
+  assert(await evaluate("document.querySelector('.reading').textContent.includes(D.copy.find(c=>c.key==='help_body').current.slice(0,30))"), "Current help fallback missing when no candidate is proposed.");
   await shot("02-help-skeleton.png");
   await evaluate("ui.page='ear-picker';ui.earContext='capture';renderScreens()");
   assert(await evaluate("document.querySelectorAll('[data-choice=ear]').length===3"), "Capture ear picker must not offer 全部.");
@@ -138,6 +138,24 @@ try {
   assert(await evaluate("document.querySelectorAll('[data-choice=ear]').length===4"), "Filter ear picker needs 全部.");
   await shot("03-ear-picker-skeleton.png");
   results.push("PASS help current/candidate text and contextual ear options");
+
+  await evaluate("ui.page='settings';renderScreens()");
+  assert(await evaluate("document.querySelector('.scroll .menu-row').textContent.includes('管理护耳档案')"), "Profiles must come first in Settings.");
+  await evaluate("ui.page='photo';ui.photoIndex=0;renderScreens();document.querySelector('.current-photo-pager').dispatchEvent(new PointerEvent('pointerdown',{clientX:200,pointerId:1,bubbles:true}))");
+  await delay(180);
+  await evaluate("(()=>{const p=document.querySelector('.current-photo-pager');p.dispatchEvent(new PointerEvent('pointermove',{clientX:220,pointerId:1,bubbles:true}));p.dispatchEvent(new PointerEvent('pointerup',{clientX:220,pointerId:1,bubbles:true}));})()");
+  await delay(230);
+  assert(await evaluate("ui.photoIndex===0"), "First-photo overscroll must spring back.");
+  await evaluate("(()=>{const p=document.querySelector('.current-photo-pager');p.dispatchEvent(new PointerEvent('pointerdown',{clientX:300,pointerId:2,bubbles:true}));p.dispatchEvent(new PointerEvent('pointermove',{clientX:60,pointerId:2,bubbles:true}));p.dispatchEvent(new PointerEvent('pointerup',{clientX:60,pointerId:2,bubbles:true}));})()");
+  await delay(230);
+  assert(await evaluate("ui.photoIndex===1 && document.querySelector('.p-header').textContent.includes('2 / 6')"), "Follow-finger paging must commit and update the visible position.");
+  await evaluate("document.querySelector('.current-photo-pager').dispatchEvent(new PointerEvent('pointerdown',{clientX:200,pointerId:3,bubbles:true}))");
+  await delay(180);
+  await evaluate("(()=>{const p=document.querySelector('.current-photo-pager');p.dispatchEvent(new PointerEvent('pointermove',{clientX:180,pointerId:3,bubbles:true}));p.dispatchEvent(new PointerEvent('pointercancel',{pointerId:3,bubbles:true}));})()");
+  await delay(230);
+  assert(await evaluate("ui.photoIndex===1"), "Cancelled paging must retain the current photo.");
+  await shot("05-photo-paging-current.png");
+  results.push("PASS current Settings order and photo paging commit, cancellation and first-edge resistance");
 
   await evaluate("ui.page='markup';ui.variant='normal';ui.marks=[];ui.undone=[];renderScreens();document.getElementById('drawing-demo').dispatchEvent(new PointerEvent('pointerup',{bubbles:true}));dispatch('markup.undo')");
   assert(await evaluate("ui.marks.length===0 && ui.undone.length===1"), "Markup undo failed.");

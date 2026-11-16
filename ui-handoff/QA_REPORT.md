@@ -1,20 +1,18 @@
-# 交接包验证记录
+# 0.27 交接包与真机验证
 
-日期：2026-11-11。对象：离线 UI 审核包，不是新版 Android 安装包。
+本轮原生安装包已构建并验证签名，0.26 功能与 0.27 固定背景真机结果见 [真机验收记录](真机验收-0.27.md)。
 
-通过的自动检查：
+离线骨架沿用同一结构的 56 个页面／状态验证；0.27 同步版本、源码及固定背景契约。通过项目：
 
-- 29 类页面、51 个页面/状态组合可渲染，无浏览器脚本异常。file:// 离线加载，测试时阻断外部 HTTP。
-- 44 个语义动作、41 个必需图标、171 条资源文案和 41 条中文硬编码/诊断字面量完成盘点；三种语言、来源、遗留引用一并保留。
-- 360×800、390×844、412×915、844×390 四种取景布局中按钮触摸区域至少 48px（HTML 尺寸约定映射到 Android dp）。
-- 圆形/微距待机盖板、禁止未取景拍摄、开合保留微距方向；定格恢复和旋转演示。
-- 帮助现状与候选文案对照，拍摄耳别三选项与筛选耳别四选项的上下文。
-- 标注模拟的撤销、重做与保存中保护。
-- 审核本地持久化、JSON 导出导入往返；CSV 转 JSON、旧快照拒绝。
-- 主题文件载入、完整图标板、无效触摸尺寸与危险 SVG 拒绝；最终主题校验会拒绝占位图标。
+- PASS offline file:// load with external HTTP blocked
+- PASS all 56 page/state combinations render
+- PASS capture touch targets at four viewport sizes
+- PASS connected idle, disabled capture and cover open/close with macro orientation retained
+- PASS simulated macro freeze/resume and rotation controls
+- PASS help current/candidate text and contextual ear options
+- PASS current Settings order and photo paging commit, cancellation and first-edge resistance
+- PASS markup simulation and busy state
+- PASS local review persistence and JSON export/import round trip
+- PASS theme import and rejection of unsafe/invalid inputs
 
-已目视检查中性预览：微距、帮助、耳别、标注、连接待机盖板。灰色方框图标是明确的占位，不是最终图标作品。主题视觉质量要由用户逐项审核。
-
-未在本次包验证中完成的项目：Android 新会话拆分与灯光联动、真实视频/保存测试、系统权限窗口、系统分享、原生键盘避让、TalkBack、原生字体放大和长翻译布局。这些列入交接验收；离线浏览器通过不能作为真机通过证据。现有 Android 0.18 源码在本次整理中没有修改。
-
-复现：在项目根目录运行 python -X utf8 ui-handoff/tools/build_inventory.py、python -X utf8 ui-handoff/tools/qa_contracts.py、node ui-handoff/tools/qa_browser.mjs。主题回归可传入独立主题目录。打包运行 python -X utf8 ui-handoff/tools/package.py，生成 ZIP 及逐文件 SHA-256 清单。
+电量估算、照片松手判定与硬件统计的本地回归通过。浏览器骨架不等同于 Android 真机，未测试项目以真机记录中的范围为准。

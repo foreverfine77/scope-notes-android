@@ -232,13 +232,14 @@ def build():
     snapshot_input = {"sources": hashes, "catalog": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
     snapshot = hashlib.sha256(json.dumps(snapshot_input, sort_keys=True).encode()).hexdigest()[:16]
     data = {"schemaVersion": "1.0", "snapshot": snapshot, "sourceCommit": subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(), "date": "2026-11-11",
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(), "date": "2026-11-16",
         "appVersion": ET.fromstring(manifest).get("{http://schemas.android.com/apk/res/android}versionName"),
         "pages": pages, "actions": actions, "copy": copy + hardcoded,
         "edges": edges, "sources": SOURCES, "sourceHashes": hashes, "methods": methods}
+    data["copyCsv"] = "文案审核-" + data["appVersion"] + ".csv"
     write_json(PACKAGE / "inventory.json", data)
     (PACKAGE / "inventory.js").write_text("window.UI_REVIEW_DATA = " + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
-    with (PACKAGE / "文案审核.csv").open("w", encoding="utf-8-sig", newline="") as stream:
+    with (PACKAGE / data["copyCsv"]).open("w", encoding="utf-8-sig", newline="") as stream:
         writer = csv.writer(stream)
         writer.writerow(["ID", "源快照", "分类", "优先级", "当前文案", "候选文案", "审核原因", "遗留", "英文", "繁体", "来源", "审核结论", "你的修改或意见"])
         for item in data["copy"]:
@@ -266,6 +267,31 @@ def build():
     print(json.dumps({"pages": len(pages), "actions": len(actions), "resourceCopy": len(copy),
                       "literalCopy": len(hardcoded), "requiredIcons": len(icons), "snapshot": snapshot}))
 
+
+
+# Current 0.26 implementation is the handoff baseline.
+PAGE_ROWS += [
+ ("profile-manager", "管理护耳档案", "PreviewActivity.showProfileManager / ProfileOrderList", "App Dialog", "整行长按拖动，浮层不裁切，首尾均可插入"),
+ ("cover-picker", "镜头封面图库", "CoverPickerActivity", "App Activity", "圆形缩略图、预览、裁剪和按档案保存"),
+ ("theme-picker", "界面主题", "PreviewActivity.chooseUiTheme", "App Dialog", "深海星夜、暖纸线稿、橙色线条、清爽青色"),
+ ("interaction-feedback", "操作反馈", "PreviewActivity.showInteractionFeedback", "App Dialog", "音效与触感独立开关"),
+ ("device-info", "设备参考信息", "PreviewActivity.showDeviceInfo", "App Dialog", "说明书标称参数与应用实测区分"),
+]
+ACTION_ROWS = [tuple(
+ "圆内任意方向滑动；连接后开始取景，不重新连接网络" if row[0] == "camera.start-preview" and i == 7 else
+ "圆内任意方向滑动；停止视频并保留网络与电量" if row[0] == "camera.stop-preview" and i == 7 else
+ "实际圆形封面" if row[0] in ("camera.start-preview", "camera.stop-preview") and i == 6 else
+ "Canvas 滑杆图标" if row[0] == "settings.open" and i == 3 else
+ "设备检查" if row[0] == "diagnostics.open" and i == 1 else
+ "30 秒接收、画面、电量、姿态统计，清晰度和补光由用户确认" if row[0] == "diagnostics.open" and i == 7 else
+ value for i, value in enumerate(row)) for row in ACTION_ROWS]
+COPY_PROPOSALS = {}  # Previous proposals are archived; current copy comes from resources.
+EDGE_ROWS = [row for row in EDGE_ROWS if row[0] not in ("edge.preview-session", "edge.freeze")]
+EDGE_ROWS += [
+ ("edge.preview-session", "连接与取景分开", "capture", "高", "连接后先显示个人封面和电量；圆内滑动开合。录制和保存保护沿用源码。"),
+ ("edge.freeze", "固定工具顺序", "capture", "高", "稳向、镜像、耳别、定格；位置不随状态变化。"),
+ ("edge.paging", "照片跟手翻页", "photo", "高", "两页跟手滑动，松手不足回弹；首尾有阻尼；张数、日期、耳别和操作对象同步。"),
+]
 
 if __name__ == "__main__":
     build()

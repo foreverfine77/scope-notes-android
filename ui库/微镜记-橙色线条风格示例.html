@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>微镜记 · 橙色线条风格示例</title>
+<style>
+:root{
+  --bg:#F6F0E3; --surface:#FFFDF7; --raised:#FBEFD9; --ink:#3A2414; --muted:#6F5A47; --hair:#E3D3B8;
+  --sun:#F6A04D; --yolk:#F7B733; --soft:#FDE7B8; --view:#2A1B12; --danger:#C2412D;
+  --sky:#8EC9E8; --navy:#3F4B7A; --coral:#F4907B;
+}
+*{box-sizing:border-box;margin:0}
+body{background:#E4D9C2;color:var(--ink);font:14px/1.5 system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;padding:28px 16px 48px}
+h1{font-size:22px;font-weight:800;text-align:center}
+.sub{text-align:center;color:var(--muted);font-size:13px;margin:4px 0 18px}
+.sw{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+.sw span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.sw i{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink)}
+.row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+figure{width:300px}
+figcaption{text-align:center;font-size:13px;color:var(--muted);margin-top:10px}
+.ph{position:relative;width:300px;height:620px;background:var(--bg);border-radius:38px;border:2px solid var(--ink);overflow:hidden;padding:0 14px}
+.sb{height:26px;display:flex;align-items:center;justify-content:space-between;font-size:11px;padding:0 10px;font-weight:600}
+.top{display:flex;align-items:center;justify-content:space-between;height:46px;position:relative;z-index:2}
+.o{border:2px solid var(--ink);background:var(--surface)}
+.chip{height:36px;padding:0 12px;border-radius:18px;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:700}
+.bat{display:flex;align-items:center;gap:6px}
+.bt{height:36px;padding:0 10px;border-radius:18px;font-size:12px;line-height:1.2;display:flex;align-items:center;font-weight:600}
+.rb{width:36px;height:36px;border-radius:50%;display:grid;place-items:center}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.zone{position:relative;height:262px;display:grid;place-items:center;margin-top:2px}
+.sunb{position:absolute;width:228px;height:228px;border-radius:50%;background:var(--sun);border:2px solid var(--ink);left:62px;top:2px}
+.cloud{position:absolute;height:26px;border-radius:13px;background:var(--sky);border:2px solid var(--ink)}
+.lens{position:relative;width:212px;height:212px;border-radius:50%;background:var(--view);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);overflow:hidden;top:8px;left:-6px}
+.ring{position:absolute;inset:30px;border-radius:50%;border:1.5px solid rgba(255,246,230,.18)}
+.spoon{position:absolute;right:-18px;top:54px;width:100px;height:100px;border-radius:50%;background:var(--navy)}
+.A{position:absolute;left:54px;top:56px;font:800 70px/1 system-ui,sans-serif;color:#FFF6E6}
+.lv{position:absolute;left:50%;top:12px;transform:translateX(-50%);font-size:11px;font-weight:800;color:var(--ink);background:var(--yolk);border:2px solid var(--ink);padding:0 10px;border-radius:12px}
+.rot{position:absolute;right:42px;bottom:22px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center}
+.rot svg{width:18px;height:18px}
+.handle{position:absolute;left:-6px;top:112px;width:10px;height:42px;border-radius:5px;background:var(--surface);border:2px solid var(--ink)}
+.cover{position:absolute;inset:0;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.cover:before{content:"";position:absolute;inset:22px;border-radius:50%;border:2px solid var(--ink)}
+.cover:after{content:"";position:absolute;inset:54px;border-radius:50%;border:2px dashed var(--hair)}
+.start{position:relative;z-index:1;height:46px;padding:0 24px;border-radius:23px;background:var(--yolk);border:2px solid var(--ink);box-shadow:0 3px 0 var(--ink);color:var(--ink);font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+.cap2{position:relative;z-index:1;font-size:12px;color:var(--muted);line-height:1.4;font-weight:600}
+.tools{display:flex;justify-content:space-between;padding:10px 8px 0}
+.tool{width:58px;text-align:center;font-size:11px;color:var(--muted);font-weight:700}
+.tool b{display:grid;place-items:center;width:46px;height:46px;margin:0 auto 4px;border-radius:50%;color:var(--ink)}
+.tool.on b{background:var(--yolk)}
+.tool.dim{opacity:.45}
+.st{text-align:center;font-size:12px;color:var(--muted);margin:10px 0 2px;font-weight:700}
+.shut{display:flex;align-items:center;justify-content:space-around;height:90px}
+.sbtn{width:52px;height:52px;border-radius:50%;display:grid;place-items:center}
+.sbtn.g{border-radius:16px;background:linear-gradient(135deg,var(--soft),var(--sky))}
+.big{width:80px;height:80px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;background:var(--surface)}
+.big i{display:block;width:58px;height:58px;border-radius:50%;background:var(--sun);border:2px solid var(--ink);box-shadow:0 3px 0 var(--ink)}
+.big.off i{background:var(--hair);box-shadow:none}
+.rec{background:var(--danger)} .rec i{display:block;width:18px;height:18px;border-radius:50%;background:#fff}
+.dev{display:flex;justify-content:center;gap:12px}
+.dv{height:42px;padding:0 18px;border-radius:21px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
+.hi{position:absolute;left:105px;bottom:8px;width:90px;height:4px;border-radius:2px;background:var(--ink)}
+.gal h2{font-size:20px;font-weight:800;padding:14px 4px 12px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs span{height:32px;padding:0 16px;border-radius:16px;font-size:13px;font-weight:700;display:flex;align-items:center}
+.tabs .on{background:var(--yolk)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.grid i{aspect-ratio:1;border-radius:16px;background:var(--soft);border:2px solid var(--ink)}
+.grid i:nth-child(3n+2){background:var(--sky)}.grid i:nth-child(3n){background:var(--coral)}
+.dim-bg{position:absolute;inset:0;background:rgba(58,36,20,.45)}
+.sh2{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-top:2px solid var(--ink);border-radius:30px 30px 0 0;padding:18px 18px 22px}
+.x{position:absolute;right:16px;top:14px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center}
+.x svg{width:14px;height:14px}
+.sh2 h3{font-size:20px;font-weight:800;text-align:center;margin:2px 0 14px}
+.li{height:52px;margin-bottom:8px;padding:0 16px;border-radius:18px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:700}
+.li.sel{background:var(--yolk)}
+.li svg{width:20px;height:20px;stroke-width:3}
+.ok{height:48px;border-radius:24px;display:grid;place-items:center;font-size:16px;font-weight:800;margin-top:6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="freeze" viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></symbol>
+ <symbol id="stab" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 17V8M9 11l3-3 3 3"/></symbol>
+ <symbol id="mirror" viewBox="0 0 24 24"><path d="M12 4v16M8 7 3.5 17H8zM16 7l4.5 10H16z"/></symbol>
+ <symbol id="mark" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/></symbol>
+ <symbol id="gallery" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="3"/><path d="M4 16l5-5 4 4 3-3 4 4"/></symbol>
+ <symbol id="set" viewBox="0 0 24 24"><path d="M4 8h9M19 8h1M4 16h1M11 16h9"/><circle cx="16" cy="8" r="2.4"/><circle cx="8" cy="16" r="2.4"/></symbol>
+ <symbol id="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></symbol>
+ <symbol id="expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></symbol>
+ <symbol id="scope" viewBox="0 0 24 24"><circle cx="16.5" cy="7.5" r="3.5"/><path d="M14 10 5.5 18.5a1.4 1.4 0 0 0 2 2L16 12"/></symbol>
+ <symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.6 0l3-3a4 4 0 0 0-5.6-5.6l-1 1M14 10a4 4 0 0 0-5.6 0l-3 3a4 4 0 0 0 5.6 5.6l1-1"/></symbol>
+ <symbol id="play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+ <symbol id="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+ <symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
+
+<h1>微镜记 · 橙色线条风格</h1>
+<p class="sub">骨架与固定槽位不变，只换材质、颜色、形状与图标语言。示例画面均为占位。</p>
+<div class="sw">
+ <span><i style="background:#F6F0E3"></i>纸底 F6F0E3</span>
+ <span><i style="background:#F6A04D"></i>日橙 F6A04D</span>
+ <span><i style="background:#F7B733"></i>蛋黄 F7B733</span>
+ <span><i style="background:#3A2414"></i>棕墨 3A2414</span>
+ <span><i style="background:#8EC9E8"></i>天蓝 8EC9E8</span>
+ <span><i style="background:#F4907B"></i>珊瑚 F4907B</span>
+ <span><i style="background:#3F4B7A"></i>夜蓝 3F4B7A</span>
+</div>
+
+<div class="row">
+ <figure>
+  <div class="ph">
+   <div class="sb"><span>10:30</span><span>示例</span></div>
+   <div class="top">
+    <div class="chip o">示例使用人<svg class="i" style="width:16px;height:16px"><use href="#chev"/></svg></div>
+    <div class="bat"><div class="bt o">47% · 约 32 分钟</div><div class="rb o"><svg class="i"><use href="#set"/></svg></div></div>
+   </div>
+   <div class="zone">
+    <div class="sunb"></div>
+    <div class="cloud" style="width:70px;left:-6px;top:30px"></div>
+    <div class="cloud" style="width:56px;right:-8px;top:196px"></div>
+    <div class="handle"></div>
+    <div class="lens"><div class="ring"></div><div class="spoon"></div><div class="A">A</div><span class="lv">实时</span></div>
+    <div class="rot o"><svg class="i"><use href="#expand"/></svg></div>
+   </div>
+   <div class="tools">
+    <div class="tool"><b class="o"><svg class="i"><use href="#freeze"/></svg></b>定格</div>
+    <div class="tool on"><b class="o"><svg class="i"><use href="#stab"/></svg></b>稳向</div>
+    <div class="tool"><b class="o"><svg class="i"><use href="#mirror"/></svg></b>镜像</div>
+    <div class="tool dim"><b class="o"><svg class="i"><use href="#mark"/></svg></b>标记</div>
+   </div>
+   <div class="st">实时 · 稳向已开启</div>
+   <div class="shut">
+    <div class="sbtn g o"></div>
+    <div class="big"><i></i></div>
+    <div class="sbtn rec o"><i></i></div>
+   </div>
+   <div class="dev"><div class="dv o"><svg class="i" style="width:18px;height:18px"><use href="#scope"/></svg>选择设备</div><div class="dv o"><svg class="i" style="width:18px;height:18px"><use href="#link"/></svg>断开</div></div>
+   <div class="hi"></div>
+  </div>
+  <figcaption>实时取景</figcaption>
+ </figure>
+
+ <figure>
+  <div class="ph">
+   <div class="sb"><span>10:30</span><span>示例</span></div>
+   <div class="top">
+    <div class="chip o">示例使用人<svg class="i" style="width:16px;height:16px"><use href="#chev"/></svg></div>
+    <div class="bat"><div class="bt o">47% · 约 32 分钟</div><div class="rb o"><svg class="i"><use href="#set"/></svg></div></div>
+   </div>
+   <div class="zone">
+    <div class="sunb"></div>
+    <div class="lens"><div class="cover"><div class="start"><svg class="i" style="width:18px;height:18px"><use href="#play"/></svg>开始取景</div><div class="cap2">已连接，尚未取景<br>电量与预计时间仍可查看</div></div></div>
+   </div>
+   <div class="tools">
+    <div class="tool dim"><b class="o"><svg class="i"><use href="#freeze"/></svg></b>定格</div>
+    <div class="tool dim"><b class="o"><svg class="i"><use href="#stab"/></svg></b>稳向</div>
+    <div class="tool dim"><b class="o"><svg class="i"><use href="#mirror"/></svg></b>镜像</div>
+    <div class="tool dim"><b class="o"><svg class="i"><use href="#mark"/></svg></b>标记</div>
+   </div>
+   <div class="st">点开盖板，开始取景</div>
+   <div class="shut">
+    <div class="sbtn g o"></div>
+    <div class="big off"><i></i></div>
+    <div class="sbtn rec o" style="opacity:.45"><i></i></div>
+   </div>
+   <div class="dev"><div class="dv o"><svg class="i" style="width:18px;height:18px"><use href="#scope"/></svg>选择设备</div><div class="dv o"><svg class="i" style="width:18px;height:18px"><use href="#link"/></svg>断开</div></div>
+   <div class="hi"></div>
+  </div>
+  <figcaption>已连接 · 未取景（盖板）</figcaption>
+ </figure>
+
+ <figure>
+  <div class="ph gal">
+   <div class="sb"><span>10:30</span><span>示例</span></div>
+   <h2>示例使用人</h2>
+   <div class="tabs"><span class="o on">图片</span><span class="o">录像</span><span class="o">全部耳别</span></div>
+   <div class="grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+   <div class="dim-bg"></div>
+   <div class="sh2">
+    <div class="x o"><svg class="i"><use href="#close"/></svg></div>
+    <h3>选择耳别</h3>
+    <div class="li o sel">全部<svg class="i"><use href="#check"/></svg></div>
+    <div class="li o">左耳</div>
+    <div class="li o">右耳</div>
+    <div class="li o">未标记</div>
+    <div class="ok o">取消</div>
+   </div>
+  </div>
+  <figcaption>耳别弹窗</figcaption>
+ </figure>
+</div>
+</body>
+</html>

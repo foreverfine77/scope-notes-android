@@ -33,7 +33,6 @@ final class BatteryReading {
     }
 
     int estimatedMinutes() {
-        // Local heuristic. The device reports percent, not an estimated runtime.
-        return percent < 20 ? percent * 15 / 20 : 15 + (percent - 20) * 7 / 16;
+        return BatteryEstimate.minutes(percent);
     }
 }

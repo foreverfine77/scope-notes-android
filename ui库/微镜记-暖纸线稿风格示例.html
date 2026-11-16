@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>微镜记 · 暖纸线稿风格示例</title>
+<style>
+:root{
+  --bg:#EFEBDD; --surface:#FBF9F2; --raised:#F6F2E6; --mat:#E8E2D0;
+  --ink:#23211C; --muted:#6B665A; --line:#D5CEBB; --accent:#A8613A; --accent-soft:#F1DDCF;
+  --view:#1E1D1B; --navy:#26385E; --sun:#E8C547; --danger:#A83232;
+  --sh:0 2px 8px rgba(70,55,30,.10), 0 0 0 .5px rgba(70,55,30,.06);
+}
+*{box-sizing:border-box;margin:0}
+body{background:#DDD7C4;color:var(--ink);font:14px/1.5 system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;padding:28px 16px 48px}
+h1{font-size:20px;font-weight:600;text-align:center}
+.sub{text-align:center;color:var(--muted);font-size:13px;margin:4px 0 18px}
+.sw{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+.sw span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.sw i{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,.12)}
+.row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+figure{width:300px}
+figcaption{text-align:center;font-size:13px;color:var(--muted);margin-top:10px}
+.ph{position:relative;width:300px;height:620px;background:var(--bg);border-radius:38px;border:1px solid #bfb8a3;overflow:hidden;display:flex;flex-direction:column;padding:0 14px}
+.sb{height:26px;display:flex;align-items:center;justify-content:space-between;font-size:11px;padding:0 10px;color:var(--ink)}
+.top{display:flex;align-items:center;justify-content:space-between;height:46px}
+.chip{height:36px;padding:0 12px;border-radius:18px;background:var(--surface);box-shadow:var(--sh);display:flex;align-items:center;gap:4px;font-size:14px}
+.bat{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.25;color:var(--muted);text-align:right}
+.rb{width:36px;height:36px;border-radius:50%;background:var(--surface);box-shadow:var(--sh);display:grid;place-items:center;color:var(--ink)}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.mat{position:relative;margin-top:6px;height:272px;background:var(--mat);border-radius:28px;display:grid;place-items:center}
+.lens{position:relative;width:236px;height:236px;border-radius:50%;background:var(--view);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.ring{position:absolute;inset:34px;border-radius:50%;border:1px solid rgba(255,255,255,.10)}
+.ring.b{inset:70px}
+.spoon{position:absolute;right:-18px;top:62px;width:110px;height:110px;border-radius:50%;background:var(--navy);opacity:.9}
+.A{position:absolute;left:62px;top:70px;font:300 70px/1 Georgia,serif;color:#EDE7D6;opacity:.85}
+.sun{position:absolute;left:150px;top:46px;width:12px;height:12px;border-radius:50%;background:var(--sun)}
+.lv{position:absolute;left:14px;top:14px;font-size:11px;color:#EDE7D6;background:rgba(255,255,255,.12);padding:2px 8px;border-radius:10px}
+.rot{position:absolute;right:30px;bottom:34px;width:34px;height:34px;border-radius:50%;background:rgba(251,249,242,.88);display:grid;place-items:center;color:var(--ink);box-shadow:var(--sh)}
+.rot svg{width:18px;height:18px}
+.handle{position:absolute;left:6px;top:116px;width:8px;height:40px;border-radius:4px;background:var(--line)}
+.cover{position:absolute;inset:0;border-radius:50%;background:#F1ECDD;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.cover:before{content:"";position:absolute;inset:26px;border-radius:50%;border:1px solid var(--line)}
+.cover:after{content:"";position:absolute;inset:60px;border-radius:50%;border:1px dashed var(--line)}
+.start{position:relative;z-index:1;height:44px;padding:0 22px;border-radius:22px;background:var(--accent);color:#fff;font-size:15px;display:flex;align-items:center;gap:8px;box-shadow:var(--sh)}
+.cap2{position:relative;z-index:1;font-size:12px;color:var(--muted);line-height:1.4}
+.tools{display:flex;justify-content:space-between;padding:12px 18px 0}
+.tool{width:56px;text-align:center;font-size:11px;color:var(--muted)}
+.tool b{display:grid;place-items:center;width:44px;height:44px;margin:0 auto 4px;border-radius:50%;background:var(--surface);box-shadow:var(--sh);color:var(--ink);font-weight:400}
+.tool.on b{background:var(--accent-soft);color:var(--accent);box-shadow:none;border:1px solid #E3C4AE}
+.tool.dim{opacity:.5}
+.st{text-align:center;font-size:12px;color:var(--muted);margin:10px 0 6px}
+.shut{display:flex;align-items:center;justify-content:space-around;height:84px}
+.sbtn{width:50px;height:50px;border-radius:50%;background:var(--surface);box-shadow:var(--sh);display:grid;place-items:center}
+.sbtn.g{border-radius:16px}
+.big{width:76px;height:76px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center}
+.big i{display:block;width:60px;height:60px;border-radius:50%;background:var(--surface);box-shadow:var(--sh)}
+.big.off{border-color:var(--line)} .big.off i{background:var(--raised);box-shadow:none}
+.dev{display:flex;justify-content:center;gap:24px;margin-top:2px}
+.dv{width:64px;text-align:center;font-size:11px;color:var(--muted)}
+.dv b{display:grid;place-items:center;width:44px;height:44px;margin:0 auto 3px;border-radius:16px;background:var(--surface);box-shadow:var(--sh);color:var(--ink)}
+.hi{position:absolute;left:105px;bottom:8px;width:90px;height:4px;border-radius:2px;background:var(--ink);opacity:.8}
+.dim-bg{position:absolute;inset:0;background:rgba(35,33,28,.38)}
+.gal{padding-top:8px}
+.gal h2{font-size:17px;font-weight:600;padding:14px 4px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.grid i{aspect-ratio:1;border-radius:12px;background:var(--mat)}
+.sheet{position:absolute;left:10px;right:10px;bottom:22px;display:flex;flex-direction:column;gap:8px}
+.card{background:var(--surface);border-radius:26px;padding:8px 6px 6px;box-shadow:var(--sh)}
+.grab{width:36px;height:4px;border-radius:2px;background:var(--line);margin:2px auto 10px}
+.card h3{font-size:16px;font-weight:600;text-align:center;margin-bottom:8px}
+.list{background:var(--raised);border-radius:18px;margin:0 6px 6px;overflow:hidden}
+.li{height:50px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;font-size:15px}
+.li+.li{border-top:1px solid var(--line)}
+.li.sel{color:var(--accent);font-weight:600}
+.cancel{height:52px;border-radius:26px;background:var(--surface);box-shadow:var(--sh);display:grid;place-items:center;font-size:16px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="freeze" viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></symbol>
+ <symbol id="stab" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 17V8M9 11l3-3 3 3"/></symbol>
+ <symbol id="mirror" viewBox="0 0 24 24"><path d="M12 4v16M8 7 3.5 17H8zM16 7l4.5 10H16z"/></symbol>
+ <symbol id="mark" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/></symbol>
+ <symbol id="gallery" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="3"/><path d="M4 16l5-5 4 4 3-3 4 4"/></symbol>
+ <symbol id="rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor"/></symbol>
+ <symbol id="set" viewBox="0 0 24 24"><path d="M4 8h9M19 8h1M4 16h1M11 16h9"/><circle cx="16" cy="8" r="2.4"/><circle cx="8" cy="16" r="2.4"/></symbol>
+ <symbol id="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></symbol>
+ <symbol id="expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></symbol>
+ <symbol id="scope" viewBox="0 0 24 24"><circle cx="16.5" cy="7.5" r="3.5"/><path d="M14 10 5.5 18.5a1.4 1.4 0 0 0 2 2L16 12"/></symbol>
+ <symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.6 0l3-3a4 4 0 0 0-5.6-5.6l-1 1M14 10a4 4 0 0 0-5.6 0l-3 3a4 4 0 0 0 5.6 5.6l1-1"/></symbol>
+ <symbol id="play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+ <symbol id="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+</svg>
+
+<h1>微镜记 · 暖纸线稿风格</h1>
+<p class="sub">骨架与固定槽位不变，只换材质、颜色、形状与图标语言。示例画面均为占位。</p>
+<div class="sw">
+ <span><i style="background:#EFEBDD"></i>纸底 EFEBDD</span>
+ <span><i style="background:#FBF9F2"></i>按钮面 FBF9F2</span>
+ <span><i style="background:#E8E2D0"></i>取景垫 E8E2D0</span>
+ <span><i style="background:#23211C"></i>墨线 23211C</span>
+ <span><i style="background:#A8613A"></i>陶土 A8613A</span>
+ <span><i style="background:#26385E"></i>夜蓝 26385E</span>
+ <span><i style="background:#1E1D1B"></i>取景窗 1E1D1B</span>
+</div>
+
+<div class="row">
+ <figure>
+  <div class="ph">
+   <div class="sb"><span>10:30</span><span>示例</span></div>
+   <div class="top">
+    <div class="chip">示例使用人<svg class="i" style="width:16px;height:16px"><use href="#chev"/></svg></div>
+    <div class="bat"><span>47%<br>约 32 分钟</span><div class="rb"><svg class="i"><use href="#set"/></svg></div></div>
+   </div>
+   <div class="mat">
+    <div class="handle"></div>
+    <div class="lens"><div class="ring"></div><div class="ring b"></div><div class="spoon"></div><div class="A">A</div><div class="sun"></div><span class="lv">实时</span></div>
+    <div class="rot"><svg class="i"><use href="#expand"/></svg></div>
+   </div>
+   <div class="tools">
+    <div class="tool"><b><svg class="i"><use href="#freeze"/></svg></b>定格</div>
+    <div class="tool on"><b><svg class="i"><use href="#stab"/></svg></b>稳向</div>
+    <div class="tool"><b><svg class="i"><use href="#mirror"/></svg></b>镜像</div>
+    <div class="tool dim"><b><svg class="i"><use href="#mark"/></svg></b>标记</div>
+   </div>
+   <div class="st">实时 · 稳向已开启</div>
+   <div class="shut">
+    <div class="sbtn g"><svg class="i"><use href="#gallery"/></svg></div>
+    <div class="big"><i></i></div>
+    <div class="sbtn"><svg class="i" style="width:26px;height:26px;color:var(--danger)"><use href="#rec"/></svg></div>
+   </div>
+   <div class="dev">
+    <div class="dv"><b><svg class="i"><use href="#scope"/></svg></b>选择设备</div>
+    <div class="dv"><b><svg class="i"><use href="#link"/></svg></b>断开</div>
+   </div>
+   <div class="hi"></div>
+  </div>
+  <figcaption>实时取景</figcaption>
+ </figure>
+
+ <figure>
+  <div class="ph">
+   <div class="sb"><span>10:30</span><span>示例</span></div>
+   <div class="top">
+    <div class="chip">示例使用人<svg class="i" style="width:16px;height:16px"><use href="#chev"/></svg></div>
+    <div class="bat"><span>47%<br>约 32 分钟</span><div class="rb"><svg class="i"><use href="#set"/></svg></div></div>
+   </div>
+   <div class="mat">
+    <div class="lens"><div class="cover"><div class="start"><svg class="i" style="width:18px;height:18px"><use href="#play"/></svg>开始取景</div><div class="cap2">已连接，尚未取景<br>电量与预计时间仍可查看</div></div></div>
+   </div>
+   <div class="tools">
+    <div class="tool dim"><b><svg class="i"><use href="#freeze"/></svg></b>定格</div>
+    <div class="tool dim"><b><svg class="i"><use href="#stab"/></svg></b>稳向</div>
+    <div class="tool dim"><b><svg class="i"><use href="#mirror"/></svg></b>镜像</div>
+    <div class="tool dim"><b><svg class="i"><use href="#mark"/></svg></b>标记</div>
+   </div>
+   <div class="st">点开盖板，开始取景</div>
+   <div class="shut">
+    <div class="sbtn g"><svg class="i"><use href="#gallery"/></svg></div>
+    <div class="big off"><i></i></div>
+    <div class="sbtn" style="opacity:.5"><svg class="i" style="width:26px;height:26px"><use href="#rec"/></svg></div>
+   </div>
+   <div class="dev">
+    <div class="dv"><b><svg class="i"><use href="#scope"/></svg></b>选择设备</div>
+    <div class="dv"><b><svg class="i"><use href="#link"/></svg></b>断开</div>
+   </div>
+   <div class="hi"></div>
+  </div>
+  <figcaption>已连接 · 未取景（盖板）</figcaption>
+ </figure>
+
+ <figure>
+  <div class="ph gal">
+   <div class="sb"><span>10:30</span><span>示例</span></div>
+   <h2>示例使用人</h2>
+   <div class="grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+   <div class="dim-bg"></div>
+   <div class="sheet">
+    <div class="card"><div class="grab"></div><h3>选择耳别</h3>
+     <div class="list">
+      <div class="li sel">全部<svg class="i"><use href="#check"/></svg></div>
+      <div class="li">左耳</div>
+      <div class="li">右耳</div>
+      <div class="li">未标记</div>
+     </div>
+    </div>
+    <div class="cancel">取消</div>
+   </div>
+   <div class="hi" style="background:#fff"></div>
+  </div>
+  <figcaption>耳别弹窗（分组列表）</figcaption>
+ </figure>
+</div>
+</body>
+</html>

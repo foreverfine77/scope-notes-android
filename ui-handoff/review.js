@@ -28,7 +28,7 @@ let decisions = {};
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
   decisions = saved.decisions || {};
-  ui.freezePlacement = saved.freezePlacement || "tools";
+  ui.freezePlacement = "tools";
 } catch (error) {
   notice("浏览器未能恢复本地审核记录。可以继续审核并导出 JSON。");
 }
@@ -137,8 +137,8 @@ function menu(label, target, detail = "") {
 }
 function screenHeader() {
   const available = !["disconnected", "connecting", "reconnecting", "error"].includes(ui.variant);
-  return '<div class="p-header">' + textAction(ui.profile + " ▾", "profiles") + '<span class="grow"></span>' +
-    action("settings.open") + '<span class="battery" data-review="edge.battery">' + (available ? '47%<br>约 32 分钟' : '—<br>等待设备读数') + '</span></div>';
+  return '<div class="p-header">' + textAction("● " + ui.profile, "profiles") + '<span class="grow"></span>' +
+    action("settings.open") + '<span class="battery" data-review="edge.battery">' + (available ? '47%<br>约 31 分钟' : '—<br>等待设备读数') + '</span></div>';
 }
 function captureScreen() {
   const v = ui.variant;
@@ -154,20 +154,20 @@ function captureScreen() {
   const viewportFreeze = ui.freezePlacement === "current-top" ? '<div class="viewport-freeze current-top">' + freeze + "</div>" : "";
   let scene = '<span>' + (live ? (frozen ? "已定格的画面占位" : "实时画面占位") : esc(T(v === "error" ? "wifi_failed" : v === "disconnected" ? "disconnected" : "connecting"))) + "</span>";
   scene += '<span class="scene-caption">' + (live ? "640 × 480 · 示例画面" : esc(T("connect_hint"))) + "</span>";
-  if (idle) scene = '<div class="lens-cover" data-review="edge.preview-session"><strong>已连接 · 尚未取景</strong><span>电量与预计时间仍可查看</span>' + action("camera.start-preview") + '<span>点开盖板，开始取景</span></div>';
-  if (live) scene += action("camera.stop-preview", {extra: "cover-handle", disabled: recording || busy});
+  if (!live) scene = '<div class="lens-cover" data-review="edge.preview-session"><strong>已连接 · 尚未取景</strong><span>电量与预计时间仍可查看</span>' + "" + '<span>在封面圆内滑动，开始取景</span></div>';
+
   if (macro) scene += action(expanded ? "camera.collapse" : "camera.expand", {extra: "zoom-act"});
   if (ui.freezePlacement === "viewport-left") scene += '<div class="viewport-freeze viewport-left">' + freeze + "</div>";
   if (recording) scene += '<span class="badge">● 00:12</span>';
-  const tools = (ui.freezePlacement === "tools" ? action(freezeId, {slot: ui.showSlots, disabled: !live || recording || busy, selected: frozen}) : "") +
+  const tools =
     action("camera.stabilize", {slot: ui.showSlots, disabled: !live || macro, selected: !!ui.stabilize}) +
     action("camera.mirror", {slot: ui.showSlots, disabled: !live, selected: !!ui.mirror}) +
     action("ear.mark", {slot: ui.showSlots, disabled: !live || macro,
       selected: !!ui.cameraEar && ui.cameraEar !== "未标记",
-      icon: ui.cameraEar === "左耳" ? "ic-ear-left" : ui.cameraEar === "右耳" ? "ic-ear-right" : "ic-ear"});
+      icon: ui.cameraEar === "左耳" ? "ic-ear-left" : ui.cameraEar === "右耳" ? "ic-ear-right" : "ic-ear"}) + action(freezeId, {slot: ui.showSlots, disabled: !live || recording || busy, selected: frozen});
   const link = live || idle ? "device.disconnect" : ["connecting", "reconnecting"].includes(v) ? "device.cancel" : "device.connect";
   const line = frozen ? T("frozen_status") : recording ? "● 正在录像 00:12" : busy ? T("saving") :
-    live ? macro ? T("macro_hint") : T("recording_for", [ui.profile]) : "";
+    live ? macro ? T("macro_hint") : T("recording_for", [ui.profile]) : idle ? T("device_ready") : T(v === "disconnected" ? "disconnected" : "connecting");
   return screenHeader() + '<div class="viewport">' + viewportFreeze + '<div class="scene ' + (macro ? "macro" : "circle") + '">' + scene +
     '</div></div><div class="tools">' + tools + '</div><p class="state-line">' + esc(line) +
     '</p><div class="capture-bar">' + action("gallery.open", {disabled: recording || busy}) +
@@ -197,13 +197,12 @@ function galleryScreen() {
     '</div>' + (selected ? '<div class="selection-actions"><span class="grow">已选 2 项</span><button>全选</button>' + action("media.share") + action("media.delete", {danger: true}) + "</div>" : "");
 }
 function detailScreen(video) {
-  const macro = ui.variant === "macro";
-  return '<div class="p-header">' + action("nav.back") + '<strong class="grow">' + (video ? "录像" : ui.variant === "copy" ? "标注副本" : "照片") +
-    "</strong>" + action("media.share") + '</div>' + (!video && !macro ? textAction("耳别 · 左耳", "ear-picker") : "") +
-    '<div class="viewport"><div class="scene ' + (macro ? "macro" : "circle") + '"><span>' + (video ? "录像画面占位" : "照片占位") +
-    "</span></div></div><p class='state-line'>2026-11-11 10:30</p>" +
-    (video ? '<div class="p-row">' + action(ui.playing ? "playback.pause" : "playback.play") + '<input aria-label="播放进度" type="range" value="35"><span>00:12 / 00:34</span></div>' : '<div class="tools">' + action("photo.markup") + "</div>") +
-    '<div class="tools">' + action("media.delete", {danger: true}) + "</div>";
+  const index=ui.photoIndex||0;
+  return header(video?T("video"):T("photo")+" · "+(index+1)+" / 6")+
+    (video?'':menu("未标记","ear-picker"))+
+    '<div class="current-photo-pager"><div class="sample-page" data-current>示例照片 '+(index+1)+'</div><div class="sample-page" data-neighbor></div></div>'+
+    '<p class="state-line">2026-11-16 10:30:'+String(index).padStart(2,'0')+'</p><div class="tools">'+
+    (video?action("playback.play"):action("photo.markup"))+action("media.share")+action("media.delete")+'</div>';
 }
 function markupScreen() {
   const busy = ui.variant === "busy";
@@ -233,11 +232,14 @@ function picker(title, values, field, back) {
     textAction(T("cancel"), back));
 }
 function settingsScreen() {
-  return header(T("settings")) + '<div class="scroll">' + menu(T("language_title"), "language") +
-    menu(T("help"), "help") + menu(T("privacy"), "privacy") + menu(T("feedback"), "feedback") +
-    '<p class="p-section">取景</p>' + menu(T("macro_mode"), "macro-confirm", ui.macroEnabled ? "开启" : "关闭") +
-    '<p class="p-section">高级</p>' + menu(T("test_tools"), "diagnostics") +
-    '<p class="skeleton-note">Scope Notes · 视觉骨架</p></div>';
+  const group = (title, rows) => '<p class="p-section">'+esc(title)+'</p>'+rows;
+  return header(T("settings"))+'<div class="scroll">'+
+    group(T("profiles"),menu(T("manage_profiles"),"profile-manager"))+
+    group(T("settings_appearance"),menu(T("mask_image"),"cover-picker",ui.profile)+menu(T("ui_theme"),"theme-picker"))+
+    group(T("settings_capture"),menu(T("choose_device"),"device-picker")+menu(T("device_info"),"device-info")+menu(T("macro_mode"),"macro-confirm",ui.macroEnabled?"开启":"关闭"))+
+    group(T("settings_general"),menu(T("language_title"),"language")+menu(T("interaction_feedback"),"interaction-feedback"))+
+    group(T("settings_support"),menu(T("help"),"help")+menu(T("feedback"),"feedback")+menu(T("privacy"),"privacy"))+
+    group(T("test_tools"),menu(T("test_label",[30]),"diagnostics")+menu(T("test_copy"),"diagnostic-result"))+'</div>';
 }
 function readingScreen(key, title) {
   return header(T(title)) + '<div class="scroll reading" data-review="copy.' + key + '">' + esc(T(key)) +
@@ -250,6 +252,16 @@ function systemScreen() {
 }
 function genericScreen() {
   switch (ui.page) {
+    case "profile-manager":
+      return header(T("manage_profiles"))+'<p class="skeleton-note">'+esc(T("profile_sort_hint"))+'</p>'+["示例使用人","示例使用人 B","示例使用人 C"].map(n=>menu("☰  "+n,"profile-edit","删除")).join("")+menu(T("profile_add_person"),"profile-edit");
+    case "cover-picker":
+      return header(T("mask_image"))+'<div class="cover-grid">'+["默认封面","橘伴相依","橘子心情","甜心橘宝"].map(n=>'<div class="sample-cover">'+esc(n)+'</div>').join("")+'</div>'+menu(T("cover_add"),"profile-edit")+menu(T("mask_crop"),"cover-picker")+menu(T("cover_apply"),"settings");
+    case "theme-picker":
+      return sheet(T("ui_theme"),["ui_dark","ui_warm","ui_orange","ui_cyan"].map(k=>menu(T(k),"settings")).join(""),textAction(T("ui_set_default"),"settings"));
+    case "interaction-feedback":
+      return sheet(T("interaction_feedback"),menu(T("sound_feedback"),"interaction-feedback",T("feedback_on"))+menu(T("haptic_feedback"),"interaction-feedback",T("feedback_on")));
+    case "device-info":
+      return sheet(T("device_info"),'<div class="reading">'+esc(T("device_info_body"))+'</div>');
     case "profiles":
       return sheet(T("profiles"), '<p class="skeleton-note">' + esc(T("profiles_hint")) + "</p>" +
         menu("示例使用人", "capture", "当前") + menu("示例使用人 B", "capture") +
@@ -282,12 +294,9 @@ function genericScreen() {
       return sheet(T("delete_count", [2]), '<p data-review="copy.delete_warning">' + esc(T("delete_warning")) +
         '</p><div class="p-row">' + textAction(T("cancel"), "gallery") + textAction(T("delete"), "gallery", "danger") + "</div>");
     case "diagnostics":
-      return header(T("test_tools")) + '<div class="scroll reading"><p>30 秒诊断 · 12 秒</p><p>' + esc(T("test_target")) + "</p><p>" +
-        esc(T("test_rotate_off")) + "</p><p>" + esc(T("test_rotate_on")) + "</p><p>" + esc(T("test_hold")) +
-        "</p></div>" + textAction(T("test_stop"), "diagnostic-result");
+      return header(T("hardware_check"))+'<div class="scroll reading"><p>'+esc(T("hardware_prepare"))+'</p><ol>'+["test_target","test_rotate_off","test_rotate_on","test_hold"].map(k=>'<li>'+esc(T(k))+'</li>').join("")+'</ol></div>'+textAction(T("hardware_begin"),"diagnostic-result");
     case "diagnostic-result":
-      return header(T("test_tools")) + '<div class="scroll reading">诊断结果占位\n连接、帧率、丢包、稳向来源\n技术细节属于此页</div>' +
-        textAction(T("test_copy"), "settings");
+      return header(T("hardware_result"))+'<div class="scroll reading"><p>接收画面、电量与姿态响应统计（示例，无硬件输入）</p><p>'+esc(T("hardware_observe"))+'</p><label><input type="checkbox">'+esc(T("hardware_clear"))+'</label><label><input type="checkbox">'+esc(T("hardware_light"))+'</label></div>'+textAction(T("save"),"settings");
     case "save-failure":
       return sheet("保存失败", '<p>' + esc(T("markup_error")) + "</p><p>原图仍在，标注草稿保留。</p>" +
         textAction("返回标注", "markup", "primary"));
@@ -343,7 +352,7 @@ function fitScene() {
     scene.style.height = width / ratio + "px";
   });
 }
-function renderPhone() {
+function renderPhoneBase() {
   const phone = document.getElementById("phone");
   if (!phone) return;
   phone.className = "phone" + (ui.showSlots ? " show-slots" : "") + (ui.width > ui.height ? " landscape" : "");
@@ -452,16 +461,16 @@ function dispatch(id) {
   if (id === "playback.pause") ui.playing = false;
   renderPhone();
 }
-function renderScreens() {
+function renderScreensBase() {
   ui.tab = "screens";
   setActiveTab();
   const main = document.getElementById("main");
-  main.innerHTML = '<h1>手机页面骨架</h1><p class="muted">灰度占位表示布局。定格的图标和位置待审核；当前 App 的图标是 Canvas 自绘，Claude 按语义 ID 重新设计。</p>' +
+  main.innerHTML = '<h1>手机页面骨架 · 0.27</h1><p class="muted">灰度占位表示当前原生布局。工具顺序固定为稳向、镜像、耳别、定格；图标由 Canvas 绘制。</p>' +
     '<div class="toolbar"><select id="page-select" aria-label="页面"></select><select id="variant-select" aria-label="状态"></select></div>' +
     '<div class="toolbar"><label><input type="checkbox" id="simulate"> 演示点击流</label><label><input type="checkbox" id="show-slots"> 显示槽位</label>' +
     '<select id="viewport-select" aria-label="手机尺寸"><option value="390,844">390 × 844</option><option value="360,800">360 × 800</option><option value="412,915">412 × 915</option><option value="844,390">844 × 390 横屏</option></select>' +
     '<select id="copy-mode"><option value="current">当前文案</option><option value="proposal">候选文案 · 待审核</option></select></div>' +
-    '<div class="toolbar"><label>定格位置</label><select id="freeze-place"><option value="tools">建议 A · 工具栏首位</option><option value="viewport-left">建议 B · 实际画面左下</option><option value="current-top">当前 · 取景区右上</option></select>' +
+    '<div class="toolbar"><label>定格位置</label><select id="freeze-place"><option value="tools">当前 · 工具栏末位（固定）</option></select>' +
     '<button id="review-page">审核这页</button></div><div class="phone-stage"><div id="phone" class="phone"></div></div>';
   const pageSelect = document.getElementById("page-select");
   pageSelect.innerHTML = D.pages.map(p => '<option value="' + p.id + '">' + esc(p.title) + "</option>").join("");
@@ -540,7 +549,7 @@ function renderInventory() {
   paintList();
 }
 function renderOverview() {
-  document.getElementById("main").innerHTML = '<h1>先定骨架，再交给 Claude 换视觉</h1><p>这是一份基于 Android 0.18 源码的离线审核包。先逐项审核位置、图标语义和文字，再让 Claude 按同一接口做不同风格，最后回归到原生 App。</p>' +
+  document.getElementById("main").innerHTML = '<h1>先定骨架，再交给 Claude 换视觉</h1><p>这是一份基于 Android 0.27 源码的离线审核包。以当前原生实现为骨架，覆盖设置、封面、档案排序、设备检查与照片翻页；后续主题沿用这些操作。</p>' +
     '<div class="summary-strip"><div><strong>' + D.pages.length + '</strong>页面/界面</div><div><strong>' + D.actions.length +
     '</strong>动作</div><div><strong>' + D.copy.length + '</strong>文案/字面量</div><div><strong>' + D.edges.length + '</strong>边角项</div></div>' +
     '<div class="warning">定格的暂停/播放方案已被用户否定。本骨架以语义槽位占位，默认建议放在工具栏首位，仍待审核。喜欢的旋转反馈和实际矩形右下角锚定列为保留项。</div>' +
@@ -655,7 +664,7 @@ document.getElementById("review-file").onchange = async event => {
       if (!Object.hasOwn(byId, item.id) || !Object.hasOwn(statusLabels, item.status) || typeof item.proposal !== "string" || typeof item.note !== "string") continue;
       decisions[item.id] = {id: item.id, status: item.status, proposal: item.proposal, note: item.note}; count++;
     }
-    if (["tools", "viewport-left", "current-top"].includes(input.freezePlacement)) ui.freezePlacement = input.freezePlacement;
+    ui.freezePlacement = "tools";
     persist(); renderInspector(); renderMain();
     notice("导入 " + count + " 项。" + (input.snapshot !== D.snapshot ? "注意：来源快照不同，需要重新核对。" : ""));
   } catch (error) { notice(error.message); }
@@ -665,3 +674,30 @@ document.getElementById("snapshot").textContent = "Android " + D.appVersion + " 
 makePlaceholderIcons();
 renderMain();
 renderInspector();
+
+function renderScreens() { renderScreensBase(); bindCurrentGestures(); }
+function renderPhone() { renderPhoneBase(); bindCurrentGestures(); }
+function bindCurrentGestures() {
+  document.querySelectorAll('.current-photo-pager').forEach(p=>{
+    let start=0,when=0,dx=0,active=false;
+    const a=p.querySelector('[data-current]'),b=p.querySelector('[data-neighbor]');
+    p.onpointerdown=e=>{start=e.clientX;dx=0;when=performance.now();active=true;try{p.setPointerCapture(e.pointerId);}catch{}};
+    p.onpointermove=e=>{if(!active)return;dx=e.clientX-start;const d=dx<0?1:-1,n=(ui.photoIndex||0)+d;
+      const valid=n>=0&&n<6;const x=valid?dx:dx*.18;a.style.transform=`translateX(${x}px)`;
+      b.textContent=valid?'示例照片 '+(n+1):'';b.style.transform=`translateX(${x+d*p.clientWidth}px)`;};
+    const end=(e,cancel)=>{if(!active)return;active=false;const d=dx<0?1:-1,n=(ui.photoIndex||0)+d;
+      const speed=dx/Math.max(1,performance.now()-when)*1000;
+      const change=!cancel&&n>=0&&n<6&&(Math.abs(dx)>=p.clientWidth*.22||(Math.abs(dx)>=12&&Math.abs(speed)>=650));
+      a.style.transition=b.style.transition='transform 180ms ease-out';
+      a.style.transform=`translateX(${change?-d*p.clientWidth:0}px)`;b.style.transform=`translateX(${change?0:d*p.clientWidth}px)`;
+      setTimeout(()=>{if(change)ui.photoIndex=n;renderScreens();},190);};
+    p.onpointerup=e=>end(e,false);p.onpointercancel=e=>end(e,true);
+  });
+  if(ui.page==='capture')document.querySelectorAll('.viewport').forEach(v=>{
+    let x=0,y=0;v.onpointerdown=e=>{x=e.clientX;y=e.clientY;v.setPointerCapture(e.pointerId);};
+    v.onpointerup=e=>{if(Math.hypot(e.clientX-x,e.clientY-y)<28)return;
+      if(['connected-idle','macro-idle'].includes(ui.variant))ui.variant=ui.variant==='macro-idle'?'macro':'live';
+      else if(['live','macro'].includes(ui.variant))ui.variant=ui.variant==='macro'?'macro-idle':'connected-idle';
+      renderScreens();};
+  });
+}

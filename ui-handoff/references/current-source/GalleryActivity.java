@@ -21,6 +21,7 @@ import android.os.Looper;
 import android.text.format.DateFormat;
 import android.util.LruCache;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.text.TextUtils;
@@ -53,8 +54,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class GalleryActivity extends Activity {
-    private static final int TEXT = ScopeUi.TEXT;
-    private static final int ACCENT = ScopeUi.ACCENT;
     private final ScopeUi style = new ScopeUi(this);
     private static final int COLUMNS = 3;
     private ListView list;
@@ -92,6 +91,9 @@ public final class GalleryActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle state) {
+        style.load();
+        setTheme(style.light ? android.R.style.Theme_Material_Light_NoActionBar
+                : android.R.style.Theme_Material_NoActionBar);
         super.onCreate(state);
         CareProfiles profiles = new CareProfiles(this);
         profile = profiles.resolve(getIntent().getStringExtra(CareProfiles.EXTRA));
@@ -105,22 +107,22 @@ public final class GalleryActivity extends Activity {
         }
         LinearLayout page = style.page();
         style.fit(this, page, 16, 12);
-        Button back = style.button("‹");
+        Button back = style.iconButton("back", getString(R.string.back));
         back.setContentDescription(getString(R.string.back_to_preview));
         back.setOnClickListener(view -> finish());
         LinearLayout header = new LinearLayout(this);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        header.addView(back, new LinearLayout.LayoutParams(dp(44), dp(44)));
+        header.addView(back, new LinearLayout.LayoutParams(dp(48), dp(48)));
         owner = style.button("");
         owner.setSingleLine(true);
         owner.setEllipsize(TextUtils.TruncateAt.END);
-        owner.setText(getString(R.string.profile_album, profiles.name(profile)));
+        owner.setText(profiles.name(profile));
         owner.setContentDescription(getString(R.string.profile_switch, profiles.name(profile)));
         owner.setOnClickListener(view -> style.showProfiles(profiles, profile, id -> {
             if (id.equals(profile)) return;
             profile = id;
             profiles.select(id);
-            owner.setText(getString(R.string.profile_album, profiles.name(id)));
+            owner.setText(profiles.name(id));
             owner.setContentDescription(getString(R.string.profile_switch, profiles.name(id)));
             selected.clear();
             selecting = false;
@@ -138,30 +140,35 @@ public final class GalleryActivity extends Activity {
             selected.clear();
             updateSelection();
         });
-        header.addView(selectButton);
+        shareButton = style.iconButton("share", getString(R.string.share));
+        shareButton.setOnClickListener(view -> share(selected.toArray(new File[0])));
+        header.addView(shareButton, new LinearLayout.LayoutParams(dp(48), dp(48)));
         page.addView(header);
         LinearLayout controls = new LinearLayout(this);
         controls.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout tabs = new LinearLayout(this);
         tabs.setPadding(dp(3), dp(3), dp(3), dp(3));
-        tabs.setBackground(style.shape(ScopeUi.GLASS, 23, ScopeUi.EDGE));
+        tabs.setBackground(style.shape(style.GLASS, 23, style.EDGE));
         picturesTab = style.button(getString(R.string.photo));
         picturesTab.setOnClickListener(view -> showTab(false));
         videosTab = style.button(getString(R.string.video));
         videosTab.setOnClickListener(view -> showTab(true));
         tabs.addView(picturesTab, new LinearLayout.LayoutParams(0, dp(40), 1));
         tabs.addView(videosTab, new LinearLayout.LayoutParams(0, dp(40), 1));
+        LinearLayout.LayoutParams chooseSize = new LinearLayout.LayoutParams(dp(72), dp(48));
+        chooseSize.rightMargin = dp(10);
+        controls.addView(selectButton, chooseSize);
         controls.addView(tabs, new LinearLayout.LayoutParams(0, -2, 1));
-        filterButton = style.iconButton("filter", getString(R.string.filter_title));
+        filterButton = style.button(getString(R.string.filter_title));
         filterButton.setOnClickListener(view -> chooseFilters());
-        LinearLayout.LayoutParams filterSize = new LinearLayout.LayoutParams(dp(48), dp(48));
+        LinearLayout.LayoutParams filterSize = new LinearLayout.LayoutParams(dp(72), dp(48));
         filterSize.leftMargin = dp(10);
         controls.addView(filterButton, filterSize);
         style.add(page, controls, 12);
-        filterSummary = style.label("", 12, ScopeUi.MUTED);
+        filterSummary = style.label("", 12, style.MUTED);
         filterSummary.setPadding(dp(6), dp(6), dp(6), dp(4));
         page.addView(filterSummary);
-        empty = style.label("", 15, ScopeUi.MUTED);
+        empty = style.label("", 15, style.MUTED);
         empty.setGravity(Gravity.CENTER);
         empty.setLineSpacing(dp(5), 1);
         list = new ListView(this);
@@ -177,8 +184,8 @@ public final class GalleryActivity extends Activity {
         selectionActions = new LinearLayout(this);
         selectionActions.setGravity(Gravity.CENTER_VERTICAL);
         selectionActions.setPadding(dp(16), dp(7), dp(8), dp(7));
-        selectionActions.setBackground(style.shape(ScopeUi.GLASS, 32, ScopeUi.EDGE));
-        selectionCount = style.label("", 14, TEXT);
+        selectionActions.setBackground(style.shape(style.GLASS, 32, style.EDGE));
+        selectionCount = style.label("", 14, style.TEXT);
         selectionActions.addView(selectionCount, new LinearLayout.LayoutParams(0, -2, 1));
         selectAll = style.button(getString(R.string.select_all));
         selectAll.setOnClickListener(view -> {
@@ -186,17 +193,17 @@ public final class GalleryActivity extends Activity {
             else selected.addAll(Arrays.asList(captures));
             updateSelection();
         });
-        selectionActions.addView(selectAll);
-        shareButton = style.iconButton("share", getString(R.string.share));
-        shareButton.setOnClickListener(view -> share(selected.toArray(new File[0])));
+        selectionActions.addView(selectAll, new LinearLayout.LayoutParams(0, dp(48), 1));
         deleteButton = style.iconButton("delete", getString(R.string.delete));
         deleteButton.setBackground(style.pill(0x58ff453a, 22, 0));
-        deleteButton.setTextColor(0xffffb4ae);
+        deleteButton.setTextColor(style.light ? style.RED : 0xffffb4ae);
         deleteButton.setOnClickListener(view -> confirmDelete(selected.toArray(new File[0])));
-        selectionActions.addView(shareButton);
-        LinearLayout.LayoutParams deleteSize = new LinearLayout.LayoutParams(-2, dp(44));
+
+        LinearLayout.LayoutParams deleteSize = new LinearLayout.LayoutParams(0, dp(48), 1);
         deleteSize.leftMargin = dp(8);
-        selectionActions.addView(deleteButton, deleteSize);
+        FrameLayout deleteSlot = new FrameLayout(this);
+        deleteSlot.addView(deleteButton, new FrameLayout.LayoutParams(dp(48), dp(48), Gravity.END));
+        selectionActions.addView(deleteSlot, deleteSize);
         style.add(page, selectionActions, 8);
         setContentView(page);
     }
@@ -278,8 +285,8 @@ public final class GalleryActivity extends Activity {
         empty.setVisibility(captures.length == 0 ? View.VISIBLE : View.GONE);
         filterSummary.setText(summary);
         filterSummary.setVisibility(summary.isEmpty() ? View.GONE : View.VISIBLE);
-        style.setIcon(filterButton, summary.isEmpty() ? "filter" : "filter-active",
-                getString(R.string.filter_title) + (summary.isEmpty() ? "" : " · " + summary));
+        filterButton.setText(getString(R.string.filter_title) + (summary.isEmpty() ? "" : " ·"));
+        filterButton.setContentDescription(getString(R.string.filter_title) + " " + summary);
         styleTab(picturesTab, !videos);
         styleTab(videosTab, videos);
         tiles.group();
@@ -311,7 +318,7 @@ public final class GalleryActivity extends Activity {
         Dialog sheet = new Dialog(this);
         LinearLayout page = style.page();
         page.setPadding(dp(20), dp(20), dp(20), dp(24));
-        page.addView(style.label(getString(R.string.filter_title), 22, TEXT));
+        page.addView(style.label(getString(R.string.filter_title), 22, style.TEXT));
         Button year = style.button("");
         Button month = style.button("");
         Button ear = style.button("");
@@ -332,7 +339,7 @@ public final class GalleryActivity extends Activity {
             String[] labels = new String[values.size()];
             labels[0] = getString(R.string.all_photos);
             for (int i = 1; i < labels.length; i++) labels[i] = String.valueOf(values.get(i));
-            new AlertDialog.Builder(this).setTitle(R.string.filter_year)
+            new ScopeDialog.Builder(this).setTitle(R.string.filter_year)
                     .setSingleChoiceItems(labels, values.indexOf(filteredYear), (dialog, which) -> {
                         filteredYear = values.get(which);
                         applyFilters(year, month, ear);
@@ -343,7 +350,7 @@ public final class GalleryActivity extends Activity {
             String[] labels = new String[13];
             labels[0] = getString(R.string.all_photos);
             for (int i = 1; i <= 12; i++) labels[i] = getString(R.string.filter_month_value, i);
-            new AlertDialog.Builder(this).setTitle(R.string.filter_month)
+            new ScopeDialog.Builder(this).setTitle(R.string.filter_month)
                     .setSingleChoiceItems(labels, filteredMonth, (dialog, which) -> {
                         filteredMonth = which;
                         applyFilters(year, month, ear);
@@ -354,7 +361,7 @@ public final class GalleryActivity extends Activity {
             EarSide[] values = {null, EarSide.LEFT, EarSide.RIGHT, EarSide.NONE};
             String[] labels = {getString(R.string.all_photos), EarSide.LEFT.label(this),
                     EarSide.RIGHT.label(this), EarSide.NONE.label(this)};
-            new AlertDialog.Builder(this).setTitle(R.string.ear_choose)
+            new ScopeDialog.Builder(this).setTitle(R.string.ear_choose)
                     .setSingleChoiceItems(labels, Arrays.asList(values).indexOf(filteredEar), (dialog, which) -> {
                         filteredEar = values[which];
                         applyFilters(year, month, ear);
@@ -362,17 +369,21 @@ public final class GalleryActivity extends Activity {
                     }).setNegativeButton(R.string.cancel, null).show();
         });
         LinearLayout actions = new LinearLayout(this);
-        actions.setGravity(Gravity.END);
+        actions.setGravity(Gravity.CENTER);
         Button clear = style.button(getString(R.string.clear_filters));
+        clear.setGravity(Gravity.CENTER);
         clear.setOnClickListener(view -> {
             filteredYear = filteredMonth = 0;
             filteredEar = null;
             applyFilters(year, month, ear);
         });
         Button done = style.button(getString(R.string.done));
+        done.setGravity(Gravity.CENTER);
         done.setOnClickListener(view -> sheet.dismiss());
-        actions.addView(clear);
-        actions.addView(done);
+        LinearLayout.LayoutParams clearSize = new LinearLayout.LayoutParams(0, dp(48), 1);
+        clearSize.rightMargin = dp(8);
+        actions.addView(clear, clearSize);
+        actions.addView(done, new LinearLayout.LayoutParams(0, dp(48), 1));
         style.add(page, actions, 18);
         applyFilters(year, month, ear);
         sheet.setContentView(page);
@@ -394,7 +405,7 @@ public final class GalleryActivity extends Activity {
     private void styleTab(Button tab, boolean active) {
         tab.setSelected(active);
         tab.setBackground(style.pill(active ? 0x48ffffff : 0, 20, 0));
-        tab.setTextColor(active ? TEXT : ScopeUi.MUTED);
+        tab.setTextColor(active ? style.TEXT : style.MUTED);
     }
 
     private void toggle(File file) {
@@ -471,7 +482,7 @@ public final class GalleryActivity extends Activity {
         public View getView(int position, View recycled, ViewGroup parent) {
             Object item = getItem(position);
             if (item instanceof String) {
-                TextView heading = recycled instanceof TextView ? (TextView) recycled : style.label("", 16, TEXT);
+                TextView heading = recycled instanceof TextView ? (TextView) recycled : style.label("", 16, style.TEXT);
                 heading.setText((String) item);
                 heading.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
                 heading.setPadding(0, dp(14), 0, dp(8));
@@ -507,14 +518,14 @@ public final class GalleryActivity extends Activity {
             });
             String stamp = stamp(file);
             EarSide side = isVideo(file) ? EarSide.NONE : EarSide.read(GalleryActivity.this, file);
-            tile.caption.setText(side == EarSide.NONE ? stamp : side.label(GalleryActivity.this) + " · " + stamp);
+            tile.caption.setVisibility(View.GONE);
             boolean checked = selected.contains(file);
             tile.check.setVisibility(selecting ? View.VISIBLE : View.GONE);
             tile.check.setText(checked ? "✓" : "○");
-            tile.check.setTextColor(checked ? ScopeUi.INK : TEXT);
-            tile.check.setBackground(style.shape(checked ? ACCENT : 0xb5070b12, 12, 0));
+            tile.check.setTextColor(checked ? style.INK : style.TEXT);
+            tile.check.setBackground(style.shape(checked ? style.ACCENT : 0xb5070b12, 12, 0));
             tile.setBackground(style.shape(checked ? 0x397dd3fc : 0x16ffffff, 19,
-                    checked ? ACCENT : 0x30ffffff));
+                    checked ? style.ACCENT : 0x30ffffff));
             tile.setContentDescription(label(file) + " " + stamp
                     + (selecting ? " " + getString(checked ? R.string.selected_description : R.string.not_selected_description) : ""));
             Thumbnail thumbnail = thumbnails.get(file);
@@ -550,9 +561,9 @@ public final class GalleryActivity extends Activity {
             });
             image.setClipToOutline(true);
             cover.addView(image, new FrameLayout.LayoutParams(-1, -1, Gravity.CENTER));
-            duration.setTextColor(TEXT);
+            duration.setTextColor(style.TEXT);
             duration.setTextSize(11);
-            duration.setBackground(style.shape(0xd31b2132, 12, ScopeUi.EDGE));
+            duration.setBackground(style.shape(0xd31b2132, 12, style.EDGE));
             duration.setPadding(dp(6), dp(2), dp(6), dp(2));
             FrameLayout.LayoutParams badge = new FrameLayout.LayoutParams(-2, -2,
                     Gravity.BOTTOM | Gravity.END);
@@ -561,7 +572,7 @@ public final class GalleryActivity extends Activity {
             check.setGravity(Gravity.CENTER);
             cover.addView(check, new FrameLayout.LayoutParams(dp(24), dp(24),
                     Gravity.TOP | Gravity.END));
-            caption.setTextColor(ScopeUi.MUTED);
+            caption.setTextColor(style.MUTED);
             caption.setTextSize(11);
             caption.setMaxLines(2);
             caption.setPadding(dp(2), dp(5), dp(2), 0);
@@ -645,70 +656,170 @@ public final class GalleryActivity extends Activity {
     }
 
     private void open(File file) {
-        boolean video = isVideo(file);
-        VideoPlayback playback = video ? new VideoPlayback(this, CaptureProvider.uri(file),
-                !CaptureProvider.isMacro(file), () -> Toast.makeText(this, R.string.playback_error, Toast.LENGTH_SHORT).show()) : null;
-        View media = playback == null ? photoView(file) : playback;
-        Dialog dialog = new Dialog(this);
-        LinearLayout content = style.page();
-        content.setPadding(dp(16), dp(12), dp(16), dp(16));
-        LinearLayout header = new LinearLayout(this);
-        header.setGravity(Gravity.CENTER_VERTICAL);
-        Button back = style.button("‹");
-        back.setContentDescription(getString(R.string.back_to_media));
-        back.setOnClickListener(view -> dialog.dismiss());
-        header.addView(back, new LinearLayout.LayoutParams(dp(44), dp(44)));
-        TextView type = style.label(label(file), 16, TEXT);
-        type.setGravity(Gravity.CENTER);
-        header.addView(type, new LinearLayout.LayoutParams(0, -2, 1));
-        Button share = style.iconButton("share", getString(R.string.share));
-        share.setOnClickListener(view -> share(file));
-        header.addView(share);
-        content.addView(header);
-        if (!video && !CaptureProvider.isMacro(file)) {
-            Button side = style.button(EarSide.read(this, file).label(this));
-            side.setOnClickListener(view -> chooseSide(file, side));
-            style.add(content, side, 6);
+        new MediaDetails(file).show();
+    }
+
+    private final class MediaDetails {
+        private File current;
+        private final ArrayList<File> photos = new ArrayList<>();
+        private int index;
+        private ImageView picture;
+        private TextView type, date;
+        private Button side;
+        private FrameLayout stage;
+        private PhotoPager pager;
+
+        MediaDetails(File file) {
+            current = file;
+            for (File candidate : captures) if (!isVideo(candidate)) photos.add(candidate);
+            index = photos.indexOf(file);
+            if (index < 0 && !isVideo(file)) {
+                photos.add(file);
+                index = photos.size() - 1;
+            }
         }
-        FrameLayout stage = new FrameLayout(this);
-        content.addView(stage, new LinearLayout.LayoutParams(-1, 0, 1));
-        stage.addView(media, new FrameLayout.LayoutParams(-1, -1, Gravity.CENTER));
-        TextView date = style.label(stamp(file), 17, TEXT);
-        date.setGravity(Gravity.CENTER);
-        style.add(content, date, 8);
-        if (!video) {
-            Button markup = style.iconButton("markup", getString(R.string.markup));
-            markup.setOnClickListener(view -> editMarkup(file, dialog));
-            style.add(content, markup, 8);
+
+        private boolean navigate(int direction) {
+            return pager != null && pager.page(direction);
         }
-        PlaybackControls controls = playback == null ? null : new PlaybackControls(playback.player);
-        if (controls != null) style.add(content, controls, 14);
-        Button delete = style.iconButton("delete", getString(R.string.delete));
-        delete.setTextColor(0xffffb4ae);
-        delete.setOnClickListener(view -> {
-            dialog.dismiss();
-            confirmDelete(file);
-        });
-        LinearLayout.LayoutParams deleteSize = new LinearLayout.LayoutParams(dp(48), dp(48));
-        deleteSize.gravity = Gravity.CENTER_HORIZONTAL;
-        deleteSize.topMargin = dp(12);
-        content.addView(delete, deleteSize);
-        dialog.setContentView(content);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        mediaDialog = dialog;
-        dialog.setOnDismissListener(window -> {
-            if (mediaDialog == dialog) mediaDialog = null;
-            if (controls != null) controls.close();
-            if (playback != null) playback.close();
-        });
-        dialog.show();
-        dialog.getWindow().setLayout(-1, -1);
+
+        private int nextIndex(int direction) {
+            int next = index + direction;
+            while (next >= 0 && next < photos.size() && !photos.get(next).isFile()) next += direction;
+            return next < 0 || next >= photos.size() ? -1 : next;
+        }
+
+        private void applyPhoto(File target, Bitmap bitmap) {
+            index = photos.indexOf(target);
+            current = target;
+            picture.animate().cancel();
+            picture.setImageBitmap(bitmap);
+            configurePhoto(picture, current);
+            picture.setContentDescription(getString(R.string.photo_position, index + 1, photos.size()));
+            type.setText(label(current) + " · " + (index + 1) + " / " + photos.size());
+            date.setText(stamp(current));
+            side.setVisibility(CaptureProvider.isMacro(current) ? View.GONE : View.VISIBLE);
+            side.setText(EarSide.read(GalleryActivity.this, current).label(GalleryActivity.this));
+            picture.post(() -> positionDate(picture));
+        }
+
+        private void positionDate(View media) {
+            int width = stage.getWidth(), height = stage.getHeight();
+            float imageHeight = Math.min(width, height);
+            if (media instanceof ImageView && ((ImageView) media).getDrawable() != null) {
+                android.graphics.drawable.Drawable drawable = ((ImageView) media).getDrawable();
+                float scale = Math.min((float) width / drawable.getIntrinsicWidth(),
+                        (float) height / drawable.getIntrinsicHeight());
+                imageHeight = drawable.getIntrinsicHeight() * scale;
+            }
+            float imageBottom = (height + imageHeight) / 2f;
+            date.setTranslationY(Math.min(height - date.getHeight(),
+                    (imageBottom + height + dp(12) - date.getHeight()) / 2f));
+        }
+
+        void show() {
+            File file = current;
+            boolean video = isVideo(file);
+            VideoPlayback playback = video ? new VideoPlayback(GalleryActivity.this, CaptureProvider.uri(file),
+                    !CaptureProvider.isMacro(file), () -> Toast.makeText(GalleryActivity.this, R.string.playback_error, Toast.LENGTH_SHORT).show()) : null;
+            View media = playback == null ? photoView(file) : playback;
+            Dialog dialog = new Dialog(GalleryActivity.this);
+            LinearLayout content = style.page();
+            content.setPadding(dp(16), dp(12), dp(16), dp(32));
+            LinearLayout header = new LinearLayout(GalleryActivity.this);
+            header.setGravity(Gravity.CENTER_VERTICAL);
+            Button back = style.iconButton("back", getString(R.string.back));
+            back.setContentDescription(getString(R.string.back_to_media));
+            back.setOnClickListener(view -> dialog.dismiss());
+            header.addView(back, new LinearLayout.LayoutParams(dp(48), dp(48)));
+            type = style.label(label(file) + (video ? "" : " · " + (index + 1) + " / " + photos.size()), 16, style.TEXT);
+            type.setGravity(Gravity.CENTER);
+            header.addView(type, new LinearLayout.LayoutParams(0, -2, 1));
+            Button share = style.iconButton("share", getString(R.string.share));
+            share.setOnClickListener(view -> share(current));
+            header.addView(share);
+            content.addView(header);
+            if (!video) {
+                side = style.button(EarSide.read(GalleryActivity.this, current).label(GalleryActivity.this));
+                side.setVisibility(CaptureProvider.isMacro(current) ? View.GONE : View.VISIBLE);
+                side.setOnClickListener(view -> chooseSide(current, side));
+                style.add(content, side, 6);
+            }
+            stage = new FrameLayout(GalleryActivity.this);
+            content.addView(stage, new LinearLayout.LayoutParams(-1, 0, 1));
+            if (!video) {
+                picture = (ImageView) media;
+                pager = new PhotoPager(GalleryActivity.this, picture, new PhotoPager.Source() {
+                    @Override public File neighbor(int direction) {
+                        int next = nextIndex(direction); return next < 0 ? null : photos.get(next);
+                    }
+                    @Override public void configure(ImageView image, File file) { configurePhoto(image, file); }
+                    @Override public void changed(File file, Bitmap bitmap) { applyPhoto(file, bitmap); }
+                });
+                stage.addView(pager, new FrameLayout.LayoutParams(-1, -1));
+            } else stage.addView(media, new FrameLayout.LayoutParams(-1, -1, Gravity.CENTER));
+            if (!video) {
+                picture = (ImageView) media;
+                picture.setContentDescription(getString(R.string.photo_position, index + 1, photos.size()));
+                picture.setAccessibilityDelegate(new View.AccessibilityDelegate() {
+                    @Override public void onInitializeAccessibilityNodeInfo(View host,
+                            android.view.accessibility.AccessibilityNodeInfo info) {
+                        super.onInitializeAccessibilityNodeInfo(host, info);
+                        if (index > 0) info.addAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+                        if (index < photos.size() - 1) info.addAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                    }
+                    @Override public boolean performAccessibilityAction(View host, int action, Bundle arguments) {
+                        if (action == android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) return navigate(1);
+                        if (action == android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) return navigate(-1);
+                        return super.performAccessibilityAction(host, action, arguments);
+                    }
+                });
+            }
+            date = style.label(stamp(file), 17, style.TEXT);
+            date.setGravity(Gravity.CENTER);
+            FrameLayout.LayoutParams timeSize = new FrameLayout.LayoutParams(-2, -2,
+                    Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+            stage.addView(date, timeSize);
+            stage.addOnLayoutChangeListener((view, left, top, right, bottom, a, b, c, d) ->
+                    date.post(() -> positionDate(video ? media : picture)));
+            PlaybackControls controls = playback == null ? null : new PlaybackControls(playback.player);
+            if (controls != null) style.add(content, controls, 14);
+            Button delete = style.iconButton("delete", getString(R.string.delete));
+            delete.setTextColor(style.light ? style.RED : 0xffffb4ae);
+            delete.setOnClickListener(view -> {
+                dialog.dismiss();
+                confirmDelete(current);
+            });
+            LinearLayout bottom = new LinearLayout(GalleryActivity.this);
+            bottom.setGravity(Gravity.CENTER);
+            if (!video) {
+                Button markup = style.iconButton("markup", getString(R.string.markup));
+                markup.setOnClickListener(view -> editMarkup(current, dialog));
+                LinearLayout.LayoutParams markupSize = new LinearLayout.LayoutParams(dp(48), dp(48));
+                markupSize.rightMargin = dp(16);
+                bottom.addView(markup, markupSize);
+            }
+            bottom.addView(delete, new LinearLayout.LayoutParams(dp(48), dp(48)));
+            style.add(content, bottom, 12);
+            dialog.setContentView(content);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            mediaDialog = dialog;
+            dialog.setOnDismissListener(window -> {
+                if (mediaDialog == dialog) mediaDialog = null;
+                if (controls != null) controls.close();
+                if (playback != null) playback.close();
+            });
+            dialog.show();
+            dialog.getWindow().setLayout(-1, -1);
+            style.decorateWindow(dialog.getWindow());
+        }
+
     }
 
     private void chooseSide(File file, Button button) {
         EarSide[] sides = EarSide.values();
         String[] labels = EarSide.labels(this);
-        new AlertDialog.Builder(this).setTitle(R.string.ear_choose)
+        new ScopeDialog.Builder(this).setTitle(R.string.ear_choose)
                 .setSingleChoiceItems(labels, EarSide.read(this, file).ordinal(), (dialog, which) -> {
                     if (file.isFile()) {
                         sides[which].save(this, file);
@@ -730,7 +841,7 @@ public final class GalleryActivity extends Activity {
         EarSide side = EarSide.read(this, file);
         Dialog editor = new Dialog(this);
         LinearLayout page = style.page();
-        page.setPadding(dp(16), dp(12), dp(16), dp(16));
+        page.setPadding(dp(16), dp(12), dp(16), dp(32));
         LinearLayout tools = new LinearLayout(this);
         tools.setGravity(Gravity.CENTER);
         Button circle = style.iconButton("circle", getString(R.string.markup_circle));
@@ -770,7 +881,7 @@ public final class GalleryActivity extends Activity {
         undo.setOnClickListener(view -> drawing.undo());
         redo.setOnClickListener(view -> drawing.redo());
         page.addView(drawing, new LinearLayout.LayoutParams(-1, 0, 1));
-        TextView hint = style.label(getString(R.string.markup_hint), 13, ScopeUi.MUTED);
+        TextView hint = style.label(getString(R.string.markup_hint), 13, style.MUTED);
         hint.setGravity(Gravity.CENTER);
         page.addView(hint);
         LinearLayout actions = new LinearLayout(this);
@@ -779,7 +890,7 @@ public final class GalleryActivity extends Activity {
         LinearLayout.LayoutParams saveSpacing = new LinearLayout.LayoutParams(dp(48), dp(48));
         saveSpacing.leftMargin = dp(12);
         actions.addView(save, saveSpacing);
-        style.add(page, actions, 8);
+        style.add(page, actions, 12);
         cancel.setOnClickListener(view -> editor.dismiss());
         save.setEnabled(false);
         save.setOnClickListener(view -> {
@@ -822,6 +933,7 @@ public final class GalleryActivity extends Activity {
         });
         editor.show();
         editor.getWindow().setLayout(-1, -1);
+        style.decorateWindow(editor.getWindow());
     }
 
     private boolean saveMarkupCopy(Bitmap copy, String owner, boolean fullFrame, EarSide side) {
@@ -849,7 +961,7 @@ public final class GalleryActivity extends Activity {
         Dialog palette = new Dialog(this);
         LinearLayout page = style.page();
         page.setPadding(dp(20), dp(20), dp(20), dp(20));
-        page.addView(style.label(getString(R.string.markup_color), 18, TEXT));
+        page.addView(style.label(getString(R.string.markup_color), 18, style.TEXT));
         LinearLayout swatches = new LinearLayout(this);
         swatches.setGravity(Gravity.CENTER);
         for (int i = 0; i < colors.length; i++) {
@@ -874,6 +986,12 @@ public final class GalleryActivity extends Activity {
         ImageView picture = new ImageView(this);
         picture.setScaleType(ImageView.ScaleType.FIT_CENTER);
         picture.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));
+        configurePhoto(picture, file);
+        return picture;
+    }
+
+    private void configurePhoto(ImageView picture, File file) {
+        picture.setClipToOutline(!CaptureProvider.isMacro(file));
         if (!CaptureProvider.isMacro(file)) {
             picture.setOutlineProvider(new ViewOutlineProvider() {
                 @Override public void getOutline(View view, Outline outline) {
@@ -884,8 +1002,10 @@ public final class GalleryActivity extends Activity {
                 }
             });
             picture.setClipToOutline(true);
+        } else {
+            picture.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         }
-        return picture;
+        picture.invalidateOutline();
     }
 
     private final class PlaybackControls extends LinearLayout {
@@ -904,9 +1024,9 @@ public final class GalleryActivity extends Activity {
             this.player = player;
             setOrientation(VERTICAL);
             setPadding(dp(16), dp(8), dp(16), dp(8));
-            setBackground(style.shape(ScopeUi.GLASS, 28, ScopeUi.EDGE));
-            position.setProgressTintList(ColorStateList.valueOf(ACCENT));
-            position.setThumbTintList(ColorStateList.valueOf(ACCENT));
+            setBackground(style.shape(style.GLASS, 28, style.EDGE));
+            position.setProgressTintList(ColorStateList.valueOf(style.ACCENT));
+            position.setThumbTintList(ColorStateList.valueOf(style.ACCENT));
             position.setContentDescription(getString(R.string.playback_progress));
             position.setEnabled(false);
             position.setSplitTrack(false);
@@ -927,7 +1047,7 @@ public final class GalleryActivity extends Activity {
                 update();
             });
             actions.addView(play);
-            time.setTextColor(ScopeUi.MUTED);
+            time.setTextColor(style.MUTED);
             time.setGravity(Gravity.END);
             actions.addView(time, new LinearLayout.LayoutParams(0, -2, 1));
             addView(actions, new LinearLayout.LayoutParams(-1, -2));
@@ -1020,7 +1140,7 @@ public final class GalleryActivity extends Activity {
 
     private void confirmDelete(File... files) {
         if (files.length == 0) return;
-        new AlertDialog.Builder(this).setTitle(getString(R.string.delete_count, files.length))
+        new ScopeDialog.Builder(this).setTitle(getString(R.string.delete_count, files.length))
                 .setMessage(getString(R.string.delete_warning))
                 .setNegativeButton(getString(R.string.cancel), null)
                 .setPositiveButton(getString(R.string.delete), (dialog, which) -> {

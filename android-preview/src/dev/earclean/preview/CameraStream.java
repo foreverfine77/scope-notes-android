@@ -52,6 +52,7 @@ final class CameraStream {
     private final Thread worker;
     private volatile boolean stopped;
     private volatile boolean stabilize;
+    private volatile boolean previewEnabled;
 
     CameraStream(ConnectivityManager connectivity, EarWifi managedWifi, Listener listener) {
         this.connectivity = connectivity;
@@ -62,6 +63,10 @@ final class CameraStream {
 
     void start() {
         worker.start();
+    }
+
+    void setPreviewEnabled(boolean enabled) {
+        previewEnabled = enabled;
     }
 
     void setStabilize(boolean enabled) {
@@ -146,12 +151,26 @@ final class CameraStream {
             listener.detail(this, "开始收流 UDP 8031");
             Thread battery = new Thread(() -> pollBattery(network, address), "earclean-battery");
             battery.start();
+            boolean sending = false;
             try {
                 while (!stopped) {
                     if (managedWifi != null && !network.equals(managedWifi.network())) {
                         throw new IOException("耳镜 Wi-Fi 已断开");
                     }
                     long now = SystemClock.elapsedRealtime();
+                    if (!previewEnabled) {
+                        if (sending) send(video, STOP);
+                        sending = false;
+                        lastFrame = now;
+                        nextStart = now;
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException interrupted) {
+                            return;
+                        }
+                        continue;
+                    }
+                    sending = true;
                     if (now - lastFrame > 3000) {
                         throw new SocketTimeoutException("3000 ms 内无可解码画面");
                     }
@@ -267,6 +286,7 @@ final class CameraStream {
                 listener.detail(this, "电量查询未回包");
             }
             if (stopped || Thread.currentThread().isInterrupted()) return;
+            if (reading != null) listener.connected(this, network);
             listener.battery(this, reading);
             try {
                 Thread.sleep(15000);

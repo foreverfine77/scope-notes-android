@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0",
-  "snapshot": "99e2ff073d9684fc",
-  "sourceCommit": "399674672a0c5287aef33b9a3d760bbd79420f0d",
-  "date": "2026-11-11",
-  "appVersion": "0.18",
+  "snapshot": "ba05ccff55f54f43",
+  "sourceCommit": "4c910c9f073f0a6db7fd7de0f24cc18e8b69587c",
+  "date": "2026-11-16",
+  "appVersion": "0.27",
   "pages": [
     {
       "id": "capture",
@@ -207,6 +207,41 @@
       "sourceMethod": "PreviewActivity.openFeedback",
       "owner": "Android 系统",
       "treatment": "统一 App 内的反馈说明，外部浏览器由系统或用户选择"
+    },
+    {
+      "id": "profile-manager",
+      "title": "管理护耳档案",
+      "sourceMethod": "PreviewActivity.showProfileManager / ProfileOrderList",
+      "owner": "App Dialog",
+      "treatment": "整行长按拖动，浮层不裁切，首尾均可插入"
+    },
+    {
+      "id": "cover-picker",
+      "title": "镜头封面图库",
+      "sourceMethod": "CoverPickerActivity",
+      "owner": "App Activity",
+      "treatment": "圆形缩略图、预览、裁剪和按档案保存"
+    },
+    {
+      "id": "theme-picker",
+      "title": "界面主题",
+      "sourceMethod": "PreviewActivity.chooseUiTheme",
+      "owner": "App Dialog",
+      "treatment": "深海星夜、暖纸线稿、橙色线条、清爽青色"
+    },
+    {
+      "id": "interaction-feedback",
+      "title": "操作反馈",
+      "sourceMethod": "PreviewActivity.showInteractionFeedback",
+      "owner": "App Dialog",
+      "treatment": "音效与触感独立开关"
+    },
+    {
+      "id": "device-info",
+      "title": "设备参考信息",
+      "sourceMethod": "PreviewActivity.showDeviceInfo",
+      "owner": "App Dialog",
+      "treatment": "说明书标称参数与应用实测区分"
     }
   ],
   "actions": [
@@ -217,8 +252,8 @@
       "currentKind": "新增待审交互",
       "page": "capture",
       "presentation": "盖板＋文字",
-      "placement": "实际取景窗内",
-      "behavior": "已连接后才可打开；请求视频，不重新连接网络"
+      "placement": "实际圆形封面",
+      "behavior": "圆内任意方向滑动；连接后开始取景，不重新连接网络"
     },
     {
       "id": "camera.stop-preview",
@@ -227,8 +262,8 @@
       "currentKind": "新增待审交互",
       "page": "capture",
       "presentation": "边缘把手＋图标",
-      "placement": "实际取景窗左侧固定位置",
-      "behavior": "停止视频并保留网络与电量查询；录像和保存中禁用；灯光反应需实测"
+      "placement": "实际圆形封面",
+      "behavior": "圆内任意方向滑动；停止视频并保留网络与电量"
     },
     {
       "id": "profile.open",
@@ -244,7 +279,7 @@
       "id": "settings.open",
       "title": "设置",
       "icon": "ic-settings",
-      "currentKind": "gear text",
+      "currentKind": "Canvas 滑杆图标",
       "page": "capture",
       "presentation": "图标",
       "placement": "顶部固定槽",
@@ -642,13 +677,13 @@
     },
     {
       "id": "diagnostics.open",
-      "title": "测试工具",
+      "title": "设备检查",
       "icon": "ic-diagnostics",
       "currentKind": "文字列表行",
       "page": "settings",
       "presentation": "图标＋文字",
       "placement": "设置高级组",
-      "behavior": "诊断不混入普通取景提示"
+      "behavior": "30 秒接收、画面、电量、姿态统计，清晰度和补光由用户确认"
     }
   ],
   "copy": [
@@ -761,28 +796,28 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 302,
+          "line": 309,
           "method": "applyFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 357,
+          "line": 364,
           "method": "chooseFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 711,
+          "line": 822,
           "method": "chooseSide"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 267,
-          "method": "onCreate"
+          "line": 325,
+          "method": "shape"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 270,
-          "method": "onCreate"
+          "line": 328,
+          "method": "shape"
         }
       ],
       "page": "gallery",
@@ -805,7 +840,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 805,
+          "line": 1103,
           "method": "setEarSide"
         }
       ],
@@ -915,15 +950,15 @@
       "key": "wireless_title",
       "title": "wireless_title",
       "category": "资源文案",
-      "current": "无线网络",
-      "proposal": "连接耳镜",
-      "priority": "高",
-      "reason": "首次引导标题应描述用户目标。",
+      "current": "连接耳镜",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 810,
+          "line": 1108,
           "method": "showWirelessReminder"
         }
       ],
@@ -939,15 +974,15 @@
       "key": "wireless_prompt",
       "title": "wireless_prompt",
       "category": "资源文案",
-      "current": "打开无线网络功能，用于连接设备",
-      "proposal": "打开耳镜后，在本页连接设备。需要时也可打开手机的 Wi-Fi 设置。",
-      "priority": "高",
-      "reason": "区分应用连接与系统手动后备路径。",
+      "current": "请打开耳镜，在本页连接。也可前往手机 Wi-Fi 设置。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 811,
+          "line": 1109,
           "method": "showWirelessReminder"
         }
       ],
@@ -971,7 +1006,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 812,
+          "line": 1110,
           "method": "showWirelessReminder"
         }
       ],
@@ -988,14 +1023,14 @@
       "title": "continue_app",
       "category": "资源文案",
       "current": "继续",
-      "proposal": "返回取景",
+      "proposal": "",
       "priority": "中",
-      "reason": "继续指向不明确，需结合首次引导流程审核。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 813,
+          "line": 1111,
           "method": "showWirelessReminder"
         }
       ],
@@ -1019,12 +1054,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 427,
+          "line": 533,
           "method": "showSettings"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 477,
+          "line": 737,
           "method": "showLanguages"
         }
       ],
@@ -1048,7 +1083,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 474,
+          "line": 734,
           "method": "showLanguages"
         }
       ],
@@ -1065,24 +1100,24 @@
       "title": "profile_switch",
       "category": "资源文案",
       "current": "切换护耳档案，当前为 %1$s",
-      "proposal": "切换档案，当前为 %1$s",
+      "proposal": "",
       "priority": "中",
-      "reason": "统一档案用语。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 118,
+          "line": 120,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 124,
+          "line": 126,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 348,
+          "line": 431,
           "method": "selectProfile"
         }
       ],
@@ -1103,21 +1138,10 @@
       "current": "%1$s的档案  ▾",
       "proposal": "",
       "priority": "中",
-      "reason": "逐条审核名称、语气、当前行为和长度。",
-      "legacy": false,
-      "source": [
-        {
-          "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 117,
-          "method": "onCreate"
-        },
-        {
-          "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 123,
-          "method": "onCreate"
-        }
-      ],
-      "page": "gallery",
+      "reason": "当前 Java/Manifest 未引用，列为遗留候选；不要重新引入废弃功能。",
+      "legacy": true,
+      "source": [],
+      "page": "capture",
       "translations": {
         "zh-TW": "%1$s的檔案  ▾",
         "en": "%1$s’s profile  ▾"
@@ -1132,19 +1156,19 @@
       "title": "recording_for",
       "category": "资源文案",
       "current": "正在为 %1$s 拍摄",
-      "proposal": "当前档案 · %1$s",
-      "priority": "高",
-      "reason": "实时预览并不等于正在录制。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 363,
+          "line": 447,
           "method": "showConnection"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 385,
+          "line": 471,
           "method": "updateCaptureControls"
         }
       ],
@@ -1170,7 +1194,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 374,
+          "line": 460,
           "method": "showBattery"
         }
       ],
@@ -1191,15 +1215,9 @@
       "current": "充电中 · %1$d%%",
       "proposal": "",
       "priority": "中",
-      "reason": "逐条审核名称、语气、当前行为和长度。",
-      "legacy": false,
-      "source": [
-        {
-          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 658,
-          "method": "battery"
-        }
-      ],
+      "reason": "当前 Java/Manifest 未引用，列为遗留候选；不要重新引入废弃功能。",
+      "legacy": true,
+      "source": [],
       "page": "capture",
       "translations": {
         "zh-TW": "充電中 · %1$d%%",
@@ -1218,15 +1236,9 @@
       "current": "%1$d%% · 约 %2$d 分钟",
       "proposal": "",
       "priority": "中",
-      "reason": "逐条审核名称、语气、当前行为和长度。",
-      "legacy": false,
-      "source": [
-        {
-          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 661,
-          "method": "battery"
-        }
-      ],
+      "reason": "当前 Java/Manifest 未引用，列为遗留候选；不要重新引入废弃功能。",
+      "legacy": true,
+      "source": [],
       "page": "capture",
       "translations": {
         "zh-TW": "%1$d%% · 約 %2$d 分鐘",
@@ -1244,14 +1256,14 @@
       "title": "video_error",
       "category": "资源文案",
       "current": "录像失败：%1$s",
-      "proposal": "录像没有保存成功。%1$s",
-      "priority": "高",
-      "reason": "技术错误详情应另列诊断，避免原始异常直接展示。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 915,
+          "line": 1217,
           "method": "startVideo"
         }
       ],
@@ -1269,7 +1281,7 @@
       "key": "test_label",
       "title": "test_label",
       "category": "资源文案",
-      "current": "%1$d 秒诊断",
+      "current": "%1$d 秒设备检查",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -1277,14 +1289,14 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 434,
+          "line": 540,
           "method": "showSettings"
         }
       ],
       "page": "settings",
       "translations": {
-        "zh-TW": "%1$d 秒診斷",
-        "en": "%1$d-second test"
+        "zh-TW": "%1$d 秒裝置檢查",
+        "en": "%1$d-second device check"
       },
       "placeholders": [
         "%1$d"
@@ -1303,7 +1315,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 990,
+          "line": 1317,
           "method": "updateTest"
         }
       ],
@@ -1329,7 +1341,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 1006,
+          "line": 1332,
           "method": "updateTest"
         }
       ],
@@ -1356,7 +1368,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 1016,
+          "line": 1350,
           "method": "finishTest"
         }
       ],
@@ -1382,7 +1394,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 1028,
+          "line": 1388,
           "method": "copyReport"
         }
       ],
@@ -1408,7 +1420,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 271,
+          "line": 278,
           "method": "load"
         }
       ],
@@ -1434,7 +1446,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 272,
+          "line": 279,
           "method": "load"
         }
       ],
@@ -1460,7 +1472,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 409,
+          "line": 420,
           "method": "updateSelection"
         }
       ],
@@ -1486,7 +1498,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1023,
+          "line": 1143,
           "method": "confirmDelete"
         }
       ],
@@ -1512,12 +1524,17 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 321,
-          "method": "onCreate"
+          "line": 391,
+          "method": "shape"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 695,
+          "line": 428,
+          "method": "selectProfile"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 992,
           "method": "stopPreview"
         }
       ],
@@ -1533,15 +1550,15 @@
       "key": "wifi_failed",
       "title": "wifi_failed",
       "category": "资源文案",
-      "current": "未能连接耳镜，可重选设备或打开 Wi-Fi 设置",
-      "proposal": "没有连接成功。可以重新选择设备，或打开 Wi-Fi 设置。",
-      "priority": "高",
-      "reason": "明确结果和可操作的后备入口。",
+      "current": "暂未连接成功，请重选设备或打开 Wi-Fi 设置。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 132,
+          "line": 144,
           "method": "onCreate"
         }
       ],
@@ -1557,7 +1574,7 @@
       "key": "switch_after_stop",
       "title": "switch_after_stop",
       "category": "资源文案",
-      "current": "请停止预览并等文件保存完成后再切换档案",
+      "current": "请先收起取景，待保存完成后再切换档案。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -1565,8 +1582,13 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 156,
+          "line": 168,
           "method": "onCreate"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 625,
+          "method": "renderProfileRows"
         }
       ],
       "page": "capture",
@@ -1589,12 +1611,17 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 168,
+          "line": 177,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 424,
+          "line": 180,
+          "method": "onCreate"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 515,
           "method": "showSettings"
         }
       ],
@@ -1618,8 +1645,13 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 238,
-          "method": "onCreate"
+          "line": 295,
+          "method": "shape"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 528,
+          "method": "showSettings"
         }
       ],
       "page": "capture",
@@ -1642,12 +1674,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 240,
-          "method": "onCreate"
+          "line": 297,
+          "method": "shape"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 397,
+          "line": 483,
           "method": "updateCaptureControls"
         }
       ],
@@ -1671,8 +1703,8 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 253,
-          "method": "onCreate"
+          "line": 311,
+          "method": "shape"
         }
       ],
       "page": "capture",
@@ -1695,8 +1727,8 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 255,
-          "method": "onCreate"
+          "line": 313,
+          "method": "shape"
         }
       ],
       "page": "capture",
@@ -1719,8 +1751,8 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 289,
-          "method": "onCreate"
+          "line": 359,
+          "method": "shape"
         }
       ],
       "page": "capture",
@@ -1735,26 +1767,51 @@
       "key": "finish_recording_first",
       "title": "finish_recording_first",
       "category": "资源文案",
-      "current": "请先结束录制，等文件保存完成",
-      "proposal": "请先结束录像，或等待当前文件保存完成。",
-      "priority": "高",
-      "reason": "当前文案也被拍照保存保护使用。",
+      "current": "请先结束录像，等待保存完成。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 291,
-          "method": "onCreate"
+          "line": 361,
+          "method": "shape"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 454,
+          "line": 564,
+          "method": "chooseMaskImage"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 701,
+          "method": "chooseUiTheme"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 713,
           "method": "chooseMacroMode"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 482,
+          "line": 742,
           "method": "showLanguages"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 770,
+          "method": "editProfile"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 954,
+          "method": "setViewfinder"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1285,
+          "method": "startTest"
         }
       ],
       "page": "capture",
@@ -1777,8 +1834,8 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 307,
-          "method": "onCreate"
+          "line": 377,
+          "method": "shape"
         }
       ],
       "page": "capture",
@@ -1801,22 +1858,22 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 150,
+          "line": 154,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1046,
+          "line": 1166,
           "method": "label"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 312,
-          "method": "onCreate"
+          "line": 382,
+          "method": "shape"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 404,
+          "line": 495,
           "method": "updateCaptureControls"
         }
       ],
@@ -1850,20 +1907,25 @@
       "key": "connect_hint",
       "title": "connect_hint",
       "category": "资源文案",
-      "current": "打开耳镜电源，连接耳镜 Wi-Fi",
-      "proposal": "打开耳镜，点下方连接。连接成功后，点开盖板开始取景。",
-      "priority": "高",
-      "reason": "连接与取景分离为新要求；盖板方案待审核。原生流程接入后再采用此候选文案。",
+      "current": "请打开耳镜，点击下方连接。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 321,
-          "method": "onCreate"
+          "line": 391,
+          "method": "shape"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 695,
+          "line": 429,
+          "method": "selectProfile"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 992,
           "method": "stopPreview"
         }
       ],
@@ -1887,7 +1949,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 404,
+          "line": 495,
           "method": "updateCaptureControls"
         }
       ],
@@ -1911,7 +1973,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 404,
+          "line": 495,
           "method": "updateCaptureControls"
         }
       ],
@@ -1935,12 +1997,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 109,
+          "line": 111,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 421,
+          "line": 512,
           "method": "showSettings"
         }
       ],
@@ -1964,12 +2026,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 427,
+          "line": 536,
           "method": "showSettings"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 947,
+          "line": 1250,
           "method": "showHelp"
         }
       ],
@@ -1993,17 +2055,17 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 427,
+          "line": 536,
           "method": "showSettings"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 950,
+          "line": 1253,
           "method": "showHelp"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 955,
+          "line": 1258,
           "method": "showPrivacy"
         }
       ],
@@ -2019,7 +2081,7 @@
       "key": "feedback",
       "title": "feedback",
       "category": "资源文案",
-      "current": "意见反馈",
+      "current": "反馈与建议",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2027,8 +2089,13 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 427,
+          "line": 536,
           "method": "showSettings"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1264,
+          "method": "openFeedback"
         }
       ],
       "page": "settings",
@@ -2043,7 +2110,7 @@
       "key": "test_tools",
       "title": "test_tools",
       "category": "资源文案",
-      "current": "测试工具",
+      "current": "设备检查",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2051,14 +2118,14 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 432,
+          "line": 538,
           "method": "showSettings"
         }
       ],
       "page": "settings",
       "translations": {
-        "zh-TW": "測試工具",
-        "en": "Diagnostics"
+        "zh-TW": "裝置檢查",
+        "en": "Device check"
       },
       "placeholders": []
     },
@@ -2075,7 +2142,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 434,
+          "line": 540,
           "method": "showSettings"
         }
       ],
@@ -2099,8 +2166,13 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 434,
+          "line": 540,
           "method": "showSettings"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1267,
+          "method": "openFeedback"
         }
       ],
       "page": "settings",
@@ -2123,7 +2195,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 437,
+          "line": 543,
           "method": "showSettings"
         }
       ],
@@ -2147,7 +2219,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 440,
+          "line": 546,
           "method": "showSettings"
         }
       ],
@@ -2171,7 +2243,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 511,
+          "line": 775,
           "method": "editProfile"
         }
       ],
@@ -2188,14 +2260,14 @@
       "title": "profile_add",
       "category": "资源文案",
       "current": "添加护耳档案",
-      "proposal": "添加使用人",
+      "proposal": "",
       "priority": "中",
-      "reason": "档案和使用人的术语应统一审核。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 521,
+          "line": 785,
           "method": "editProfile"
         }
       ],
@@ -2212,14 +2284,14 @@
       "title": "profile_edit",
       "category": "资源文案",
       "current": "编辑护耳档案",
-      "proposal": "编辑使用人",
+      "proposal": "",
       "priority": "中",
-      "reason": "与添加使用人保持一致。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 521,
+          "line": 785,
           "method": "editProfile"
         }
       ],
@@ -2243,63 +2315,88 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 340,
+          "line": 347,
           "method": "chooseFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 351,
+          "line": 358,
           "method": "chooseFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 362,
+          "line": 369,
           "method": "chooseFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 719,
+          "line": 830,
           "method": "chooseSide"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 748,
+          "line": 859,
           "method": "editMarkup"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1025,
+          "line": 1145,
           "method": "confirmDelete"
         },
         {
-          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 274,
-          "method": "onCreate"
+          "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+          "line": 98,
+          "method": ""
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 470,
+          "line": 332,
+          "method": "shape"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 631,
+          "method": "renderProfileRows"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 708,
+          "method": "chooseUiTheme"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 730,
           "method": "chooseMacroMode"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 488,
+          "line": 748,
           "method": "showLanguages"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 523,
+          "line": 787,
           "method": "editProfile"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 726,
+          "line": 1024,
           "method": "chooseEar"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 752,
+          "line": 1050,
           "method": "chooseEar"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1268,
+          "method": "openFeedback"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1290,
+          "method": "startTest"
         }
       ],
       "page": "gallery",
@@ -2321,9 +2418,19 @@
       "legacy": false,
       "source": [
         {
+          "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+          "line": 101,
+          "method": ""
+        },
+        {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 524,
+          "line": 788,
           "method": "editProfile"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1371,
+          "method": "showHardwareResult"
         }
       ],
       "page": "capture",
@@ -2346,7 +2453,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 530,
+          "line": 794,
           "method": "editProfile"
         }
       ],
@@ -2362,7 +2469,7 @@
       "key": "nickname_duplicate",
       "title": "nickname_duplicate",
       "category": "资源文案",
-      "current": "已有同名档案",
+      "current": "昵称已使用，请换一个。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2370,7 +2477,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 535,
+          "line": 799,
           "method": "editProfile"
         }
       ],
@@ -2394,7 +2501,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 568,
+          "line": 837,
           "method": "onStop"
         }
       ],
@@ -2410,21 +2517,26 @@
       "key": "waiting_image",
       "title": "waiting_image",
       "category": "资源文案",
-      "current": "等待实时画面",
-      "proposal": "已连接，正在接收画面…",
-      "priority": "高",
-      "reason": "只在确认网络已连接的状态使用；其他状态应分开。",
+      "current": "正在接收画面…",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 608,
+          "line": 879,
           "method": "status"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 667,
+          "line": 945,
           "method": "battery"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 964,
+          "method": "setViewfinder"
         }
       ],
       "page": "capture",
@@ -2447,7 +2559,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 624,
+          "line": 900,
           "method": "frame"
         }
       ],
@@ -2471,7 +2583,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 656,
+          "line": 934,
           "method": "battery"
         }
       ],
@@ -2490,15 +2602,9 @@
       "current": "已充满",
       "proposal": "",
       "priority": "中",
-      "reason": "逐条审核名称、语气、当前行为和长度。",
-      "legacy": false,
-      "source": [
-        {
-          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 658,
-          "method": "battery"
-        }
-      ],
+      "reason": "当前 Java/Manifest 未引用，列为遗留候选；不要重新引入废弃功能。",
+      "legacy": true,
+      "source": [],
       "page": "capture",
       "translations": {
         "zh-TW": "已充滿",
@@ -2519,7 +2625,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 397,
+          "line": 483,
           "method": "updateCaptureControls"
         }
       ],
@@ -2543,13 +2649,18 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 82,
+          "line": 87,
           "method": "run"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 667,
+          "line": 945,
           "method": "battery"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 963,
+          "method": "setViewfinder"
         }
       ],
       "page": "capture",
@@ -2572,7 +2683,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 683,
+          "line": 979,
           "method": "stopRequestedPreview"
         }
       ],
@@ -2596,7 +2707,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 721,
+          "line": 1019,
           "method": "chooseEar"
         }
       ],
@@ -2612,7 +2723,7 @@
       "key": "wifi_permissions",
       "title": "wifi_permissions",
       "category": "资源文案",
-      "current": "允许附近设备和精确位置权限后，可以按热点查找耳镜。也可以到系统 Wi-Fi 设置手动连接。",
+      "current": "查找耳镜需要附近设备和位置权限，也可前往 Wi-Fi 设置手动连接。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2620,7 +2731,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 722,
+          "line": 1020,
           "method": "chooseEar"
         }
       ],
@@ -2644,7 +2755,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 723,
+          "line": 1021,
           "method": "chooseEar"
         }
       ],
@@ -2668,12 +2779,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 725,
+          "line": 1023,
           "method": "chooseEar"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 751,
+          "line": 1049,
           "method": "chooseEar"
         }
       ],
@@ -2697,7 +2808,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 732,
+          "line": 1030,
           "method": "chooseEar"
         }
       ],
@@ -2721,7 +2832,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 750,
+          "line": 1048,
           "method": "chooseEar"
         }
       ],
@@ -2745,7 +2856,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 753,
+          "line": 1051,
           "method": "chooseEar"
         }
       ],
@@ -2761,15 +2872,15 @@
       "key": "wifi_no_devices",
       "title": "wifi_no_devices",
       "category": "资源文案",
-      "current": "暂未找到 earclean 热点。打开耳镜电源后重新扫描，或手动连接 Wi-Fi。",
-      "proposal": "没有找到耳镜。请确认设备已开机，并靠近手机后重试。",
-      "priority": "高",
-      "reason": "协议热点名称留在诊断信息；普通提示给出下一步。",
+      "current": "暂未找到耳镜，请确认已开机并靠近手机后重试。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 755,
+          "line": 1053,
           "method": "chooseEar"
         }
       ],
@@ -2785,7 +2896,7 @@
       "key": "wifi_scan_failed",
       "title": "wifi_scan_failed",
       "category": "资源文案",
-      "current": "无法读取 Wi-Fi 扫描结果，请在系统设置中手动连接",
+      "current": "暂时无法查找，请前往 Wi-Fi 设置连接。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2793,7 +2904,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 761,
+          "line": 1059,
           "method": "chooseEar"
         }
       ],
@@ -2809,7 +2920,7 @@
       "key": "wifi_manual",
       "title": "wifi_manual",
       "category": "资源文案",
-      "current": "可使用系统 Wi-Fi 设置手动连接耳镜",
+      "current": "请在手机 Wi-Fi 设置中连接耳镜。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2817,7 +2928,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 785,
+          "line": 1083,
           "method": "onRequestPermissionsResult"
         }
       ],
@@ -2833,7 +2944,7 @@
       "key": "wait_for_preview",
       "title": "wait_for_preview",
       "category": "资源文案",
-      "current": "请先等实时画面出现",
+      "current": "请稍候，等待画面出现。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2841,12 +2952,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 820,
+          "line": 1119,
           "method": "savePicture"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 906,
+          "line": 1207,
           "method": "startVideo"
         }
       ],
@@ -2862,7 +2973,7 @@
       "key": "photo_saved",
       "title": "photo_saved",
       "category": "资源文案",
-      "current": "图片已保存到应用相册",
+      "current": "图片已保存",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2870,7 +2981,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 855,
+          "line": 1155,
           "method": "finishPhotoBurst"
         }
       ],
@@ -2886,15 +2997,15 @@
       "key": "photo_error",
       "title": "photo_error",
       "category": "资源文案",
-      "current": "图片保存失败",
-      "proposal": "照片没有保存成功，请重试。",
+      "current": "图片未能保存，请重试。",
+      "proposal": "",
       "priority": "中",
-      "reason": "给出结果，技术原因进入日志。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 857,
+          "line": 1157,
           "method": "finishPhotoBurst"
         }
       ],
@@ -2910,7 +3021,7 @@
       "key": "video_saved",
       "title": "video_saved",
       "category": "资源文案",
-      "current": "录像已保存到应用相册",
+      "current": "录像已保存",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -2918,7 +3029,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 915,
+          "line": 1217,
           "method": "startVideo"
         }
       ],
@@ -2935,15 +3046,20 @@
       "title": "feedback_action",
       "category": "资源文案",
       "current": "反馈与建议",
-      "proposal": "打开反馈页面",
+      "proposal": "",
       "priority": "中",
-      "reason": "当前实际跳转 GitHub 个人主页，链接目标需一并审核。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 949,
+          "line": 1252,
           "method": "showHelp"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1266,
+          "method": "openFeedback"
         }
       ],
       "page": "help",
@@ -2966,16 +3082,31 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 951,
+          "line": 574,
+          "method": "showDeviceInfo"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 687,
+          "method": "showInteractionFeedback"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1254,
           "method": "showHelp"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 957,
+          "line": 1260,
           "method": "showPrivacy"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1370,
+          "method": "showHardwareResult"
         }
       ],
-      "page": "help",
+      "page": "capture",
       "translations": {
         "zh-TW": "關閉",
         "en": "Close"
@@ -2995,8 +3126,8 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 964,
-          "method": "openFeedback"
+          "line": 1275,
+          "method": "openFeedbackLink"
         }
       ],
       "page": "capture",
@@ -3011,7 +3142,7 @@
       "key": "test_target",
       "title": "test_target",
       "category": "资源文案",
-      "current": "对准字母 A 或格线，保持居中",
+      "current": "先确认耳镜已连接，等待画面与电量出现。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -3019,14 +3150,14 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 996,
+          "line": 1323,
           "method": "updateTest"
         }
       ],
       "page": "capture",
       "translations": {
-        "zh-TW": "對準字母 A 或格線，保持居中",
-        "en": "Center the camera on the letter A or grid lines."
+        "zh-TW": "先確認耳鏡已連線，等待畫面與電量出現。",
+        "en": "Confirm the connection. Wait for the image and battery reading."
       },
       "placeholders": []
     },
@@ -3035,7 +3166,7 @@
       "key": "test_rotate_off",
       "title": "test_rotate_off",
       "category": "资源文案",
-      "current": "稳向关闭，绕镜头轴转手柄，再转回",
+      "current": "对准桌面文字或纹理，缓慢调整距离，观察清晰度与补光。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -3043,14 +3174,14 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 997,
+          "line": 1324,
           "method": "updateTest"
         }
       ],
       "page": "capture",
       "translations": {
-        "zh-TW": "穩向關閉，繞鏡頭軸轉手柄，再轉回",
-        "en": "With stabilization off, rotate the handle around the lens axis and back."
+        "zh-TW": "對準桌面文字或紋理，緩慢調整距離，觀察清晰度與補光。",
+        "en": "Aim at printed text or texture. Adjust the distance slowly and check focus and lighting."
       },
       "placeholders": []
     },
@@ -3059,7 +3190,7 @@
       "key": "test_rotate_on",
       "title": "test_rotate_on",
       "category": "资源文案",
-      "current": "稳向开启，重复动作，尽量让 A 留在中央",
+      "current": "缓慢转动手柄，再转回，检查画面与姿态响应。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -3067,14 +3198,14 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 998,
+          "line": 1325,
           "method": "updateTest"
         }
       ],
       "page": "capture",
       "translations": {
-        "zh-TW": "穩向開啟，重復動作，盡量讓 A 留在中央",
-        "en": "Repeat with stabilization on and keep the A centered."
+        "zh-TW": "緩慢轉動手柄，再轉回，檢查畫面與姿態回應。",
+        "en": "Slowly rotate the handle and return it. Observe image and orientation response."
       },
       "placeholders": []
     },
@@ -3083,7 +3214,7 @@
       "key": "test_hold",
       "title": "test_hold",
       "category": "资源文案",
-      "current": "手柄放稳，继续观察是否黑屏或重连",
+      "current": "保持静止，观察画面是否连续，有无黑屏或断连。",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -3091,14 +3222,14 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 999,
+          "line": 1326,
           "method": "updateTest"
         }
       ],
       "page": "capture",
       "translations": {
-        "zh-TW": "手柄放穩，繼續觀察是否黑屏或重連",
-        "en": "Hold still and watch for a blank screen or reconnection."
+        "zh-TW": "保持靜止，觀察畫面是否連續，有無黑屏或斷線。",
+        "en": "Hold still and watch for interrupted images or disconnections."
       },
       "placeholders": []
     },
@@ -3115,7 +3246,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 1031,
+          "line": 1391,
           "method": "copyReport"
         }
       ],
@@ -3139,7 +3270,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 1032,
+          "line": 1392,
           "method": "copyReport"
         }
       ],
@@ -3163,12 +3294,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 1065,
+          "line": 1430,
           "method": "dp"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 1130,
+          "line": 1502,
           "method": "onScroll"
         }
       ],
@@ -3185,19 +3316,19 @@
       "title": "freeze_preview",
       "category": "资源文案",
       "current": "定格",
-      "proposal": "定格画面",
-      "priority": "高",
-      "reason": "动作名应与新的定格图标一致。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 217,
-          "method": "onCreate"
+          "line": 274,
+          "method": "shape"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 389,
+          "line": 475,
           "method": "updateCaptureControls"
         }
       ],
@@ -3214,14 +3345,14 @@
       "title": "resume_preview",
       "category": "资源文案",
       "current": "已定格 · 恢复实时",
-      "proposal": "恢复实时画面",
-      "priority": "高",
-      "reason": "这是动作名；已定格作为单独状态保留。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 389,
+          "line": 475,
           "method": "updateCaptureControls"
         }
       ],
@@ -3245,7 +3376,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 1130,
+          "line": 1502,
           "method": "onScroll"
         }
       ],
@@ -3269,12 +3400,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 135,
+          "line": 137,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 408,
+          "line": 419,
           "method": "updateSelection"
         }
       ],
@@ -3316,12 +3447,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 148,
+          "line": 152,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1049,
+          "line": 1169,
           "method": "label"
         }
       ],
@@ -3338,19 +3469,19 @@
       "title": "macro_rotate_preview",
       "category": "资源文案",
       "current": "旋转放大",
-      "proposal": "旋转放大取景",
+      "proposal": "",
       "priority": "中",
-      "reason": "区分预览和文件的方向。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 225,
-          "method": "onCreate"
+          "line": 282,
+          "method": "shape"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 400,
+          "line": 491,
           "method": "updateCaptureControls"
         }
       ],
@@ -3367,14 +3498,14 @@
       "title": "macro_restore_preview",
       "category": "资源文案",
       "current": "恢复横向",
-      "proposal": "恢复横向取景",
+      "proposal": "",
       "priority": "中",
-      "reason": "与旋转放大成对。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 400,
+          "line": 491,
           "method": "updateCaptureControls"
         }
       ],
@@ -3398,8 +3529,8 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 680,
-          "method": "open"
+          "line": 796,
+          "method": "performAccessibilityAction"
         }
       ],
       "page": "gallery",
@@ -3422,7 +3553,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 736,
+          "line": 847,
           "method": "editMarkup"
         }
       ],
@@ -3446,7 +3577,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 737,
+          "line": 848,
           "method": "editMarkup"
         }
       ],
@@ -3470,7 +3601,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 740,
+          "line": 851,
           "method": "editMarkup"
         }
       ],
@@ -3494,7 +3625,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 749,
+          "line": 860,
           "method": "editMarkup"
         }
       ],
@@ -3518,7 +3649,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1047,
+          "line": 1167,
           "method": "label"
         }
       ],
@@ -3535,19 +3666,19 @@
       "title": "markup_hint",
       "category": "资源文案",
       "current": "在照片上拖动绘制",
-      "proposal": "拖动画圈或箭头，完成后另存副本。",
+      "proposal": "",
       "priority": "中",
-      "reason": "指出操作方法和保存结果。",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 750,
+          "line": 861,
           "method": "editMarkup"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 773,
+          "line": 884,
           "method": "editMarkup"
         }
       ],
@@ -3571,7 +3702,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 798,
+          "line": 909,
           "method": "editMarkup"
         }
       ],
@@ -3588,24 +3719,24 @@
       "title": "markup_error",
       "category": "资源文案",
       "current": "无法打开照片或保存副本",
-      "proposal": "暂时无法保存标注。请重试，或取消返回。",
-      "priority": "高",
-      "reason": "当前同一句也用于打开照片失败，需拆成两个状态后采用。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 725,
+          "line": 836,
           "method": "editMarkup"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 788,
+          "line": 899,
           "method": "editMarkup"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 798,
+          "line": 909,
           "method": "editMarkup"
         }
       ],
@@ -3629,13 +3760,13 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 190,
+          "line": 143,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 664,
-          "method": "open"
+          "line": 738,
+          "method": "positionDate"
         }
       ],
       "page": "gallery",
@@ -3658,18 +3789,23 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 192,
+          "line": 197,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 686,
-          "method": "open"
+          "line": 787,
+          "method": "performAccessibilityAction"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1026,
+          "line": 1146,
           "method": "confirmDelete"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 632,
+          "method": "renderProfileRows"
         }
       ],
       "page": "gallery",
@@ -3692,7 +3828,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 276,
+          "line": 283,
           "method": "load"
         }
       ],
@@ -3716,7 +3852,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 276,
+          "line": 283,
           "method": "load"
         }
       ],
@@ -3740,7 +3876,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 277,
+          "line": 284,
           "method": "load"
         }
       ],
@@ -3764,12 +3900,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 372,
+          "line": 380,
           "method": "chooseFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 408,
+          "line": 419,
           "method": "updateSelection"
         }
       ],
@@ -3793,7 +3929,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 519,
+          "line": 530,
           "method": "bind"
         }
       ],
@@ -3817,7 +3953,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 519,
+          "line": 530,
           "method": "bind"
         }
       ],
@@ -3841,8 +3977,8 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 658,
-          "method": "open"
+          "line": 732,
+          "method": "positionDate"
         }
       ],
       "page": "gallery",
@@ -3865,17 +4001,17 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 895,
+          "line": 1015,
           "method": "getOutline"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 917,
+          "line": 1037,
           "method": "getOutline"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 992,
+          "line": 1112,
           "method": "update"
         }
       ],
@@ -3899,7 +4035,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 910,
+          "line": 1030,
           "method": "getOutline"
         }
       ],
@@ -3923,12 +4059,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 650,
-          "method": "open"
+          "line": 724,
+          "method": "positionDate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 970,
+          "line": 1090,
           "method": "onStopTrackingTouch"
         }
       ],
@@ -3952,7 +4088,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 992,
+          "line": 1112,
           "method": "update"
         }
       ],
@@ -3976,7 +4112,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1010,
+          "line": 1130,
           "method": "share"
         }
       ],
@@ -4000,7 +4136,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1015,
+          "line": 1135,
           "method": "share"
         }
       ],
@@ -4024,7 +4160,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1017,
+          "line": 1137,
           "method": "share"
         }
       ],
@@ -4041,14 +4177,14 @@
       "title": "delete_warning",
       "category": "资源文案",
       "current": "将删除应用相册中的本地文件。",
-      "proposal": "所选文件会从这个 App 的本地相册删除。已分享的副本需要在对应应用中处理。",
-      "priority": "高",
-      "reason": "审核是否补充不可恢复，以及文件范围。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1024,
+          "line": 1144,
           "method": "confirmDelete"
         }
       ],
@@ -4072,7 +4208,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1039,
+          "line": 1159,
           "method": "confirmDelete"
         }
       ],
@@ -4095,12 +4231,17 @@
       "legacy": false,
       "source": [
         {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 518,
+          "method": "showSettings"
+        },
+        {
           "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-          "line": 392,
+          "line": 597,
           "method": "getOpacity"
         }
       ],
-      "page": "capture",
+      "page": "settings",
       "translations": {
         "zh-TW": "護耳檔案",
         "en": "Care profiles"
@@ -4120,7 +4261,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-          "line": 395,
+          "line": 600,
           "method": "getOpacity"
         }
       ],
@@ -4144,12 +4285,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-          "line": 421,
+          "line": 626,
           "method": "getOpacity"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-          "line": 422,
+          "line": 627,
           "method": "getOpacity"
         }
       ],
@@ -4172,8 +4313,13 @@
       "legacy": false,
       "source": [
         {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 594,
+          "method": "showProfileManager"
+        },
+        {
           "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-          "line": 430,
+          "line": 635,
           "method": "getOpacity"
         }
       ],
@@ -4197,7 +4343,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-          "line": 433,
+          "line": 639,
           "method": "getOpacity"
         }
       ],
@@ -4221,7 +4367,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CareProfiles.java",
-          "line": 31,
+          "line": 32,
           "method": ""
         }
       ],
@@ -4237,15 +4383,15 @@
       "key": "wifi_waiting",
       "title": "wifi_waiting",
       "category": "资源文案",
-      "current": "等待连接耳镜 Wi-Fi",
-      "proposal": "正在等待耳镜连接…",
-      "priority": "高",
-      "reason": "避免一律要求用户手动进 Wi-Fi。",
+      "current": "正在等待耳镜连接…",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 80,
+          "line": 85,
           "method": "run"
         }
       ],
@@ -4261,7 +4407,7 @@
       "key": "wifi_reconnecting",
       "title": "wifi_reconnecting",
       "category": "资源文案",
-      "current": "正在重连耳镜 Wi-Fi…",
+      "current": "正在重连耳镜…",
       "proposal": "",
       "priority": "中",
       "reason": "逐条审核名称、语气、当前行为和长度。",
@@ -4269,7 +4415,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 80,
+          "line": 85,
           "method": "run"
         }
       ],
@@ -4293,7 +4439,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 89,
+          "line": 94,
           "method": "run"
         }
       ],
@@ -4309,22 +4455,22 @@
       "key": "help_body",
       "title": "help_body",
       "category": "资源文案",
-      "current": "打开耳镜电源，在应用内选择设备或手动连接耳镜 Wi-Fi。稳向以开启时的方向为基准，镜像只改变画面方向。\n\n拍照前可标记左耳或右耳。旧照片可在详情里补标，回到相册可对照同一侧的两张照片。影像归入当前护耳档案，录像只录耳镜画面。\n\n反馈问题时可附上手机型号、系统版本、复现步骤和诊断日志。GitHub 是公开平台，请勿发布含个人信息或诊疗影像的资料。",
-      "proposal": "1. 打开耳镜，选择使用人档案，然后连接设备。\n\n2. 正常模式可标记左耳、右耳或未标记，再拍照或录像。\n\n3. 定格后可放大检查；微距模式可旋转放大取景。旋转取景与拍摄文件方向分开。\n\n4. 在相册按年份、月份和耳别筛选。打开照片可画圈或箭头，并另存标注副本。\n\n5. 连接或画面异常时，可在设置中运行诊断并复制结果。反馈前检查资料中的个人信息。",
-      "priority": "高",
-      "reason": "现有帮助仍提已撤下的同侧对照，遗漏筛选、标注、定格和微距录像。完整段落待用户审核。",
+      "current": "连接耳镜后，在镜头封面内滑动即可开始取景；再次滑动可收起取景。未取景时仍可查看电量。全画幅拍摄可在设置中切换。\n\n照片和录像保存在当前护耳档案，耳别可在照片详情中补充。设置中可管理档案、调整镜头封面、切换主题及操作反馈。\n\n设备参数与保养说明请查看「设备参考信息」。反馈问题时，可附上手机型号、系统版本、操作步骤和诊断日志，请先去除个人信息。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 948,
+          "line": 1251,
           "method": "showHelp"
         }
       ],
       "page": "help",
       "translations": {
-        "zh-TW": "打開耳鏡電源，在應用內選擇設備或手動連接耳鏡 Wi-Fi。穩向以開啟時的方向為基準，鏡像只改變畫面方向。\n\n拍照前可標記左耳或右耳。舊照片可在詳情里補標，回到相冊可對照同一側的兩張照片。影像歸入當前護耳檔案，錄影只錄耳鏡畫面。\n\n反饋問題時可附上手機型號、系統版本、復現步驟和診斷日志。GitHub 是公開平臺，請勿發布含個人信息或診療影像的資料。",
-        "en": "Turn on the device, then choose it in the app or connect to its Wi-Fi manually. Stabilization uses the starting orientation as its reference. Mirror flips the image.\n\nChoose an ear side before taking a photo, or label an existing photo in its details. Compare two photos of the same ear in the gallery. Media is saved to the active care profile, and recordings capture device video only.\n\nWhen reporting a problem, include your phone model, OS version, steps and diagnostic log. GitHub is public. Keep personal and clinical images private."
+        "zh-TW": "連接耳鏡後，未取景時仍可查看電量。在鏡頭封面圓內任意方向滑動，開始或收起取景。全畫幅拍攝可在設定裡切換。\n\n照片和錄影歸入目前使用人，耳別可在照片詳情補標。設定中可以管理檔案、調整個人鏡頭封面、切換預設介面，以及開關音效和震動。\n\n回饋問題時可附上手機型號、系統版本、重現步驟和診斷記錄。請先去除影像和記錄中的個人資訊。",
+        "en": "After connecting, battery information remains available with the viewfinder closed. Swipe anywhere inside the circular cover in any direction to open or close the viewfinder. Full-frame capture is available in Settings.\n\nCaptures belong to the active person. Ear labels can be edited in photo details. Settings includes profile management, personal cover images, default appearance, sounds and haptics.\n\nFor feedback, include the phone model, system version, steps and diagnostic log. Remove personal information first."
       },
       "placeholders": []
     },
@@ -4333,22 +4479,22 @@
       "key": "privacy_body",
       "title": "privacy_body",
       "category": "资源文案",
-      "current": "本应用通过本地 Wi-Fi 接收耳镜影像，无需注册账号，无广告、统计或云端同步。\n\n档案昵称、照片、耳别、无声录像、已连接耳镜的热点信息及诊断日志保存在本机。查找附近耳镜需要系统授权以读取 Wi-Fi 热点列表。应用不读取 GPS、系统相册、麦克风或蓝牙。\n\n点「分享」后，系统把选中的文件交给你指定的应用。可以在应用相册删除文件。清除应用数据或卸载会移除本应用的本地资料，已分享的副本由对方处理。\n\n隐私问题或意见建议可联系 GitHub @foreverfine77。",
+      "current": "本应用通过本地 Wi-Fi 接收耳镜影像，无需注册账号，无广告、统计或云端同步。\n\n档案昵称、照片、耳别、无声录像、已连接耳镜的热点信息及诊断日志保存在本机。查找附近耳镜需要系统授权以读取 Wi-Fi 热点列表。应用不扫描系统相册；仅在你主动选择图片时读取该图片，用于裁切并保存当前使用人的镜头封面。镜头封面保存在本机。应用不读取 GPS、麦克风或蓝牙。\n\n点「分享」后，系统把选中的文件交给你指定的应用。可以在应用相册删除文件。清除应用数据或卸载会移除本应用的本地资料，已分享的副本由对方处理。\n\n隐私问题或意见建议可联系 GitHub @foreverfine77。",
       "proposal": "",
-      "priority": "高",
-      "reason": "保留当前全文逐项审核。核对本机数据、标注副本、权限、系统分享与卸载影响后再改写。",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 956,
+          "line": 1259,
           "method": "showPrivacy"
         }
       ],
       "page": "privacy",
       "translations": {
-        "zh-TW": "本應用通過本地 Wi-Fi 接收耳鏡影像，無需注冊賬號，無廣告、統計或云端同步。\n\n檔案昵稱、照片、耳別、無聲錄影、已連接耳鏡的熱點信息及診斷日志保存在本機。查找附近耳鏡需要系統授權以讀取 Wi-Fi 熱點列表。應用不讀取 GPS、系統相冊、麥克風或藍牙。\n\n點「分享」后，系統把選中的文件交給你指定的應用。可以在應用相冊刪除文件。清除應用數據或卸載會移除本應用的本地資料，已分享的副本由對方處理。\n\n隱私問題或意見建議可聯系 GitHub @foreverfine77。",
-        "en": "The app receives device images over local Wi-Fi. It uses no accounts, advertising, analytics or cloud sync.\n\nProfile names, photos, ear labels, silent videos, known device Wi-Fi details and diagnostic logs are stored on your phone. Android requires permission to read the Wi-Fi list when finding nearby devices. The app does not access GPS, the system photo library, the microphone or Bluetooth.\n\nWhen you tap Share, Android passes your selected files to the app you choose. You can delete files from the gallery. Clearing app data or uninstalling removes its local data. Recipients control copies you have already shared.\n\nFor privacy questions or feedback, contact GitHub @foreverfine77."
+        "zh-TW": "本應用通過本地 Wi-Fi 接收耳鏡影像，無需注冊賬號，無廣告、統計或云端同步。\n\n檔案昵稱、照片、耳別、無聲錄影、已連接耳鏡的熱點信息及診斷日志保存在本機。查找附近耳鏡需要系統授權以讀取 Wi-Fi 熱點列表。應用不掃描系統相簿；僅在你主動選擇圖片時讀取該圖片，用於裁切並儲存目前使用人的鏡頭封面。鏡頭封面儲存在本機。應用不讀取 GPS、麥克風或藍牙。\n\n點「分享」后，系統把選中的文件交給你指定的應用。可以在應用相冊刪除文件。清除應用數據或卸載會移除本應用的本地資料，已分享的副本由對方處理。\n\n隱私問題或意見建議可聯系 GitHub @foreverfine77。",
+        "en": "The app receives device images over local Wi-Fi. It uses no accounts, advertising, analytics or cloud sync.\n\nProfile names, photos, ear labels, silent videos, known device Wi-Fi details and diagnostic logs are stored on your phone. Android requires permission to read the Wi-Fi list when finding nearby devices. The app does not scan the photo library. It reads only an image you explicitly choose, to crop and save a cover for the active person. Covers stay on your phone. The app does not access GPS, the microphone or Bluetooth.\n\nWhen you tap Share, Android passes your selected files to the app you choose. You can delete files from the gallery. Clearing app data or uninstalling removes its local data. Recipients control copies you have already shared.\n\nFor privacy questions or feedback, contact GitHub @foreverfine77."
       },
       "placeholders": []
     },
@@ -4383,12 +4529,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 183,
+          "line": 190,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 411,
+          "line": 422,
           "method": "updateSelection"
         }
       ],
@@ -4412,7 +4558,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 411,
+          "line": 422,
           "method": "updateSelection"
         }
       ],
@@ -4436,7 +4582,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 277,
+          "line": 284,
           "method": "load"
         }
       ],
@@ -4480,32 +4626,32 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 299,
+          "line": 306,
           "method": "applyFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 301,
+          "line": 308,
           "method": "applyFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 303,
+          "line": 310,
           "method": "applyFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 333,
+          "line": 340,
           "method": "chooseFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 344,
+          "line": 351,
           "method": "chooseFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 355,
+          "line": 362,
           "method": "chooseFilters"
         }
       ],
@@ -4529,17 +4675,22 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 155,
+          "line": 162,
           "method": "onCreate"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 282,
+          "line": 288,
           "method": "load"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 314,
+          "line": 289,
+          "method": "load"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+          "line": 321,
           "method": "chooseFilters"
         }
       ],
@@ -4563,7 +4714,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 1048,
+          "line": 1168,
           "method": "label"
         }
       ],
@@ -4587,12 +4738,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 363,
+          "line": 447,
           "method": "showConnection"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 385,
+          "line": 471,
           "method": "updateCaptureControls"
         }
       ],
@@ -4616,16 +4767,11 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 429,
-          "method": "showSettings"
-        },
-        {
-          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 457,
+          "line": 716,
           "method": "chooseMacroMode"
         }
       ],
-      "page": "settings",
+      "page": "capture",
       "translations": {
         "zh-TW": "微距模式",
         "en": "Macro mode"
@@ -4645,7 +4791,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 430,
+          "line": 530,
           "method": "showSettings"
         }
       ],
@@ -4669,7 +4815,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 430,
+          "line": 530,
           "method": "showSettings"
         }
       ],
@@ -4693,7 +4839,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 458,
+          "line": 717,
           "method": "chooseMacroMode"
         }
       ],
@@ -4717,7 +4863,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 459,
+          "line": 718,
           "method": "chooseMacroMode"
         }
       ],
@@ -4741,7 +4887,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 459,
+          "line": 718,
           "method": "chooseMacroMode"
         }
       ],
@@ -4765,8 +4911,8 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 974,
-          "method": "startTest"
+          "line": 1296,
+          "method": "beginHardwareCheck"
         }
       ],
       "page": "capture",
@@ -4789,12 +4935,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 298,
+          "line": 305,
           "method": "applyFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 335,
+          "line": 342,
           "method": "chooseFilters"
         }
       ],
@@ -4818,12 +4964,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 300,
+          "line": 307,
           "method": "applyFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 346,
+          "line": 353,
           "method": "chooseFilters"
         }
       ],
@@ -4847,17 +4993,17 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 292,
+          "line": 299,
           "method": "filterDescription"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 301,
+          "line": 308,
           "method": "applyFilters"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 345,
+          "line": 352,
           "method": "chooseFilters"
         }
       ],
@@ -4883,7 +5029,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 366,
+          "line": 373,
           "method": "chooseFilters"
         }
       ],
@@ -4907,7 +5053,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 741,
+          "line": 852,
           "method": "editMarkup"
         }
       ],
@@ -4931,22 +5077,22 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 738,
+          "line": 849,
           "method": "editMarkup"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 739,
+          "line": 850,
           "method": "editMarkup"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 852,
+          "line": 964,
           "method": "chooseMarkupColor"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 862,
+          "line": 974,
           "method": "chooseMarkupColor"
         }
       ],
@@ -4970,12 +5116,12 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 739,
+          "line": 850,
           "method": "editMarkup"
         },
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 848,
+          "line": 960,
           "method": "chooseMarkupColor"
         }
       ],
@@ -4999,7 +5145,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 848,
+          "line": 960,
           "method": "chooseMarkupColor"
         }
       ],
@@ -5023,7 +5169,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 848,
+          "line": 960,
           "method": "chooseMarkupColor"
         }
       ],
@@ -5047,7 +5193,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-          "line": 848,
+          "line": 960,
           "method": "chooseMarkupColor"
         }
       ],
@@ -5071,7 +5217,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 397,
+          "line": 483,
           "method": "updateCaptureControls"
         }
       ],
@@ -5095,7 +5241,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 384,
+          "line": 470,
           "method": "updateCaptureControls"
         }
       ],
@@ -5107,9 +5253,1573 @@
       "placeholders": []
     },
     {
-      "id": "literal.CameraStream.87.0",
+      "id": "copy.ui_theme",
+      "key": "ui_theme",
+      "title": "ui_theme",
+      "category": "资源文案",
+      "current": "界面主题",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 524,
+          "method": "showSettings"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 695,
+          "method": "chooseUiTheme"
+        }
+      ],
+      "page": "settings",
+      "translations": {
+        "zh-TW": "介面主題",
+        "en": "Theme"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.ui_dark",
+      "key": "ui_dark",
+      "title": "ui_dark",
+      "category": "资源文案",
+      "current": "深海星夜",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 692,
+          "method": "chooseUiTheme"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+          "line": 150,
+          "method": ""
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "深海星夜",
+        "en": "Deep Ocean Night"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.ui_warm",
+      "key": "ui_warm",
+      "title": "ui_warm",
+      "category": "资源文案",
+      "current": "暖纸线稿",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 692,
+          "method": "chooseUiTheme"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+          "line": 147,
+          "method": ""
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "暖紙線稿",
+        "en": "Warm paper"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.ui_theme_hint",
+      "key": "ui_theme_hint",
+      "title": "ui_theme_hint",
+      "category": "资源文案",
+      "current": "设为默认后立即应用，下次打开应用也会使用此界面。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "当前 Java/Manifest 未引用，列为遗留候选；不要重新引入废弃功能。",
+      "legacy": true,
+      "source": [],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "設為預設後立即套用，下次開啟應用程式也會使用此介面。",
+        "en": "Apply this appearance now and use it every time the app opens."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.ui_set_default",
+      "key": "ui_set_default",
+      "title": "ui_set_default",
+      "category": "资源文案",
+      "current": "设为默认",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 697,
+          "method": "chooseUiTheme"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "設為預設",
+        "en": "Set as default"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.back",
+      "key": "back",
+      "title": "back",
+      "category": "资源文案",
+      "current": "返回",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 45,
+          "method": "onCreate"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+          "line": 110,
+          "method": "onCreate"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+          "line": 731,
+          "method": "positionDate"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 511,
+          "method": "showSettings"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 585,
+          "method": "showProfileManager"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "返回",
+        "en": "Back"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.start_viewfinder",
+      "key": "start_viewfinder",
+      "title": "start_viewfinder",
+      "category": "资源文案",
+      "current": "开始取景",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+          "line": 71,
+          "method": "updateLabel"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "開始取景",
+        "en": "Open viewfinder"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.close_viewfinder",
+      "key": "close_viewfinder",
+      "title": "close_viewfinder",
+      "category": "资源文案",
+      "current": "收起取景",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+          "line": 71,
+          "method": "updateLabel"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "收起取景",
+        "en": "Close viewfinder"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.device_ready",
+      "key": "device_ready",
+      "title": "device_ready",
+      "category": "资源文案",
+      "current": "耳镜已连接",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 428,
+          "method": "selectProfile"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 889,
+          "method": "connected"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 963,
+          "method": "setViewfinder"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "耳鏡已連線",
+        "en": "Device connected"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.idle_battery_hint",
+      "key": "idle_battery_hint",
+      "title": "idle_battery_hint",
+      "category": "资源文案",
+      "current": "未取景时也可查看电量",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 429,
+          "method": "selectProfile"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 890,
+          "method": "connected"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 964,
+          "method": "setViewfinder"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "取景已收起，仍可查看耳鏡電量",
+        "en": "Battery remains available with the viewfinder closed"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.manage_profiles",
+      "key": "manage_profiles",
+      "title": "manage_profiles",
+      "category": "资源文案",
+      "current": "管理护耳档案",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 519,
+          "method": "showSettings"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 588,
+          "method": "showProfileManager"
+        }
+      ],
+      "page": "settings",
+      "translations": {
+        "zh-TW": "管理護耳檔案",
+        "en": "Manage care profiles"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.profile_sort_hint",
+      "key": "profile_sort_hint",
+      "title": "profile_sort_hint",
+      "category": "资源文案",
+      "current": "点击姓名编辑 · 长按档案或三横线拖动排序",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 589,
+          "method": "showProfileManager"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "點擊姓名編輯 · 長按檔案或三橫線拖動排序",
+        "en": "Tap a name to edit · Hold a profile or handle to reorder"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.delete_profile",
+      "key": "delete_profile",
+      "title": "delete_profile",
+      "category": "资源文案",
+      "current": "删除使用人",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 617,
+          "method": "renderProfileRows"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 628,
+          "method": "renderProfileRows"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "刪除使用人",
+        "en": "Delete person"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.keep_one_profile",
+      "key": "keep_one_profile",
+      "title": "keep_one_profile",
+      "category": "资源文案",
+      "current": "请至少保留一位使用人",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 621,
+          "method": "renderProfileRows"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "請至少保留一位使用人",
+        "en": "Keep at least one person"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.delete_profile_confirm",
+      "key": "delete_profile_confirm",
+      "title": "delete_profile_confirm",
+      "category": "资源文案",
+      "current": "删除“%1$s”及其 %2$d 项影像？删除后无法恢复。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 629,
+          "method": "renderProfileRows"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "刪除「%1$s」及其 %2$d 項影像？刪除後無法復原。",
+        "en": "Delete %1$s and their %2$d captures? This cannot be undone."
+      },
+      "placeholders": [
+        "%1$s",
+        "%2$d"
+      ]
+    },
+    {
+      "id": "copy.profile_delete_failed",
+      "key": "profile_delete_failed",
+      "title": "profile_delete_failed",
+      "category": "资源文案",
+      "current": "暂未删除，请待拍摄和保存结束后重试。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 642,
+          "method": "renderProfileRows"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "未完成刪除，請關閉拍攝和儲存操作後重試",
+        "en": "Deletion could not finish. Stop capture and saving, then retry."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.profile_reorder",
+      "key": "profile_reorder",
+      "title": "profile_reorder",
+      "category": "资源文案",
+      "current": "长按拖动排序",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 649,
+          "method": "renderProfileRows"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "長按拖動排序",
+        "en": "Hold and drag to reorder"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.interaction_feedback",
+      "key": "interaction_feedback",
+      "title": "interaction_feedback",
+      "category": "资源文案",
+      "current": "操作反馈",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 533,
+          "method": "showSettings"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 681,
+          "method": "showInteractionFeedback"
+        }
+      ],
+      "page": "settings",
+      "translations": {
+        "zh-TW": "操作回饋",
+        "en": "Interaction feedback"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.sound_feedback",
+      "key": "sound_feedback",
+      "title": "sound_feedback",
+      "category": "资源文案",
+      "current": "按键音效",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 675,
+          "method": "showInteractionFeedback"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "按鍵音效",
+        "en": "Button sounds"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.haptic_feedback",
+      "key": "haptic_feedback",
+      "title": "haptic_feedback",
+      "category": "资源文案",
+      "current": "触感反馈",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 675,
+          "method": "showInteractionFeedback"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "觸感震動",
+        "en": "Haptic feedback"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.feedback_on",
+      "key": "feedback_on",
+      "title": "feedback_on",
+      "category": "资源文案",
+      "current": "开启",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 679,
+          "method": "showInteractionFeedback"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "開啟",
+        "en": "On"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.feedback_off",
+      "key": "feedback_off",
+      "title": "feedback_off",
+      "category": "资源文案",
+      "current": "关闭",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 679,
+          "method": "showInteractionFeedback"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "關閉",
+        "en": "Off"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.feedback_help",
+      "key": "feedback_help",
+      "title": "feedback_help",
+      "category": "资源文案",
+      "current": "可附上设备型号、复现步骤和诊断日志。请先去除影像和日志中的个人信息。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1265,
+          "method": "openFeedback"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "可附上裝置型號、重現步驟和診斷記錄。請先去除影像和記錄中的個人資訊。",
+        "en": "Include the device model, steps and diagnostic log. Remove personal information before sharing."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.battery_short",
+      "key": "battery_short",
+      "title": "battery_short",
+      "category": "资源文案",
+      "current": "%1$d%% | 约%2$d分钟",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 939,
+          "method": "battery"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "%1$d%% | 約%2$d分鐘",
+        "en": "%1$d%% | ~%2$d min"
+      },
+      "placeholders": [
+        "%1$d",
+        "%%",
+        "%2$d"
+      ]
+    },
+    {
+      "id": "copy.battery_charging_short",
+      "key": "battery_charging_short",
+      "title": "battery_charging_short",
+      "category": "资源文案",
+      "current": "%1$d%% | 充电中",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 938,
+          "method": "battery"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "%1$d%% | 充電中",
+        "en": "%1$d%% | Charging"
+      },
+      "placeholders": [
+        "%1$d",
+        "%%"
+      ]
+    },
+    {
+      "id": "copy.mask_image",
+      "key": "mask_image",
+      "title": "mask_image",
+      "category": "资源文案",
+      "current": "镜头封面",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 48,
+          "method": "onCreate"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 522,
+          "method": "showSettings"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "鏡頭封面",
+        "en": "Lens cover"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.mask_upload",
+      "key": "mask_upload",
+      "title": "mask_upload",
+      "category": "资源文案",
+      "current": "选择图片",
+      "proposal": "",
+      "priority": "中",
+      "reason": "当前 Java/Manifest 未引用，列为遗留候选；不要重新引入废弃功能。",
+      "legacy": true,
+      "source": [],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "選擇圖片",
+        "en": "Choose image"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.mask_adjust",
+      "key": "mask_adjust",
+      "title": "mask_adjust",
+      "category": "资源文案",
+      "current": "调整大小",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 125,
+          "method": "onCreate"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "調整大小",
+        "en": "Adjust size"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.mask_default",
+      "key": "mask_default",
+      "title": "mask_default",
+      "category": "资源文案",
+      "current": "使用默认图片",
+      "proposal": "",
+      "priority": "中",
+      "reason": "当前 Java/Manifest 未引用，列为遗留候选；不要重新引入废弃功能。",
+      "legacy": true,
+      "source": [],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "使用預設圖片",
+        "en": "Use default image"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.mask_crop",
+      "key": "mask_crop",
+      "title": "mask_crop",
+      "category": "资源文案",
+      "current": "调整大小",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+          "line": 88,
+          "method": ""
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "調整大小",
+        "en": "Adjust size"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.mask_crop_hint",
+      "key": "mask_crop_hint",
+      "title": "mask_crop_hint",
+      "category": "资源文案",
+      "current": "拖动调整位置，双指缩放，仅保留圆内画面",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+          "line": 91,
+          "method": ""
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+          "line": 137,
+          "method": ""
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "拖動調整位置，雙指縮放，僅保留圓內畫面",
+        "en": "Drag to position and pinch to zoom. Only the circle is kept."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.mask_failed",
+      "key": "mask_failed",
+      "title": "mask_failed",
+      "category": "资源文案",
+      "current": "封面未能保存，请换张图片重试。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 178,
+          "method": "apply"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+          "line": 71,
+          "method": ""
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+          "line": 111,
+          "method": ""
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "圖片未能儲存，請選擇另一張圖片重試",
+        "en": "Could not save this image. Choose another image and try again."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.sound_volume_hint",
+      "key": "sound_volume_hint",
+      "title": "sound_volume_hint",
+      "category": "资源文案",
+      "current": "音效随手机媒体音量播放，可独立开关音效和触感。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 682,
+          "method": "showInteractionFeedback"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "音效隨手機媒體音量播放，可獨立開關音效和觸感。",
+        "en": "Sounds follow the media volume. Sounds and haptics can be enabled separately."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.ui_orange",
+      "key": "ui_orange",
+      "title": "ui_orange",
+      "category": "资源文案",
+      "current": "橙色线条",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 693,
+          "method": "chooseUiTheme"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+          "line": 148,
+          "method": ""
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "橙色線條",
+        "en": "Orange outline"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.ui_cyan",
+      "key": "ui_cyan",
+      "title": "ui_cyan",
+      "category": "资源文案",
+      "current": "清爽青色",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 693,
+          "method": "chooseUiTheme"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+          "line": 149,
+          "method": ""
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "清爽青色",
+        "en": "Fresh cyan"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.photo_position",
+      "key": "photo_position",
+      "title": "photo_position",
+      "category": "资源文案",
+      "current": "第 %1$d 张，共 %2$d 张",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+          "line": 698,
+          "method": "applyPhoto"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+          "line": 763,
+          "method": "changed"
+        }
+      ],
+      "page": "gallery",
+      "translations": {
+        "zh-TW": "第 %1$d 張，共 %2$d 張",
+        "en": "Photo %1$d of %2$d"
+      },
+      "placeholders": [
+        "%1$d",
+        "%2$d"
+      ]
+    },
+    {
+      "id": "copy.photo_unavailable",
+      "key": "photo_unavailable",
+      "title": "photo_unavailable",
+      "category": "资源文案",
+      "current": "图片无法打开，请尝试其他图片",
+      "proposal": "",
+      "priority": "中",
+      "reason": "当前 Java/Manifest 未引用，列为遗留候选；不要重新引入废弃功能。",
+      "legacy": true,
+      "source": [],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "圖片無法開啟，請嘗試其他圖片",
+        "en": "Unable to open this photo"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.cover_apply",
+      "key": "cover_apply",
+      "title": "cover_apply",
+      "category": "资源文案",
+      "current": "设为镜头封面",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 133,
+          "method": "onCreate"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "設為鏡頭封面",
+        "en": "Set as lens cover"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.cover_add",
+      "key": "cover_add",
+      "title": "cover_add",
+      "category": "资源文案",
+      "current": "从相册添加",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 89,
+          "method": "onCreate"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "從相簿新增",
+        "en": "Add from photos"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.cover_current",
+      "key": "cover_current",
+      "title": "cover_current",
+      "category": "资源文案",
+      "current": "当前封面",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 68,
+          "method": "onCreate"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "目前封面",
+        "en": "Current cover"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.cover_default",
+      "key": "cover_default",
+      "title": "cover_default",
+      "category": "资源文案",
+      "current": "哆啦A梦",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 63,
+          "method": "onCreate"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "哆啦A夢",
+        "en": "Doraemon"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.cover_duo",
+      "key": "cover_duo",
+      "title": "cover_duo",
+      "category": "资源文案",
+      "current": "橘伴相依",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 63,
+          "method": "onCreate"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "橘伴相依",
+        "en": "Orange companions"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.cover_sad",
+      "key": "cover_sad",
+      "title": "cover_sad",
+      "category": "资源文案",
+      "current": "橘子心情",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 64,
+          "method": "onCreate"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "橘子心情",
+        "en": "Orange mood"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.cover_sweet",
+      "key": "cover_sweet",
+      "title": "cover_sweet",
+      "category": "资源文案",
+      "current": "甜心橘宝",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+          "line": 64,
+          "method": "onCreate"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "甜心橘寶",
+        "en": "Sweet orange"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.settings_appearance",
+      "key": "settings_appearance",
+      "title": "settings_appearance",
+      "category": "资源文案",
+      "current": "个性外观",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 521,
+          "method": "showSettings"
+        }
+      ],
+      "page": "settings",
+      "translations": {
+        "zh-TW": "個性外觀",
+        "en": "Appearance"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.settings_capture",
+      "key": "settings_capture",
+      "title": "settings_capture",
+      "category": "资源文案",
+      "current": "拍摄与设备",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 527,
+          "method": "showSettings"
+        }
+      ],
+      "page": "settings",
+      "translations": {
+        "zh-TW": "拍攝與裝置",
+        "en": "Camera & device"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.settings_general",
+      "key": "settings_general",
+      "title": "settings_general",
+      "category": "资源文案",
+      "current": "通用",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 532,
+          "method": "showSettings"
+        }
+      ],
+      "page": "settings",
+      "translations": {
+        "zh-TW": "一般",
+        "en": "General"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.settings_support",
+      "key": "settings_support",
+      "title": "settings_support",
+      "category": "资源文案",
+      "current": "帮助与支持",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 535,
+          "method": "showSettings"
+        }
+      ],
+      "page": "settings",
+      "translations": {
+        "zh-TW": "說明與支援",
+        "en": "Help & support"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.device_info",
+      "key": "device_info",
+      "title": "device_info",
+      "category": "资源文案",
+      "current": "设备参考信息",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 528,
+          "method": "showSettings"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 572,
+          "method": "showDeviceInfo"
+        }
+      ],
+      "page": "settings",
+      "translations": {
+        "zh-TW": "裝置參考資訊",
+        "en": "Device reference"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.device_info_body",
+      "key": "device_info_body",
+      "title": "device_info_body",
+      "category": "资源文案",
+      "current": "XISEM-Find · Find 型号\n以下参数来自该型号说明书。\n\n连接\n2.4 GHz Wi-Fi · IEEE 802.11 b/g/n\n\n电池与充电\n电池容量：250 mAh\n充电接口：USB Type-C\n额定输入：5 V / 1 A\n标称充电时间：约 60 分钟\n标称使用时间：约 90 分钟\n实际时长受使用情况影响。\n\n镜头与机身\nCMOS 图像传感器\n镜头直径：3.5 mm\n机身：直径 14 mm × 长 150 mm\n重量：16.2 g\n\n使用与保养\n说明书要求：充电时请勿使用；请勿将整机浸入液体；镜头可用棉签小心擦拭。\n\n以上为说明书标称参数，不代表本应用当前画质、帧率或剩余使用时间。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 573,
+          "method": "showDeviceInfo"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "XISEM-Find · Find 型號\n以下參數來自該型號說明書。\n\n連線\n2.4 GHz Wi-Fi · IEEE 802.11 b/g/n\n\n電池與充電\n250 mAh · USB Type-C\n額定輸入：5 V / 1 A\n標稱充電時間：約 60 分鐘\n標稱使用時間：約 90 分鐘\n實際時長依使用情況而異。\n\n鏡頭與機身\nCMOS 感測器 · 鏡頭直徑 3.5 mm\n機身：直徑 14 mm × 長 150 mm\n重量：16.2 g\n\n保養（依說明書）\n充電時請勿使用，請勿將整機浸入液體。鏡頭可用棉棒小心擦拭。\n\n說明書標稱參數不代表本應用目前的畫質、幀率或剩餘使用時間。",
+        "en": "XISEM-Find · Find model\nFrom the manual for this model.\n\nConnection\n2.4 GHz Wi-Fi · IEEE 802.11 b/g/n\n\nBattery & charging\n250 mAh · USB Type-C\nRated input: 5 V / 1 A\nRated charging time: about 60 minutes\nRated operating time: about 90 minutes\nActual duration varies with use.\n\nCamera & body\nCMOS sensor · 3.5 mm lens diameter\nBody: 14 mm diameter × 150 mm long\nWeight: 16.2 g\n\nCare (from the manual)\nDo not use while charging or immerse the device in liquid. Gently wipe the lens with a cotton swab.\n\nManual ratings do not indicate the current app image quality, frame rate or remaining runtime."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.hardware_check",
+      "key": "hardware_check",
+      "title": "hardware_check",
+      "category": "资源文案",
+      "current": "设备快速检查",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1288,
+          "method": "startTest"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "裝置快速檢查",
+        "en": "Quick device check"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.hardware_begin",
+      "key": "hardware_begin",
+      "title": "hardware_begin",
+      "category": "资源文案",
+      "current": "开始检查",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1291,
+          "method": "startTest"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "開始檢查",
+        "en": "Start check"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.hardware_prepare",
+      "key": "hardware_prepare",
+      "title": "hardware_prepare",
+      "category": "资源文案",
+      "current": "请断开充电线，打开耳镜，并将镜头朝向桌面文字或纹理。检查约需 30 秒，会记录画面、电量和姿态响应；结束后请确认清晰度与补光情况。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1289,
+          "method": "startTest"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "請拔除充電線，開啟耳鏡，並將鏡頭朝向桌面文字或紋理。檢查約需 30 秒，會記錄畫面、電量與姿態回應；結束後請確認清晰度與補光情況。",
+        "en": "Unplug the charging cable, turn on the device and aim at printed text or texture. This 30-second check records image reception, battery replies and orientation response. Confirm focus and lighting afterwards."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.hardware_result",
+      "key": "hardware_result",
+      "title": "hardware_result",
+      "category": "资源文案",
+      "current": "设备检查结果",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1369,
+          "method": "showHardwareResult"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "裝置檢查結果",
+        "en": "Device check results"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.hardware_measured",
+      "key": "hardware_measured",
+      "title": "hardware_measured",
+      "category": "资源文案",
+      "current": "画面：%1$d 帧 · %2$d×%3$d\n平均接收：%4$.1f FPS\n最长画面间隔：%5$.1f 秒\n电量应答：%6$d 次\n观测角度变化累计：%7$.1f°",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1340,
+          "method": "finishTest"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1357,
+          "method": "showHardwareResult"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "畫面：%1$d 幀 · %2$d×%3$d\n平均接收：%4$.1f FPS\n最長畫面間隔：%5$.1f 秒\n電量回應：%6$d 次\n觀測角度變化累計：%7$.1f°",
+        "en": "Image: %1$d frames · %2$d×%3$d\nAverage reception: %4$.1f FPS\nLongest image gap: %5$.1f s\nBattery replies: %6$d\nAccumulated angle change: %7$.1f°"
+      },
+      "placeholders": [
+        "%1$d",
+        "%2$d",
+        "%3$d",
+        "%6$d"
+      ]
+    },
+    {
+      "id": "copy.hardware_observe",
+      "key": "hardware_observe",
+      "title": "hardware_observe",
+      "category": "资源文案",
+      "current": "自动记录连接、画面、电量与姿态响应。以下项目请手动确认，未勾选表示尚未确认。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1363,
+          "method": "showHardwareResult"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1374,
+          "method": "showHardwareResult"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "自動記錄連線、畫面、電量與姿態回應。以下項目請手動確認，未勾選表示尚未確認。",
+        "en": "Connection, image reception, battery and orientation response are recorded. Confirm the visual checks below. An unchecked item is unconfirmed."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.hardware_no_frames",
+      "key": "hardware_no_frames",
+      "title": "hardware_no_frames",
+      "category": "资源文案",
+      "current": "未收到画面，请确认设备已开机并连接耳镜 Wi-Fi，再重新检查。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1362,
+          "method": "showHardwareResult"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "未收到畫面，請確認裝置已開啟並連上耳鏡 Wi-Fi，再重新檢查。",
+        "en": "No image received. Check device power and Wi-Fi connection, then try again."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.hardware_clear",
+      "key": "hardware_clear",
+      "title": "hardware_clear",
+      "category": "资源文案",
+      "current": "已观察到清晰、颜色正常的画面",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1365,
+          "method": "showHardwareResult"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1372,
+          "method": "showHardwareResult"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "已觀察到清晰、顏色正常的畫面",
+        "en": "I observed a clear image with normal colors"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.hardware_light",
+      "key": "hardware_light",
+      "title": "hardware_light",
+      "category": "资源文案",
+      "current": "已观察到镜头补光正常亮起",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1367,
+          "method": "showHardwareResult"
+        },
+        {
+          "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+          "line": 1373,
+          "method": "showHardwareResult"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "已觀察到鏡頭補光正常亮起",
+        "en": "I observed the lens light working normally"
+      },
+      "placeholders": []
+    },
+    {
+      "id": "copy.photo_loading",
+      "key": "photo_loading",
+      "title": "photo_loading",
+      "category": "资源文案",
+      "current": "图片正在准备，请稍后再滑动。",
+      "proposal": "",
+      "priority": "中",
+      "reason": "逐条审核名称、语气、当前行为和长度。",
+      "legacy": false,
+      "source": [
+        {
+          "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+          "line": 118,
+          "method": "onTouchEvent"
+        }
+      ],
+      "page": "capture",
+      "translations": {
+        "zh-TW": "正在準備圖片，請稍後再滑動。",
+        "en": "Preparing the photo. Please swipe again shortly."
+      },
+      "placeholders": []
+    },
+    {
+      "id": "literal.CameraStream.92.0",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:87",
+      "title": "CameraStream:92",
       "current": "断流: ",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5118,7 +6828,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 87,
+          "line": 92,
           "method": "run"
         }
       ],
@@ -5126,9 +6836,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.128.1",
+      "id": "literal.CameraStream.133.1",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:128",
+      "title": "CameraStream:133",
       "current": "控制 UDP 50000 回包: ",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5137,7 +6847,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 128,
+          "line": 133,
           "method": "receive"
         }
       ],
@@ -5145,9 +6855,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.130.2",
+      "id": "literal.CameraStream.135.2",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:130",
+      "title": "CameraStream:135",
       "current": "控制 UDP 50000 未回包，继续尝试取流",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5156,7 +6866,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 130,
+          "line": 135,
           "method": "receive"
         }
       ],
@@ -5164,9 +6874,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.146.3",
+      "id": "literal.CameraStream.151.3",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:146",
+      "title": "CameraStream:151",
       "current": "开始收流 UDP 8031",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5175,7 +6885,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 146,
+          "line": 151,
           "method": "receive"
         }
       ],
@@ -5183,9 +6893,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.152.4",
+      "id": "literal.CameraStream.158.4",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:152",
+      "title": "CameraStream:158",
       "current": "耳镜 Wi-Fi 已断开",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5194,7 +6904,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 152,
+          "line": 158,
           "method": "receive"
         }
       ],
@@ -5202,9 +6912,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.156.5",
+      "id": "literal.CameraStream.175.5",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:156",
+      "title": "CameraStream:175",
       "current": "3000 ms 内无可解码画面",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5213,7 +6923,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 156,
+          "line": 175,
           "method": "receive"
         }
       ],
@@ -5221,9 +6931,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.185.6",
+      "id": "literal.CameraStream.204.6",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:185",
+      "title": "CameraStream:204",
       "current": "首帧 ",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5232,7 +6942,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 185,
+          "line": 204,
           "method": "receive"
         }
       ],
@@ -5240,9 +6950,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.257.7",
+      "id": "literal.CameraStream.276.7",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:257",
+      "title": "CameraStream:276",
       "current": "未识别百分比",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5251,7 +6961,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 257,
+          "line": 276,
           "method": "pollBattery"
         }
       ],
@@ -5259,9 +6969,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.260.8",
+      "id": "literal.CameraStream.279.8",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:260",
+      "title": "CameraStream:279",
       "current": " 原始=%08x/%08x",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5270,7 +6980,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 260,
+          "line": 279,
           "method": "pollBattery"
         }
       ],
@@ -5278,9 +6988,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.262.9",
+      "id": "literal.CameraStream.281.9",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:262",
+      "title": "CameraStream:281",
       "current": "电量回包 ",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5289,7 +6999,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 262,
+          "line": 281,
           "method": "pollBattery"
         }
       ],
@@ -5297,9 +7007,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.266.10",
+      "id": "literal.CameraStream.285.10",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:266",
+      "title": "CameraStream:285",
       "current": "电量查询未回包",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5308,7 +7018,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 266,
+          "line": 285,
           "method": "pollBattery"
         }
       ],
@@ -5316,9 +7026,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.267.11",
+      "id": "literal.CameraStream.286.11",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:267",
+      "title": "CameraStream:286",
       "current": "电量查询未回包",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5327,7 +7037,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 267,
+          "line": 286,
           "method": "pollBattery"
         }
       ],
@@ -5335,9 +7045,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.302.12",
+      "id": "literal.CameraStream.322.12",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:302",
+      "title": "CameraStream:322",
       "current": "耳镜型号 ",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5346,7 +7056,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 302,
+          "line": 322,
           "method": "readBoardInfo"
         }
       ],
@@ -5354,9 +7064,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.337.13",
+      "id": "literal.CameraStream.357.13",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:337",
+      "title": "CameraStream:357",
       "current": "包=%d 帧=%d FPS=%.1f 解码失败=%d 续流=%d 帧间最大=%dms",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5365,7 +7075,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 337,
+          "line": 357,
           "method": "readBoardInfo"
         }
       ],
@@ -5373,9 +7083,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.CameraStream.338.14",
+      "id": "literal.CameraStream.358.14",
       "category": "诊断/运行时字面量",
-      "title": "CameraStream:338",
+      "title": "CameraStream:358",
       "current": " 姿态=%08x 姿态角=%s 背景变化=%s 稳向帧[背景=%d 姿态=%d 保持=%d]",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5384,7 +7094,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-          "line": 338,
+          "line": 358,
           "method": "readBoardInfo"
         }
       ],
@@ -5506,9 +7216,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.PreviewActivity.474.21",
+      "id": "literal.PreviewActivity.734.21",
       "category": "硬编码文案",
-      "title": "PreviewActivity:474",
+      "title": "PreviewActivity:734",
       "current": "简体中文",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5517,7 +7227,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 474,
+          "line": 734,
           "method": "showLanguages"
         }
       ],
@@ -5525,9 +7235,9 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.474.22",
+      "id": "literal.PreviewActivity.734.22",
       "category": "硬编码文案",
-      "title": "PreviewActivity:474",
+      "title": "PreviewActivity:734",
       "current": "繁體中文",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5536,7 +7246,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 474,
+          "line": 734,
           "method": "showLanguages"
         }
       ],
@@ -5544,9 +7254,9 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.625.23",
+      "id": "literal.PreviewActivity.901.23",
       "category": "硬编码文案",
-      "title": "PreviewActivity:625",
+      "title": "PreviewActivity:901",
       "current": "进入实时预览",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5555,7 +7265,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 625,
+          "line": 901,
           "method": "frame"
         }
       ],
@@ -5563,9 +7273,9 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.643.24",
+      "id": "literal.PreviewActivity.921.24",
       "category": "硬编码文案",
-      "title": "PreviewActivity:643",
+      "title": "PreviewActivity:921",
       "current": "包=",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5574,7 +7284,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 643,
+          "line": 921,
           "method": "detail"
         }
       ],
@@ -5582,9 +7292,9 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.676.25",
+      "id": "literal.PreviewActivity.970.25",
       "category": "诊断/运行时字面量",
-      "title": "PreviewActivity:676",
+      "title": "PreviewActivity:970",
       "current": " 显示补偿=",
       "proposal": "",
       "reason": "诊断信息与普通界面文案分开审核。",
@@ -5593,7 +7303,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 676,
+          "line": 970,
           "method": "messageWithCorrection"
         }
       ],
@@ -5601,9 +7311,9 @@
       "page": "diagnostics"
     },
     {
-      "id": "literal.PreviewActivity.687.26",
+      "id": "literal.PreviewActivity.983.26",
       "category": "硬编码文案",
-      "title": "PreviewActivity:687",
+      "title": "PreviewActivity:983",
       "current": "用户停止预览",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5612,7 +7322,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 687,
+          "line": 983,
           "method": "stopPreview"
         }
       ],
@@ -5620,9 +7330,9 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.799.27",
+      "id": "literal.PreviewActivity.1097.27",
       "category": "硬编码文案",
-      "title": "PreviewActivity:799",
+      "title": "PreviewActivity:1097",
       "current": "稳向开启",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5631,7 +7341,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 799,
+          "line": 1097,
           "method": "setStabilize"
         }
       ],
@@ -5639,9 +7349,9 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.799.28",
+      "id": "literal.PreviewActivity.1097.28",
       "category": "硬编码文案",
-      "title": "PreviewActivity:799",
+      "title": "PreviewActivity:1097",
       "current": "稳向关闭",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5650,7 +7360,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 799,
+          "line": 1097,
           "method": "setStabilize"
         }
       ],
@@ -5658,9 +7368,9 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.847.29",
+      "id": "literal.PreviewActivity.1147.29",
       "category": "硬编码文案",
-      "title": "PreviewActivity:847",
+      "title": "PreviewActivity:1147",
       "current": "图片编码失败",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5669,7 +7379,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 847,
+          "line": 1147,
           "method": "finishPhotoBurst"
         }
       ],
@@ -5677,9 +7387,9 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.853.30",
+      "id": "literal.PreviewActivity.1153.30",
       "category": "硬编码文案",
-      "title": "PreviewActivity:853",
+      "title": "PreviewActivity:1153",
       "current": "无法保存图片",
       "proposal": "",
       "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
@@ -5688,7 +7398,7 @@
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 853,
+          "line": 1153,
           "method": "finishPhotoBurst"
         }
       ],
@@ -5696,23 +7406,23 @@
       "page": "settings"
     },
     {
-      "id": "literal.PreviewActivity.981.31",
-      "category": "诊断/运行时字面量",
-      "title": "PreviewActivity:981",
+      "id": "literal.PreviewActivity.1304.31",
+      "category": "硬编码文案",
+      "title": "PreviewActivity:1304",
       "current": "微镜记诊断开始 / ",
       "proposal": "",
-      "reason": "诊断信息与普通界面文案分开审核。",
-      "priority": "低",
+      "reason": "需要核对是否用户可见、是否应迁移到语言资源。",
+      "priority": "中",
       "legacy": false,
       "source": [
         {
           "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-          "line": 981,
-          "method": "startTest"
+          "line": 1304,
+          "method": "beginHardwareCheck"
         }
       ],
       "placeholders": [],
-      "page": "diagnostics"
+      "page": "settings"
     },
     {
       "id": "literal.VideoCapture.64.32",
@@ -5888,20 +7598,6 @@
   ],
   "edges": [
     {
-      "id": "edge.preview-session",
-      "title": "连接与取景分开",
-      "page": "capture",
-      "priority": "高",
-      "detail": "用户要求已连接但未开始时显示电量与预计分钟。建议用圆形/矩形盖板开始取景、窗内边缘把手收起；固定设备/连接槽位不变。收起停止视频但保留网络，灯是否熄灭待硬件实测；定格仍继续接收视频。"
-    },
-    {
-      "id": "edge.freeze",
-      "title": "定格图标与位置待重新审核",
-      "page": "capture",
-      "priority": "高",
-      "detail": "不沿用暂停/播放。骨架默认将定格放在工具栏首位，可对比画面左下和当前右上。"
-    },
-    {
       "id": "edge.rotation",
       "title": "保留喜欢的旋转动画",
       "page": "capture",
@@ -5984,6 +7680,27 @@
       "page": "device-picker",
       "priority": "高",
       "detail": "设备搜索图标参考提供的耳镜，连接/断开状态要清楚，不让按钮位置跳动。"
+    },
+    {
+      "id": "edge.preview-session",
+      "title": "连接与取景分开",
+      "page": "capture",
+      "priority": "高",
+      "detail": "连接后先显示个人封面和电量；圆内滑动开合。录制和保存保护沿用源码。"
+    },
+    {
+      "id": "edge.freeze",
+      "title": "固定工具顺序",
+      "page": "capture",
+      "priority": "高",
+      "detail": "稳向、镜像、耳别、定格；位置不随状态变化。"
+    },
+    {
+      "id": "edge.paging",
+      "title": "照片跟手翻页",
+      "page": "photo",
+      "priority": "高",
+      "detail": "两页跟手滑动，松手不足回弹；首尾有阻尼；张数、日期、耳别和操作对象同步。"
     }
   ],
   "sources": [
@@ -6019,28 +7736,40 @@
     }
   ],
   "sourceHashes": {
+    "android-preview/src/dev/earclean/preview/AppFeedback.java": "1bf273b37778169c2c4cee7ec20c6ea59b49eb40ebb5f5ad0c3a7dd8321172ef",
     "android-preview/src/dev/earclean/preview/AppLanguage.java": "bef5e738b64e4e38cce65e138b54533fc88dadce73b0e1fcbd282457341c0e28",
     "android-preview/src/dev/earclean/preview/BackgroundRoll.java": "7e50e449737767fe46d60b82d27febed875ea67eebf124e824ab68f95713168a",
-    "android-preview/src/dev/earclean/preview/BatteryReading.java": "0b691a1a6d3a5312237864319ca2ab2c44ca98283ef04a064ecc1e4c28afbf73",
-    "android-preview/src/dev/earclean/preview/CameraStream.java": "b4962c04c1f99c3991cd114fc5d240be031c76b2728267e79c78ddcd297e2c15",
+    "android-preview/src/dev/earclean/preview/BatteryEstimate.java": "e25f66a440a162952e1fcbc5441f4f89f2cba7b23a3781c7349eb3483423d4ac",
+    "android-preview/src/dev/earclean/preview/BatteryReading.java": "6023073f4f571147721b93c392780d1b7b3facab9ac2725e207a113aa64e6503",
+    "android-preview/src/dev/earclean/preview/CameraStream.java": "ed8f43fa4b8f034458940661a3a4bdfc3ae8574a189e00ea2ae5e6873fc0e148",
     "android-preview/src/dev/earclean/preview/CaptureImage.java": "0ef7a23cb4e8c4f99b801d1312353bc9e54d9a93ba2ed3b23bd549c6c546237c",
     "android-preview/src/dev/earclean/preview/CaptureProvider.java": "e137858c6b9f38f11a38c45d3c1f39c937b5109937fed24ce938f6b81045185d",
-    "android-preview/src/dev/earclean/preview/CareProfiles.java": "b9936abddd2302c220b5936cbf5741a7b91c2896bc54d4b328b2582ac3fb4386",
+    "android-preview/src/dev/earclean/preview/CareProfiles.java": "201dc162100560b3a0aad5882395116e5c4cacb676ab95696e7e9ab628baafab",
+    "android-preview/src/dev/earclean/preview/CoverPickerActivity.java": "5bcb3344e63e9ccf3611f1ef62d03dc0e4b893d5b521742a57bbb9360309d428",
     "android-preview/src/dev/earclean/preview/EarSide.java": "dc8b0fe8b3b3d38e576429ab097129dcd2decdacdc6d9b2053f14d22352152c9",
     "android-preview/src/dev/earclean/preview/EarWifi.java": "b1a993031333d5fbbb5a1c43a8332be507c21eb4cb9ba2e117840a458b7edb0e",
-    "android-preview/src/dev/earclean/preview/GalleryActivity.java": "885cfbd575cf198e16e5b92e933a42acb6cb07c4acbba13a7444151067d746f9",
+    "android-preview/src/dev/earclean/preview/GalleryActivity.java": "0ca6aba83d745b766f4eba9b758002884da7133f21efad983775eec83b62b613",
+    "android-preview/src/dev/earclean/preview/HardwareCheck.java": "3c10bdc10dce6a5dfbf0d1900a4816f659dfcf71070c3643dd659574b36bbf83",
     "android-preview/src/dev/earclean/preview/JpegFrames.java": "53d6a66ee9480902e81b24348c4b7ee873abde99a1a48e0446bd8b769e8d3627",
+    "android-preview/src/dev/earclean/preview/LensCover.java": "eecf6cd1151335550a23b8dc219a838c167c2678e7fae74e02fcb183aec1245a",
+    "android-preview/src/dev/earclean/preview/MaskCropper.java": "fdcdb7d208b5a3c11af8fc30dfed8a9971eafe30c41be1d377cdb8a8b26c6bd8",
     "android-preview/src/dev/earclean/preview/PhotoMarkup.java": "538eb1a7562ce92deae1ddbba95876f3d9c6370a5cdd94c25a82c3634a97a4f8",
+    "android-preview/src/dev/earclean/preview/PhotoPager.java": "5eb5ba2ea555076a86c37b0aee0461e50b093694b0e38300d9dc3745c538ab68",
+    "android-preview/src/dev/earclean/preview/PhotoPaging.java": "6c3c3f15820eca226e2e943b03c6f91bc456412ee30ed1fbc4d74925d1d3ea3d",
     "android-preview/src/dev/earclean/preview/PhotoQuality.java": "6a14adcc71ef6cd1f014679aa7c6522b2cf6deef10983333e2b13cab34dc1c4c",
-    "android-preview/src/dev/earclean/preview/PreviewActivity.java": "dcbce15d84a74b352e83ee956261b39f597c9a8b6d5f617182c835e560c86867",
+    "android-preview/src/dev/earclean/preview/PreviewActivity.java": "cc0cf106e5b1b18d0f65748bce67ba09c3fa233c877e20ab8e2ddaa821ac64f9",
+    "android-preview/src/dev/earclean/preview/ProfileMasks.java": "4f6441cb061de7308b063e9e4327b9963fe653468cb951e9fbef9ee51f69fda1",
+    "android-preview/src/dev/earclean/preview/ProfileOrderList.java": "6bb4b8b1cd6b50b762a263ffb3a4e2f1b9d2e6dbe769e07a53cea3a621129b8f",
     "android-preview/src/dev/earclean/preview/RollFilter.java": "1948f03abbd62d5508589b128ef50474173ec3e381c61c622fc38c319b927269",
-    "android-preview/src/dev/earclean/preview/ScopeUi.java": "c43639cc25ea2d652aeb0e73b6a2ab5e7603200aee001d27df761b8a4ae8327f",
+    "android-preview/src/dev/earclean/preview/ScopeDialog.java": "b03b1f8a2b9e28231f9473431ae81cc072653c521a2e04eeb150583247e17e74",
+    "android-preview/src/dev/earclean/preview/ScopeUi.java": "9b453e67a1dc7d75ae4e289e8aa6b8d817674b9402682c90a6c20e64b10d7a1d",
+    "android-preview/src/dev/earclean/preview/UiGeometry.java": "6f11cfb343808c7a83d001a0ba7d8c85e8353aed7d548c46bd3edf6470e553ca",
     "android-preview/src/dev/earclean/preview/VideoCapture.java": "f6a864a79e98786b10c490b13d0c10c23f39babfae0020c3ebd45d0ccdcab91e",
     "android-preview/src/dev/earclean/preview/VideoPlayback.java": "41ba3a1f068da1714ee0ebda1d54d26bbe32fafe4e12affd213d2ede396deefe",
-    "android-preview/res/values/strings.xml": "274c2c680c4858a4fd57b903e4ffab58ca3f79047044cbd9baa5731e5fcbdf58",
-    "android-preview/res/values-en/strings.xml": "89111dad53ac5834184091cad70945f9fea0d25e77b5144b6a91f6e5c36646f9",
-    "android-preview/res/values-zh-rTW/strings.xml": "3eb00b7dbd39b1946573a885dc2c929ca858832dcd2b1483e7dc3ad9b4577896",
-    "android-preview/AndroidManifest.xml": "913201e1e477176134dc6b109266493b647399034d995bf76da4eb5dcb8534fe"
+    "android-preview/res/values/strings.xml": "adc58ac98bc5f0a447a25680fd9ed77d064f3526c18e153b821b0ad0f5f3cac3",
+    "android-preview/res/values-en/strings.xml": "2e91bb9a49c862bdd57005e66b8b067ad6eb8e04d5dae0a657d0bd123ef5f042",
+    "android-preview/res/values-zh-rTW/strings.xml": "3ec2498c1e9b51c933f8551dcdc0b9cbdbca4da175230b43e0c5c8fa6e12f740",
+    "android-preview/AndroidManifest.xml": "df22f868ecf796b9b877410a070411fc20c6a98615a3e45593c77983e564ef4a"
   },
   "methods": {
     "BackgroundRoll.estimate": {
@@ -6065,35 +7794,35 @@
     },
     "CameraStream.run": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 76
+      "line": 81
     },
     "CameraStream.findCameraNetwork": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 102
+      "line": 107
     },
     "CameraStream.receive": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 117
+      "line": 122
     },
     "CameraStream.pollBattery": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 243
+      "line": 262
     },
     "CameraStream.readBoardInfo": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 279
+      "line": 299
     },
     "CameraStream.angle": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 349
+      "line": 369
     },
     "CameraStream.videoCommand": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 354
+      "line": 374
     },
     "CameraStream.send": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 361
+      "line": 381
     },
     "CaptureProvider.file": {
       "path": "android-preview/src/dev/earclean/preview/CaptureProvider.java",
@@ -6127,6 +7856,54 @@
       "path": "android-preview/src/dev/earclean/preview/CaptureProvider.java",
       "line": 98
     },
+    "CoverPickerActivity.attachBaseContext": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 25
+    },
+    "CoverPickerActivity.onCreate": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 29
+    },
+    "CoverPickerActivity.select": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 140
+    },
+    "CoverPickerActivity.acceptCrop": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 146
+    },
+    "CoverPickerActivity.onActivityResult": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 152
+    },
+    "CoverPickerActivity.apply": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 158
+    },
+    "CoverPickerActivity.circularCopy": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 184
+    },
+    "CoverPickerActivity.drawCircleImage": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 191
+    },
+    "CoverPickerActivity.onSaveInstanceState": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 207
+    },
+    "CoverPickerActivity.onBackPressed": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 216
+    },
+    "CoverPickerActivity.onDestroy": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 218
+    },
+    "CoverPickerActivity.onDraw": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 227
+    },
     "EarSide.preferences": {
       "path": "android-preview/src/dev/earclean/preview/EarSide.java",
       "line": 47
@@ -6157,211 +7934,339 @@
     },
     "GalleryActivity.attachBaseContext": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 89
+      "line": 88
     },
     "GalleryActivity.onCreate": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 94
+      "line": 93
     },
     "GalleryActivity.onResume": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 205
+      "line": 212
     },
     "GalleryActivity.onSaveInstanceState": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 211
+      "line": 218
     },
     "GalleryActivity.onBackPressed": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 221
+      "line": 228
     },
     "GalleryActivity.onStop": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 232
+      "line": 239
     },
     "GalleryActivity.onDestroy": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 239
+      "line": 246
     },
     "GalleryActivity.profileFiles": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 244
+      "line": 251
     },
     "GalleryActivity.matchesFilters": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 250
+      "line": 257
     },
     "GalleryActivity.load": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 259
+      "line": 266
     },
     "GalleryActivity.filterDescription": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 289
+      "line": 296
     },
     "GalleryActivity.applyFilters": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 297
+      "line": 304
     },
     "GalleryActivity.chooseFilters": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 310
+      "line": 317
     },
     "GalleryActivity.showTab": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 385
+      "line": 396
     },
     "GalleryActivity.styleTab": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 394
+      "line": 405
     },
     "GalleryActivity.toggle": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 400
+      "line": 411
     },
     "GalleryActivity.updateSelection": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 405
+      "line": 416
     },
     "GalleryActivity.getSections": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 454
+      "line": 465
     },
     "GalleryActivity.getPositionForSection": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 455
+      "line": 466
     },
     "GalleryActivity.getSectionForPosition": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 458
+      "line": 469
     },
     "GalleryActivity.getCount": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 462
+      "line": 473
     },
     "GalleryActivity.getItem": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 463
+      "line": 474
     },
     "GalleryActivity.getItemId": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 464
+      "line": 475
     },
     "GalleryActivity.getViewTypeCount": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 465
+      "line": 476
     },
     "GalleryActivity.getItemViewType": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 466
+      "line": 477
     },
     "GalleryActivity.isEnabled": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 467
+      "line": 478
     },
     "GalleryActivity.areAllItemsEnabled": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 468
+      "line": 479
     },
     "GalleryActivity.getView": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 471
+      "line": 482
     },
     "GalleryActivity.bind": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 498
+      "line": 509
     },
     "GalleryActivity.getOutline": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 879
+      "line": 997
     },
     "GalleryActivity.onMeasure": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 572
+      "line": 583
     },
     "GalleryActivity.stamp": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 581
+      "line": 592
     },
     "GalleryActivity.loadThumbnail": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 587
+      "line": 598
     },
     "GalleryActivity.readThumbnail": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 601
+      "line": 612
     },
     "GalleryActivity.open": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 647
+      "line": 658
+    },
+    "GalleryActivity.navigate": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 682
+    },
+    "GalleryActivity.nextIndex": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 686
+    },
+    "GalleryActivity.applyPhoto": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 692
+    },
+    "GalleryActivity.positionDate": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 706
+    },
+    "GalleryActivity.neighbor": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 753
+    },
+    "GalleryActivity.configure": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 756
+    },
+    "GalleryActivity.changed": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 757
+    },
+    "GalleryActivity.onInitializeAccessibilityNodeInfo": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 765
+    },
+    "GalleryActivity.performAccessibilityAction": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 771
     },
     "GalleryActivity.chooseSide": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 708
+      "line": 819
     },
     "GalleryActivity.editMarkup": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 722
+      "line": 833
     },
     "GalleryActivity.saveMarkupCopy": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 827
+      "line": 939
     },
     "GalleryActivity.chooseMarkupColor": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 846
+      "line": 958
     },
     "GalleryActivity.photoView": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 873
+      "line": 985
+    },
+    "GalleryActivity.configurePhoto": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 993
     },
     "GalleryActivity.onStartTrackingTouch": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 937
+      "line": 1057
     },
     "GalleryActivity.onProgressChanged": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 940
+      "line": 1060
     },
     "GalleryActivity.onStopTrackingTouch": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 947
+      "line": 1067
     },
     "GalleryActivity.seek": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 975
+      "line": 1095
     },
     "GalleryActivity.showTime": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 980
+      "line": 1100
     },
     "GalleryActivity.update": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 985
+      "line": 1105
     },
     "GalleryActivity.share": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1001
+      "line": 1121
     },
     "GalleryActivity.confirmDelete": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1021
+      "line": 1141
     },
     "GalleryActivity.label": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1045
+      "line": 1165
     },
     "GalleryActivity.isVideo": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1052
+      "line": 1172
     },
     "GalleryActivity.dp": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1056
+      "line": 1176
     },
     "JpegFrames.scanOffset": {
       "path": "android-preview/src/dev/earclean/preview/JpegFrames.java",
       "line": 96
+    },
+    "LensCover.updateLabel": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 70
+    },
+    "LensCover.setShape": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 74
+    },
+    "LensCover.diameter": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 80
+    },
+    "LensCover.inside": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 84
+    },
+    "LensCover.onDraw": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 90
+    },
+    "LensCover.onTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 113
+    },
+    "LensCover.performClick": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 145
+    },
+    "LensCover.toggle": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 151
+    },
+    "LensCover.duration": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 182
+    },
+    "LensCover.animateOffset": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 186
+    },
+    "LensCover.animateShape": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 195
+    },
+    "LensCover.animate": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 202
+    },
+    "LensCover.onAnimationEnd": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 209
+    },
+    "LensCover.onDetachedFromWindow": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 219
+    },
+    "MaskCropper.onScale": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 139
+    },
+    "MaskCropper.diameter": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 154
+    },
+    "MaskCropper.scale": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 155
+    },
+    "MaskCropper.clamp": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 156
+    },
+    "MaskCropper.onSizeChanged": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 163
+    },
+    "MaskCropper.onDraw": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 164
+    },
+    "MaskCropper.drawImage": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 182
+    },
+    "MaskCropper.onTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 191
     },
     "PhotoMarkup.onSizeChanged": {
       "path": "android-preview/src/dev/earclean/preview/PhotoMarkup.java",
@@ -6383,6 +8288,38 @@
       "path": "android-preview/src/dev/earclean/preview/PhotoMarkup.java",
       "line": 131
     },
+    "PhotoPager.prefetch": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 50
+    },
+    "PhotoPager.ready": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 73
+    },
+    "PhotoPager.showOffset": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 77
+    },
+    "PhotoPager.onInterceptTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 90
+    },
+    "PhotoPager.onTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 92
+    },
+    "PhotoPager.settle": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 134
+    },
+    "PhotoPager.onAnimationEnd": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 153
+    },
+    "PhotoPager.onDetachedFromWindow": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 165
+    },
     "PhotoQuality.ignore": {
       "path": "android-preview/src/dev/earclean/preview/PhotoQuality.java",
       "line": 37
@@ -6393,271 +8330,419 @@
     },
     "PreviewActivity.attachBaseContext": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 112
+      "line": 119
     },
     "PreviewActivity.onCreate": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 117
+      "line": 124
+    },
+    "PreviewActivity.canToggle": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 247
+    },
+    "PreviewActivity.changed": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 251
+    },
+    "PreviewActivity.inFrame": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 252
+    },
+    "PreviewActivity.shape": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 256
     },
     "PreviewActivity.addCapture": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 325
+      "line": 395
     },
     "PreviewActivity.selectProfile": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 342
+      "line": 416
     },
     "PreviewActivity.showConnection": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 353
+      "line": 436
     },
     "PreviewActivity.setLeadingIcon": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 367
+      "line": 451
     },
     "PreviewActivity.showBattery": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 372
+      "line": 456
     },
     "PreviewActivity.updateCaptureControls": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 378
+      "line": 464
     },
     "PreviewActivity.showSettings": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 416
+      "line": 507
+    },
+    "PreviewActivity.chooseMaskImage": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 562
+    },
+    "PreviewActivity.showDeviceInfo": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 571
+    },
+    "PreviewActivity.reloadMask": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 577
+    },
+    "PreviewActivity.showProfileManager": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 581
+    },
+    "PreviewActivity.renderProfileRows": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 607
+    },
+    "PreviewActivity.updateFeedback": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 664
+    },
+    "PreviewActivity.showInteractionFeedback": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 672
+    },
+    "PreviewActivity.chooseUiTheme": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 690
     },
     "PreviewActivity.chooseMacroMode": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 452
+      "line": 711
     },
     "PreviewActivity.showLanguages": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 473
+      "line": 733
     },
     "PreviewActivity.settingsGroup": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 491
+      "line": 751
     },
     "PreviewActivity.editProfile": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 508
+      "line": 768
     },
     "PreviewActivity.onStart": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 548
+      "line": 815
     },
     "PreviewActivity.onSaveInstanceState": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 557
+      "line": 825
     },
     "PreviewActivity.onStop": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 567
+      "line": 836
     },
     "PreviewActivity.onActivityResult": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 579
+      "line": 848
     },
     "PreviewActivity.onDestroy": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 585
+      "line": 855
     },
     "PreviewActivity.startPreview": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 591
+      "line": 861
     },
     "PreviewActivity.status": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 597
+      "line": 867
     },
     "PreviewActivity.connected": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 613
+      "line": 884
     },
     "PreviewActivity.frame": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 620
+      "line": 895
     },
     "PreviewActivity.detail": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 640
+      "line": 918
     },
     "PreviewActivity.battery": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 652
+      "line": 930
+    },
+    "PreviewActivity.setViewfinder": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 952
     },
     "PreviewActivity.messageWithCorrection": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 673
+      "line": 967
     },
     "PreviewActivity.stopRequestedPreview": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 679
+      "line": 973
     },
     "PreviewActivity.stopPreview": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 686
+      "line": 982
     },
     "PreviewActivity.hasWifiPermissions": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 699
+      "line": 996
     },
     "PreviewActivity.connectEar": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 706
+      "line": 1003
     },
     "PreviewActivity.chooseEar": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 715
+      "line": 1013
     },
     "PreviewActivity.previewWith": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 766
+      "line": 1064
     },
     "PreviewActivity.openWifiSettings": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 773
+      "line": 1071
     },
     "PreviewActivity.onRequestPermissionsResult": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 781
+      "line": 1079
     },
     "PreviewActivity.setStabilize": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 789
+      "line": 1087
     },
     "PreviewActivity.setEarSide": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 802
+      "line": 1100
     },
     "PreviewActivity.showWirelessReminder": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 809
+      "line": 1107
     },
     "PreviewActivity.savePicture": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 816
+      "line": 1114
     },
     "PreviewActivity.finishPhotoBurst": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 831
+      "line": 1131
     },
     "PreviewActivity.startVideo": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 903
+      "line": 1203
     },
     "PreviewActivity.stopVideo": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 925
+      "line": 1227
     },
     "PreviewActivity.updateRecordingTime": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 934
+      "line": 1237
     },
     "PreviewActivity.hideRecordingTime": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 941
+      "line": 1244
     },
     "PreviewActivity.showHelp": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 946
+      "line": 1249
     },
     "PreviewActivity.showPrivacy": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 954
+      "line": 1257
     },
     "PreviewActivity.openFeedback": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 960
+      "line": 1263
+    },
+    "PreviewActivity.openFeedbackLink": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 1271
     },
     "PreviewActivity.showMessage": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 968
+      "line": 1279
     },
     "PreviewActivity.startTest": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 972
+      "line": 1283
+    },
+    "PreviewActivity.beginHardwareCheck": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 1294
     },
     "PreviewActivity.updateTest": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 987
+      "line": 1314
     },
     "PreviewActivity.finishTest": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1010
+      "line": 1336
+    },
+    "PreviewActivity.showHardwareResult": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 1354
     },
     "PreviewActivity.record": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1019
+      "line": 1379
     },
     "PreviewActivity.copyReport": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1025
+      "line": 1385
     },
     "PreviewActivity.label": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1035
+      "line": 1395
     },
     "PreviewActivity.dp": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1039
+      "line": 1399
     },
     "PreviewActivity.onScaleBegin": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1071
+      "line": 1436
     },
     "PreviewActivity.onScale": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1078
+      "line": 1443
     },
     "PreviewActivity.onDown": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1098
+      "line": 1464
     },
     "PreviewActivity.onScroll": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1103
+      "line": 1469
     },
     "PreviewActivity.onTouchEvent": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1153
+      "line": 1537
     },
     "PreviewActivity.clampPan": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1163
+      "line": 1547
     },
     "PreviewActivity.onDraw": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1195
+      "line": 1576
+    },
+    "ProfileOrderList.run": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 39
+    },
+    "ProfileOrderList.dispatchTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 62
+    },
+    "ProfileOrderList.lift": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 95
+    },
+    "ProfileOrderList.position": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 118
+    },
+    "ProfileOrderList.positionCard": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 149
+    },
+    "ProfileOrderList.finish": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 163
+    },
+    "ProfileOrderList.land": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 185
+    },
+    "ProfileOrderList.onAnimationEnd": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 203
+    },
+    "ProfileOrderList.clearCard": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 208
+    },
+    "ProfileOrderList.onDetachedFromWindow": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 220
+    },
+    "ProfileOrderList.draw": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 241
+    },
+    "ProfileOrderList.setAlpha": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 252
+    },
+    "ProfileOrderList.setColorFilter": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 253
+    },
+    "ProfileOrderList.getOpacity": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 254
+    },
+    "ProfileOrderList.onDraw": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 261
+    },
+    "ProfileOrderList.getAccessibilityClassName": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 270
     },
     "RollFilter.signedAxis": {
       "path": "android-preview/src/dev/earclean/preview/RollFilter.java",
       "line": 68
     },
+    "ScopeDialog.show": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeDialog.java",
+      "line": 100
+    },
+    "ScopeDialog.action": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeDialog.java",
+      "line": 142
+    },
+    "ScopeUi.performClick": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+      "line": 185
+    },
     "ScopeUi.drawableStateChanged": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 77
+      "line": 190
+    },
+    "ScopeUi.centerIcon": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+      "line": 249
     },
     "ScopeUi.draw": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 466
+      "line": 700
     },
     "ScopeUi.setAlpha": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 483
+      "line": 726
     },
     "ScopeUi.setColorFilter": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 484
+      "line": 727
+    },
+    "ScopeUi.setTint": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+      "line": 544
     },
     "ScopeUi.getOpacity": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 485
+      "line": 728
     },
     "ScopeUi.onBoundsChange": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 450
+      "line": 684
     },
     "VideoCapture.encode": {
       "path": "android-preview/src/dev/earclean/preview/VideoCapture.java",
@@ -6703,5 +8788,6 @@
       "path": "android-preview/src/dev/earclean/preview/VideoPlayback.java",
       "line": 98
     }
-  }
+  },
+  "copyCsv": "文案审核-0.27.csv"
 }

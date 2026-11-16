@@ -1,29 +1,227 @@
 {
   "schemaVersion": "1.0",
   "unit": "dp (HTML 预览按 CSS px 近似；不代表物理像素)",
-  "approval": "骨架为待审布局。先由用户确认，再允许 Claude 在固定槽位内更换视觉。",
-  "viewports": [[360, 800], [390, 844], [412, 915], [844, 390]],
+  "approval": "以当前已实现的原生骨架为准；后续视觉方案沿用现有槽位与交互。",
+  "viewports": [
+    [
+      360,
+      800
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      412,
+      915
+    ],
+    [
+      844,
+      390
+    ]
+  ],
   "capture": {
-    "zones": ["status-safe-area", "profile-settings-battery", "elastic-viewport", "image-tools", "status-line", "capture-actions", "device-connection", "navigation-safe-area"],
-    "fixedSlots": ["profile.open", "settings.open", "camera.stabilize", "camera.mirror", "ear.mark", "gallery.open", "photo.capture", "video.start", "device.search", "device.connect"],
-    "sameSlotStates": [["device.connect", "device.cancel", "device.disconnect"], ["camera.freeze", "camera.resume"], ["camera.expand", "camera.collapse"], ["video.start", "video.stop"]],
+    "zones": [
+      "status-safe-area",
+      "profile-settings-battery",
+      "elastic-viewport",
+      "image-tools",
+      "status-line",
+      "capture-actions",
+      "device-connection",
+      "navigation-safe-area"
+    ],
+    "fixedSlots": [
+      "profile.open",
+      "settings.open",
+      "camera.stabilize",
+      "camera.mirror",
+      "ear.mark",
+      "gallery.open",
+      "photo.capture",
+      "video.start",
+      "device.search",
+      "device.connect"
+    ],
+    "sameSlotStates": [
+      [
+        "device.connect",
+        "device.cancel",
+        "device.disconnect"
+      ],
+      [
+        "camera.freeze",
+        "camera.resume"
+      ],
+      [
+        "camera.expand",
+        "camera.collapse"
+      ],
+      [
+        "video.start",
+        "video.stop"
+      ]
+    ],
     "freezeOptions": [
-      {"id": "tools", "label": "建议 A · 工具栏首位", "status": "待审核", "reason": "拇指容易到达，不遮挡画面；保留固定占位。"},
-      {"id": "viewport-left", "label": "建议 B · 实际画面左下", "status": "待审核", "reason": "与右下旋转形成两侧操作；需要检查遮挡。"},
-      {"id": "current-top", "label": "当前 · 取景区右上", "status": "待重审", "reason": "当前位置，仅用于对照。"}
+      {
+        "id": "tools",
+        "label": "耳别右侧",
+        "status": "用户确认",
+        "reason": "四项工具居中排列"
+      }
     ],
     "freezeIcon": "必须重新设计，不复用录像播放的 play/pause 语义。备选：画框加图钉、画框加冻结标记。",
-    "rotation": {"anchor": "实际矩形内部右下角", "inset": 8, "clockwiseDegrees": 90, "feedbackMs": 180, "preserve": true},
-    "previewSession": {"separateConnection": true, "idleStates": ["connected-idle", "macro-idle"], "openAction": "camera.start-preview", "closeAction": "camera.stop-preview", "openPlacement": "实际取景窗盖板，图标加文字", "closePlacement": "实际取景窗左侧边缘把手，待审核", "keepNetworkAndBatteryOnClose": true, "disableCloseWhile": ["recording", "saving"], "ledCoupling": "未验证，必须实际测试 STOP/START 后灯光响应", "nativeImplementation": "尚未接入 Android 0.18"},
-    "states": ["disconnected", "connecting", "connected-idle", "macro-idle", "live", "reconnecting", "frozen", "macro", "macro-expanded", "recording", "saving", "error"]
+    "rotation": {
+      "anchor": "实际矩形内部右下角",
+      "inset": 8,
+      "clockwiseDegrees": 90,
+      "feedbackMs": 180,
+      "preserve": true
+    },
+    "previewSession": {
+      "separateConnection": true,
+      "idleStates": [
+        "connected-idle",
+        "macro-idle"
+      ],
+      "openAction": "camera.start-preview",
+      "closeAction": "camera.stop-preview",
+      "openPlacement": "圆内任意位置，任意方向滑动图片",
+      "closePlacement": "圆内或微距画面任意位置，任意方向滑动",
+      "keepNetworkAndBatteryOnClose": true,
+      "disableCloseWhile": [
+        "recording",
+        "saving"
+      ],
+      "ledCoupling": "未验证，必须实际测试 STOP/START 后灯光响应",
+      "nativeImplementation": "Android 0.22 已接入，滑动图片蒙版控制取景，独立查询电量"
+    },
+    "states": [
+      "disconnected",
+      "connecting",
+      "connected-idle",
+      "macro-idle",
+      "live",
+      "reconnecting",
+      "frozen",
+      "macro",
+      "macro-expanded",
+      "recording",
+      "saving",
+      "error"
+    ],
+    "imageTools": [
+      "camera.stabilize",
+      "camera.mirror",
+      "ear.mark",
+      "camera.freeze"
+    ],
+    "ticks": false,
+    "coverGesture": "圆内任意方向滑动开合，不另设常驻开始/收起按钮。"
   },
-  "gallery": {"zones": ["profile-header", "media-tabs-filter", "active-filter-summary", "scrolling-grid", "selection-actions"], "filters": ["year", "month", "ear"], "removed": ["影像记录大标题", "独立左右耳对照", "独立时间索引入口"]},
-  "markup": {"tools": ["markup.circle", "markup.arrow", "markup.color", "markup.undo", "markup.redo"], "footer": ["markup.cancel", "markup.save"], "paletteCount": 4, "save": "另存副本"},
+  "gallery": {
+    "zones": [
+      "profile-header",
+      "media-tabs-filter",
+      "active-filter-summary",
+      "scrolling-grid",
+      "selection-actions"
+    ],
+    "filters": [
+      "year",
+      "month",
+      "ear"
+    ],
+    "removed": [
+      "影像记录大标题",
+      "独立左右耳对照",
+      "独立时间索引入口"
+    ],
+    "header": [
+      "back",
+      "profile",
+      "share"
+    ],
+    "toolbar": [
+      "select",
+      "media-tabs",
+      "filter"
+    ],
+    "thumbnailMetadata": [
+      "video-duration"
+    ],
+    "bottomSelection": [
+      "selection-count",
+      "select-all",
+      "delete"
+    ]
+  },
+  "markup": {
+    "tools": [
+      "markup.circle",
+      "markup.arrow",
+      "markup.color",
+      "markup.undo",
+      "markup.redo"
+    ],
+    "footer": [
+      "markup.cancel",
+      "markup.save"
+    ],
+    "paletteCount": 4,
+    "save": "另存副本"
+  },
   "behaviorLocks": [
-    "不新增诊断、医学判断或设备未验证功能",
+    "不引入医学判断或未经验证的硬件能力；设备检查报告实收数据与用户观察。",
     "所有拍摄、档案、分享、原图保留、录制和保存保护沿用现有实现",
     "任何位置、动作、文案或返回规则变更写入 design-decisions.json，等待用户审核",
     "连接状态变化不能让固定操作槽位跳动",
     "系统权限、Wi-Fi 确认和系统分享不宣称可以由皮肤完全接管"
-  ]
+  ],
+  "appVersion": "0.27",
+  "settingsGroups": [
+    [
+      "护耳档案",
+      "管理护耳档案"
+    ],
+    [
+      "个性外观",
+      "镜头封面",
+      "界面主题"
+    ],
+    [
+      "拍摄与设备",
+      "选择设备",
+      "设备参考信息",
+      "全画幅拍摄"
+    ],
+    [
+      "通用",
+      "应用语言",
+      "操作反馈"
+    ],
+    [
+      "帮助与支持",
+      "使用帮助",
+      "反馈与建议",
+      "隐私政策"
+    ],
+    [
+      "设备检查",
+      "30秒设备检查",
+      "复制日志"
+    ]
+  ],
+  "photoPaging": {
+    "followFinger": true,
+    "releaseDistanceRatio": 0.22,
+    "springBack": true,
+    "firstLastResistance": true,
+    "visiblePosition": true
+  },
+  "settingsBackground": {
+    "sameAs": "gallery",
+    "fixedInViewport": true,
+    "scrollContentOnly": true
+  }
 }

@@ -51,9 +51,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public final class PreviewActivity extends Activity {
-    private static final int TEXT = ScopeUi.TEXT;
-    private static final int MUTED = ScopeUi.MUTED;
-    private static final int ACCENT = ScopeUi.ACCENT;
     private final ScopeUi style = new ScopeUi(this);
     private static final int TEST_SECONDS = 30;
     private static final int WIFI_PERMISSIONS = 20;
@@ -65,6 +62,15 @@ public final class PreviewActivity extends Activity {
     private EarWifi earWifi;
     private EarWifi.Device selectedEar;
     private boolean previewRequested;
+    private boolean viewfinderEnabled;
+    private boolean connectedDevice;
+    private LensCover lensCover;
+    private static final int MASK_PICK = 502;
+    private TextView batteryTime;
+    private View batteryIcon;
+    private View batteryCapsule;
+    private Runnable refreshProfileManager;
+    private boolean profileOperation;
     private boolean galleryOpen;
     private String status;
     private TextView batteryStatus;
@@ -101,6 +107,7 @@ public final class PreviewActivity extends Activity {
     private final StringBuilder report = new StringBuilder();
     private long testStarted = -1;
     private int testPhase = -1;
+    private HardwareCheck hardwareCheck;
     private String lastStatus = "";
     private String savedReport = "";
     private final Runnable testTick = this::updateTest;
@@ -115,7 +122,11 @@ public final class PreviewActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle state) {
+        style.load();
+        setTheme(style.light ? android.R.style.Theme_Material_Light_NoActionBar
+                : android.R.style.Theme_Material_NoActionBar);
         super.onCreate(state);
+        AppFeedback.get(this);
         macro = getPreferences(MODE_PRIVATE).getBoolean("macro", false);
         savedReport = getPreferences(MODE_PRIVATE).getString("lastReport", "");
         profiles = new CareProfiles(this);
@@ -123,6 +134,7 @@ public final class PreviewActivity extends Activity {
         if (state != null) {
             macroRotated = state.getBoolean("macroRotated");
             previewRequested = state.getBoolean("previewRequested");
+            viewfinderEnabled = state.getBoolean("viewfinderEnabled");
             selectedEar = EarWifi.Device.read(state.getString("selectedEar", ""));
             if (profile.equals(state.getString("profile"))) {
                 earSide = EarSide.values()[state.getInt("earSide", EarSide.NONE.ordinal())];
@@ -152,34 +164,56 @@ public final class PreviewActivity extends Activity {
         profileButton.setPadding(dp(6), 0, dp(10), 0);
         selectProfile(profile);
         profileButton.setOnClickListener(view -> {
-            if (previewRequested || finishingVideo || savingPicture) {
+            if (recorder != null || finishingVideo || savingPicture) {
                 showMessage(getString(R.string.switch_after_stop));
             } else {
                 style.showProfiles(profiles, profile, this::selectProfile,
-                        () -> editProfile(null), () -> editProfile(profile));
+                        () -> editProfile(null), null);
             }
         });
         FrameLayout leading = new FrameLayout(this);
-        leading.addView(profileButton, new FrameLayout.LayoutParams(-2, dp(44), Gravity.START));
-        header.addView(leading, new LinearLayout.LayoutParams(0, dp(44), 1));
-        Button settings = style.button("⚙");
+        leading.addView(profileButton, new FrameLayout.LayoutParams(-1, dp(48), Gravity.CENTER));
+        header.addView(leading, new LinearLayout.LayoutParams(0, dp(48), 1));
+        Button settings = style.iconButton("settings", getString(R.string.settings));
         settings.setPadding(0, 0, 0, 0);
         settings.setTextSize(23);
         settings.setContentDescription(getString(R.string.settings));
         settings.setOnClickListener(view -> showSettings());
-        LinearLayout.LayoutParams settingsSize = new LinearLayout.LayoutParams(dp(44), dp(44));
-        settingsSize.setMargins(dp(8), 0, dp(8), 0);
+        LinearLayout.LayoutParams settingsSize = new LinearLayout.LayoutParams(dp(48), dp(48));
+        settingsSize.setMargins(dp(16), 0, dp(16), 0);
         header.addView(settings, settingsSize);
-        batteryStatus = label("", 12, TEXT);
-        batteryStatus.setGravity(Gravity.CENTER);
-        batteryStatus.setPadding(dp(10), 0, dp(10), 0);
-        batteryStatus.setCompoundDrawablePadding(dp(5));
-        batteryStatus.setMaxLines(2);
-        batteryStatus.setBackground(style.shape(ScopeUi.GLASS, 22, ScopeUi.EDGE));
+        LinearLayout batteryGroup = new LinearLayout(this);
+        batteryGroup.setGravity(Gravity.CENTER_VERTICAL);
+        batteryGroup.setBackground(style.shape(style.GLASS, 24, style.EDGE));
+        batteryCapsule = batteryGroup;
+        LinearLayout charge = new LinearLayout(this);
+        charge.setGravity(Gravity.CENTER);
+        batteryIcon = new View(this);
+        charge.addView(batteryIcon, new LinearLayout.LayoutParams(dp(18), dp(18)));
+        batteryStatus = label("—", 12, style.TEXT);
+        batteryStatus.setSingleLine(true);
+        batteryStatus.setPadding(dp(3), 0, 0, 0);
+        charge.addView(batteryStatus);
+        batteryGroup.addView(charge, new LinearLayout.LayoutParams(0, -1, 1));
+        TextView separator = label("|", 12, style.MUTED);
+        separator.setGravity(Gravity.CENTER);
+        batteryGroup.addView(separator, new LinearLayout.LayoutParams(dp(8), -1));
+        LinearLayout remaining = new LinearLayout(this);
+        remaining.setGravity(Gravity.CENTER);
+        batteryTime = label("—", 11, style.TEXT);
+        batteryTime.setSingleLine(true);
+        batteryTime.setEllipsize(TextUtils.TruncateAt.END);
+        remaining.addView(batteryTime);
+        View clock = new View(this);
+        clock.setBackground(style.symbol("alarm", 0));
+        LinearLayout.LayoutParams alarmSize = new LinearLayout.LayoutParams(dp(16), dp(16));
+        alarmSize.leftMargin = dp(2);
+        remaining.addView(clock, alarmSize);
+        batteryGroup.addView(remaining, new LinearLayout.LayoutParams(0, -1, 1));
         FrameLayout trailing = new FrameLayout(this);
-        trailing.addView(batteryStatus, new FrameLayout.LayoutParams(-2, dp(44), Gravity.END));
-        header.addView(trailing, new LinearLayout.LayoutParams(0, dp(44), 1));
-        page.addView(header, new LinearLayout.LayoutParams(-1, dp(44)));
+        trailing.addView(batteryGroup, new FrameLayout.LayoutParams(-1, dp(48), Gravity.CENTER));
+        header.addView(trailing, new LinearLayout.LayoutParams(0, dp(48), 1));
+        page.addView(header, new LinearLayout.LayoutParams(-1, dp(48)));
 
         FrameLayout screen = new FrameLayout(this);
         LinearLayout.LayoutParams screenSize = landscape
@@ -194,19 +228,42 @@ public final class PreviewActivity extends Activity {
         empty.setGravity(Gravity.CENTER);
         empty.setPadding(dp(8), 0, dp(8), 0);
         View wifiIcon = new View(this);
-        wifiIcon.setBackground(style.symbol("wifi", 0));
+        Drawable wifiSymbol = style.symbol("wifi", 0);
+        if (style.light) wifiSymbol.setTint(0xfff4f1e6);
+        wifiIcon.setBackground(wifiSymbol);
         empty.addView(wifiIcon, new LinearLayout.LayoutParams(dp(38), dp(38)));
-        connectionTitle = label("", 17, TEXT);
+        connectionTitle = label("", 17, style.light ? 0xfff4f1e6 : style.TEXT);
         connectionTitle.setGravity(Gravity.CENTER);
         connectionTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         connectionTitle.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         style.add(empty, connectionTitle, 4);
-        connectionHint = label("", 13, MUTED);
+        connectionHint = label("", 13, style.light ? 0xffd5cebb : style.MUTED);
         connectionHint.setGravity(Gravity.CENTER);
         style.add(empty, connectionHint, 5);
+        empty.setAlpha(0f);
+        empty.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         screen.addView(empty, new FrameLayout.LayoutParams(-1, -2, Gravity.CENTER));
-        recordingTime = label("", 14, TEXT);
-        recordingTime.setBackground(style.shape(0xdd242333, 17, ScopeUi.EDGE));
+        lensCover = new LensCover(this, new LensCover.Host() {
+            @Override public boolean canToggle(boolean opening) {
+                return (!opening || connectedDevice) && recorder == null && !finishingVideo
+                        && !savingPicture && !profileOperation && !preview.isFrozen();
+            }
+            @Override public void changed(boolean opened) { setViewfinder(opened); }
+            @Override public boolean inFrame(float x, float y) {
+                preview.updateFrameBounds();
+                return preview.frameBounds.contains(x, y);
+            }
+            @Override public void shape(float value) {
+                preview.shapeProgress = value;
+                preview.invalidate();
+            }
+        });
+        lensCover.setImage(ProfileMasks.load(this, profile));
+        lensCover.setMacro(macro);
+        lensCover.restore(viewfinderEnabled);
+        screen.addView(lensCover, new FrameLayout.LayoutParams(-1, -1));
+        recordingTime = label("", 14, style.TEXT);
+        recordingTime.setBackground(style.shape(0xdd242333, 17, style.EDGE));
         recordingTime.setPadding(dp(12), dp(5), dp(12), dp(5));
         recordingTime.setVisibility(View.GONE);
         FrameLayout.LayoutParams timer = new FrameLayout.LayoutParams(-2, -2,
@@ -215,15 +272,15 @@ public final class PreviewActivity extends Activity {
         screen.addOnLayoutChangeListener((view, left, top, right, bottom, a, b, c, d) ->
                 recordingTime.setTranslationY(Math.min(right - left, bottom - top) * .34f));
         freezeButton = style.iconButton("pause", getString(R.string.freeze_preview));
-        freezeButton.setBackground(style.pill(0xee242333, 22, ScopeUi.EDGE));
+        freezeButton.setBackground(style.pill(0xee242333, 22, style.EDGE));
         freezeButton.setOnClickListener(view -> {
             finishPhotoBurst();
             preview.setFrozen(!preview.isFrozen());
             updateCaptureControls();
         });
-        screen.addView(freezeButton, new FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP | Gravity.END));
+
         rotateMacroButton = style.iconButton("expand", getString(R.string.macro_rotate_preview));
-        rotateMacroButton.setBackground(style.pill(0x66070b12, 24, 0x30ffffff));
+        rotateMacroButton.setBackground(style.pill(style.light ? 0xeefbf9f2 : 0x66070b12, 24, 0x30ffffff));
         rotateMacroButton.setOnClickListener(view -> {
             macroRotated = !macroRotated;
             rotateMacroButton.animate().rotationBy(90).setDuration(180).start();
@@ -239,6 +296,7 @@ public final class PreviewActivity extends Activity {
         wifiButton.setOnClickListener(view -> chooseEar(true));
         previewButton = style.iconButton("connect", getString(R.string.connect_device));
         previewButton.setBackground(style.pill(0x487dd3fc, 24, 0x757dd3fc));
+        if (style.light) previewButton.setTextColor(style.INK);
         previewButton.setOnClickListener(view -> {
             if (previewRequested) stopRequestedPreview();
             else connectEar();
@@ -266,24 +324,36 @@ public final class PreviewActivity extends Activity {
         imageOptions.addView(mirrorButton, mirrorSize);
         earSideButton = style.iconButton("tag", getString(R.string.ear_choose));
         setEarSide(earSide);
-        earSideButton.setOnClickListener(view -> new AlertDialog.Builder(this)
+        earSideButton.setOnClickListener(view -> new ScopeDialog.Builder(this)
                 .setTitle(R.string.ear_choose)
                 .setSingleChoiceItems(EarSide.labels(this), earSide.ordinal(), (dialog, which) -> {
                     setEarSide(EarSide.values()[which]);
                     dialog.dismiss();
                 }).setNegativeButton(android.R.string.cancel, null).show());
         imageOptions.addView(earSideButton, new LinearLayout.LayoutParams(dp(48), dp(48)));
-        page.addView(imageOptions);
+        LinearLayout.LayoutParams freezeSize = new LinearLayout.LayoutParams(dp(48), dp(48));
+        freezeSize.leftMargin = dp(12);
+        imageOptions.addView(freezeButton, freezeSize);
+        LinearLayout controlsPanel = page;
+        if (style.cyan) {
+            controlsPanel = new LinearLayout(this);
+            controlsPanel.setOrientation(LinearLayout.VERTICAL);
+            controlsPanel.setPadding(0, dp(8), 0, 0);
+            LinearLayout.LayoutParams panelSize = new LinearLayout.LayoutParams(-1, -2);
+            page.addView(controlsPanel, panelSize);
+            page.setBackground(style.captureBackdrop(controlsPanel));
+        }
+        controlsPanel.addView(imageOptions);
 
-        guide = label("", 13, MUTED);
+        guide = label("", 13, style.MUTED);
         guide.setGravity(Gravity.CENTER);
         guide.setMinHeight(dp(40));
-        style.add(page, guide, 8);
+        style.add(controlsPanel, guide, 8);
 
         LinearLayout captureBar = new LinearLayout(this);
         captureBar.setGravity(Gravity.CENTER);
         View gallery = new View(this);
-        gallery.setBackground(style.pill(0x54776d95, 16, ScopeUi.EDGE));
+        gallery.setBackground(style.pill(0x54776d95, 16, style.EDGE));
         View galleryIcon = new View(this);
         galleryIcon.setBackground(style.symbol("album", 0));
         addCapture(captureBar, gallery, galleryIcon, getString(R.string.album), 56, 80, () -> {
@@ -300,23 +370,23 @@ public final class PreviewActivity extends Activity {
 
         shutter = new View(this);
         GradientDrawable shutterRim = style.shape(0x14000000, 42, 0);
-        shutterRim.setStroke(dp(3), TEXT);
+        shutterRim.setStroke(dp(style.orange ? 2 : style.light ? 1 : 3), style.TEXT);
         shutter.setBackground(shutterRim);
         View shutterCenter = new View(this);
-        shutterCenter.setBackground(style.shape(TEXT, 33, 0));
+        shutterCenter.setBackground(style.shape(style.SHUTTER, 33, style.orange ? style.TEXT : 0));
         addCapture(captureBar, shutter, shutterCenter, getString(R.string.take_photo), 80, 104, this::savePicture);
 
         videoButton = new View(this);
-        videoButton.setBackground(style.pill(ScopeUi.GLASS, 32, ScopeUi.EDGE));
+        videoButton.setBackground(style.pill(style.GLASS, 32, style.EDGE));
         recordMark = new View(this);
         addCapture(captureBar, videoButton, recordMark, getString(R.string.video), 64, 80, () -> {
             if (recorder != null) stopVideo();
             else if (!finishingVideo) startVideo();
         });
-        style.add(page, captureBar, 18);
+        style.add(controlsPanel, captureBar, 18);
         LinearLayout.LayoutParams connectionRow = new LinearLayout.LayoutParams(-1, dp(48));
         connectionRow.topMargin = dp(12);
-        page.addView(connectionActions, connectionRow);
+        controlsPanel.addView(connectionActions, connectionRow);
         updateCaptureControls();
         showConnection(getString(R.string.disconnected), getString(R.string.connect_hint));
         if (state == null) showWirelessReminder();
@@ -333,8 +403,12 @@ public final class PreviewActivity extends Activity {
         int size = diameter == 80 ? 64 : diameter == 64 ? 34 : 36;
         ring.addView(symbol, new FrameLayout.LayoutParams(dp(size), dp(size), Gravity.CENTER));
         control.setContentDescription(name);
+        style.captureFeedback(control);
         if (Build.VERSION.SDK_INT >= 26) control.setTooltipText(name);
-        control.setOnClickListener(view -> action.run());
+        control.setOnClickListener(view -> {
+            if (control != shutter && control != videoButton) AppFeedback.get(this).play(control, "click");
+            action.run();
+        });
         column.addView(ring, new LinearLayout.LayoutParams(-1, dp(80)));
         bar.addView(column, new LinearLayout.LayoutParams(dp(columnWidth), -2));
     }
@@ -344,7 +418,16 @@ public final class PreviewActivity extends Activity {
         profile = id;
         profiles.select(id);
         String name = profiles.name(id);
-        profileButton.setText(name + "  ▾");
+        profileButton.setText(name);
+        if (lensCover != null) {
+            viewfinderEnabled = false;
+            if (session != null) session.setPreviewEnabled(false);
+            lensCover.setImage(ProfileMasks.load(this, id));
+            lensCover.restore(false);
+            preview.setFrame(null, 0);
+            showConnection(getString(connectedDevice ? R.string.device_ready : R.string.disconnected),
+                    getString(connectedDevice ? R.string.idle_battery_hint : R.string.connect_hint));
+        }
         profileButton.setContentDescription(getString(R.string.profile_switch, name));
         profileButton.setCompoundDrawablePadding(dp(6));
         setLeadingIcon(profileButton, style.avatar(name), 28);
@@ -358,10 +441,11 @@ public final class PreviewActivity extends Activity {
         empty.setVisibility(live ? View.GONE : View.VISIBLE);
         if (!live) preview.setFrozen(false);
         updateCaptureControls();
-        if (!live) showBattery("—", 0);
+        if (!connectedDevice) showBattery("—", 0);
+
         if (testStarted < 0) guide.setText(live
                 ? (macro ? getString(R.string.macro_hint) : getString(R.string.recording_for, profiles.name(profile)))
-                : "");
+                : status);
     }
 
     private void setLeadingIcon(TextView label, Drawable icon, int size) {
@@ -370,9 +454,11 @@ public final class PreviewActivity extends Activity {
     }
 
     private void showBattery(String text, int percent) {
-        batteryStatus.setText(text);
-        batteryStatus.setContentDescription(getString(R.string.battery_description, text));
-        setLeadingIcon(batteryStatus, style.symbol("battery", percent), 20);
+        int separator = text.indexOf('|');
+        batteryStatus.setText(text.contains("%") ? percent + "%" : "—");
+        batteryTime.setText(separator >= 0 ? text.substring(separator + 1).trim() : "—");
+        batteryCapsule.setContentDescription(getString(R.string.battery_description, text));
+        batteryIcon.setBackground(style.symbol("battery", percent));
     }
 
     private void updateCaptureControls() {
@@ -382,19 +468,24 @@ public final class PreviewActivity extends Activity {
         boolean canCapture = live && !frozen;
         boolean canRecord = canCapture || active;
         if (testStarted < 0) guide.setText(frozen ? getString(R.string.frozen_status) : live
-                ? (macro ? getString(R.string.macro_hint) : getString(R.string.recording_for, profiles.name(profile))) : "");
-        freezeButton.setVisibility(live ? View.VISIBLE : View.GONE);
+                ? (macro ? getString(R.string.macro_hint) : getString(R.string.recording_for, profiles.name(profile))) : status);
+        freezeButton.setVisibility(View.VISIBLE);
         freezeButton.setEnabled(live && !active && !finishingVideo);
-        style.setIcon(freezeButton, frozen ? "play" : "pause",
+        style.setIcon(freezeButton, "inspect",
                 getString(frozen ? R.string.resume_preview : R.string.freeze_preview));
-        freezeButton.setBackground(style.pill(frozen ? 0xb3152635 : 0x66070b12, 24, frozen ? ACCENT : 0x30ffffff));
+        style.selectIcon(freezeButton, frozen);
         stabilizeButton.setEnabled(live && !macro);
         mirrorButton.setEnabled(live);
         earSideButton.setEnabled(live && !macro);
         style.selectIcon(stabilizeButton, preview.stabilize);
         style.selectIcon(mirrorButton, preview.mirror);
-        style.setIcon(previewButton, previewRequested ? (live ? "disconnect" : "cancel") : "connect",
-                getString(previewRequested ? (live ? R.string.disconnect_device : R.string.stop_connecting) : R.string.connect_device));
+        style.setIcon(previewButton, previewRequested ? (connectedDevice ? "disconnect" : "cancel") : "connect",
+                getString(previewRequested ? (connectedDevice ? R.string.disconnect_device : R.string.stop_connecting) : R.string.connect_device));
+        previewButton.setBackground(style.pill(previewRequested ? style.SOFT : style.ACCENT, 24, 0));
+
+        if (style.light && previewButton.getCompoundDrawables()[0] != null) {
+            previewButton.getCompoundDrawables()[0].setTint(previewRequested ? style.RED : style.INK);
+        }
         rotateMacroButton.setVisibility(live && macro ? View.VISIBLE : View.GONE);
         style.setIcon(rotateMacroButton, macroRotated ? "collapse" : "expand",
                 getString(macroRotated ? R.string.macro_restore_preview : R.string.macro_rotate_preview));
@@ -410,26 +501,41 @@ public final class PreviewActivity extends Activity {
         recordMark.getLayoutParams().width = dp(size);
         recordMark.getLayoutParams().height = dp(size);
         recordMark.requestLayout();
-        recordMark.setBackground(style.shape(ScopeUi.RED, active ? 7 : 17, 0));
+        recordMark.setBackground(style.shape(style.RECORD, active ? 7 : 17, 0));
     }
 
     private void showSettings() {
         Dialog dialog = new Dialog(this);
         LinearLayout page = style.page();
-        page.setPadding(dp(20), dp(16), dp(20), dp(16));
-        Button back = style.button("‹");
+        style.fit(this, page, 16, 12);
+        Button back = style.iconButton("back", getString(R.string.back));
         back.setContentDescription(getString(R.string.back_to_preview));
         back.setOnClickListener(view -> dialog.dismiss());
-        page.addView(back, new LinearLayout.LayoutParams(dp(44), dp(44)));
-        TextView heading = label(getString(R.string.settings), 30, TEXT);
+        page.addView(back, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        TextView heading = label(getString(R.string.settings), 30, style.TEXT);
         heading.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         style.add(page, heading, 18);
-        settingsGroup(page, new String[]{getString(R.string.language_title), getString(R.string.help), getString(R.string.privacy), getString(R.string.feedback)},
-                new Runnable[]{() -> showLanguages(dialog), this::showHelp, this::showPrivacy, this::openFeedback});
-        style.add(page, label(getString(R.string.macro_mode), 13, MUTED), 24);
+        style.add(page, label(getString(R.string.profiles), 13, style.MUTED), 24);
+        settingsGroup(page, new String[]{getString(R.string.manage_profiles)},
+                new Runnable[]{this::showProfileManager});
+        style.add(page, label(getString(R.string.settings_appearance), 13, style.MUTED), 24);
+        settingsGroup(page, new String[]{getString(R.string.mask_image) + " · " + profiles.name(profile)},
+                new Runnable[]{this::chooseMaskImage});
+        settingsGroup(page, new String[]{getString(R.string.ui_theme) + " · "
+                        + getString(style.themeLabel())},
+                new Runnable[]{() -> chooseUiTheme(dialog)});
+        style.add(page, label(getString(R.string.settings_capture), 13, style.MUTED), 24);
+        settingsGroup(page, new String[]{getString(R.string.choose_device), getString(R.string.device_info)},
+                new Runnable[]{() -> chooseEar(true), this::showDeviceInfo});
         settingsGroup(page, new String[]{getString(macro ? R.string.macro_on : R.string.macro_off)},
                 new Runnable[]{() -> chooseMacroMode(dialog)});
-        style.add(page, label(getString(R.string.test_tools), 13, MUTED), 24);
+        style.add(page, label(getString(R.string.settings_general), 13, style.MUTED), 24);
+        settingsGroup(page, new String[]{getString(R.string.language_title), getString(R.string.interaction_feedback)},
+                new Runnable[]{() -> showLanguages(dialog), this::showInteractionFeedback});
+        style.add(page, label(getString(R.string.settings_support), 13, style.MUTED), 24);
+        settingsGroup(page, new String[]{getString(R.string.help), getString(R.string.feedback), getString(R.string.privacy)},
+                new Runnable[]{this::showHelp, this::openFeedback, this::showPrivacy});
+        style.add(page, label(getString(R.string.test_tools), 13, style.MUTED), 24);
         settingsGroup(page,
                 new String[]{testStarted >= 0 ? getString(R.string.test_stop) : getString(R.string.test_label, TEST_SECONDS), getString(R.string.test_copy)},
                 new Runnable[]{() -> {
@@ -437,16 +543,169 @@ public final class PreviewActivity extends Activity {
                     if (testStarted >= 0) finishTest(getString(R.string.test_manual_end));
                     else startTest();
                 }, this::copyReport});
-        TextView version = label(getString(R.string.brand), 12, MUTED);
+        TextView version = label(getString(R.string.brand), 12, style.MUTED);
         version.setGravity(Gravity.CENTER);
         style.add(page, version, 24);
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
+        // Match the album: the wallpaper belongs to the stationary viewport.
+        scroll.setBackground(style.backdrop());
+        page.setBackgroundColor(android.graphics.Color.TRANSPARENT);
         scroll.addView(page);
         dialog.setContentView(scroll);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
         dialog.getWindow().setLayout(-1, -1);
+        style.decorateWindow(dialog.getWindow());
+    }
+
+    private void chooseMaskImage() {
+        if (profileOperation || savingPicture || finishingVideo || recorder != null) {
+            showMessage(getString(R.string.finish_recording_first));
+            return;
+        }
+        startActivityForResult(new Intent(this, CoverPickerActivity.class)
+                .putExtra(CareProfiles.EXTRA, profile), MASK_PICK);
+    }
+
+    private void showDeviceInfo() {
+        new ScopeDialog.Builder(this).setTitle(R.string.device_info)
+                .setMessage(getString(R.string.device_info_body))
+                .setPositiveButton(R.string.close, null).show();
+    }
+
+    private void reloadMask() {
+        if (lensCover != null) lensCover.setImage(ProfileMasks.load(this, profile));
+    }
+
+    private void showProfileManager() {
+        Dialog manager = new Dialog(this);
+        LinearLayout page = style.page();
+        page.setPadding(dp(16), dp(16), dp(16), dp(16));
+        Button back = style.iconButton("back", getString(R.string.back));
+        back.setOnClickListener(view -> manager.dismiss());
+        page.addView(back, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        style.add(page, label(getString(R.string.manage_profiles), 18, style.TEXT), 16);
+        style.add(page, label(getString(R.string.profile_sort_hint), 12, style.MUTED), 8);
+        LinearLayout rows = new ProfileOrderList(this, style, profiles::move);
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(rows);
+        page.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
+        Button add = style.button(getString(R.string.profile_add_person));
+        add.setOnClickListener(view -> editProfile(null));
+        style.add(page, add, 12);
+        refreshProfileManager = () -> renderProfileRows(rows);
+        manager.setOnDismissListener(window -> refreshProfileManager = null);
+        refreshProfileManager.run();
+        manager.setContentView(page);
+        manager.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        manager.show();
+        manager.getWindow().setLayout(-1, -1);
+        style.decorateWindow(manager.getWindow());
+    }
+
+    private void renderProfileRows(LinearLayout rows) {
+        rows.removeAllViews();
+        rows.setEnabled(!profileOperation);
+        for (String id : profiles.ids()) {
+            LinearLayout row = new LinearLayout(this);
+            row.setTag(id);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            View person = ProfileOrderList.name(this, style, profiles.name(id));
+            person.setOnClickListener(view -> editProfile(id));
+
+            Button delete = style.iconButton("delete", getString(R.string.delete_profile));
+            delete.setOnClickListener(view -> {
+                if (profileOperation) return;
+                if (profiles.ids().size() <= 1) {
+                    showMessage(getString(R.string.keep_one_profile));
+                    return;
+                }
+                if (savingPicture || finishingVideo || recorder != null) {
+                    showMessage(getString(R.string.switch_after_stop));
+                    return;
+                }
+                new ScopeDialog.Builder(this).setTitle(getString(R.string.delete_profile))
+                        .setMessage(getString(R.string.delete_profile_confirm,
+                                profiles.name(id), profiles.captureCount(id)))
+                        .setNegativeButton(R.string.cancel, null)
+                        .setPositiveButton(R.string.delete, (dialog, which) -> {
+                            profileOperation = true;
+                            rows.setEnabled(false);
+                            delete.setEnabled(false);
+                            new Thread(() -> {
+                                boolean removed = profiles.remove(id);
+                                runOnUiThread(() -> {
+                                    profileOperation = false;
+                                    if (isDestroyed()) return;
+                                    if (removed) selectProfile(profiles.current());
+                                    else showMessage(getString(R.string.profile_delete_failed));
+                                    if (refreshProfileManager != null) refreshProfileManager.run();
+                                });
+                            }, "profile-remove").start();
+                        }).show();
+            });
+
+            Button handle = style.iconButton("drag", getString(R.string.profile_reorder));
+            handle.setLongClickable(false);
+            row.setBackground(style.shape(style.GLASS, 24, style.EDGE));
+            row.setPadding(dp(4), dp(4), dp(4), dp(4));
+            for (View integrated : new View[]{handle, person, delete}) {
+                integrated.setBackground(style.pill(0, 24, 0));
+                integrated.setElevation(0);
+            }
+            row.addView(handle, new LinearLayout.LayoutParams(dp(48), dp(48)));
+            row.addView(person, new LinearLayout.LayoutParams(0, dp(48), 1));
+            row.addView(delete, new LinearLayout.LayoutParams(dp(48), dp(48)));
+            style.add(rows, row, 8);
+        }
+    }
+
+    private void updateFeedback(View view) {
+        view.setSoundEffectsEnabled(false);
+        if (view instanceof android.view.ViewGroup) {
+            android.view.ViewGroup group = (android.view.ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) updateFeedback(group.getChildAt(i));
+        }
+    }
+
+    private void showInteractionFeedback() {
+        android.content.SharedPreferences prefs = getSharedPreferences("appearance", MODE_PRIVATE);
+        String[] keys = {"sound_feedback", "haptic_feedback"};
+        String[] titles = {getString(R.string.sound_feedback), getString(R.string.haptic_feedback)};
+        String[] options = new String[2];
+        for (int i = 0; i < keys.length; i++) {
+            options[i] = titles[i] + " · " + getString(prefs.getBoolean(keys[i], true)
+                    ? R.string.feedback_on : R.string.feedback_off);
+        }
+        new ScopeDialog.Builder(this).setTitle(R.string.interaction_feedback)
+                .setMessage(R.string.sound_volume_hint)
+                .setItems(options, (dialog, which) -> {
+                    prefs.edit().putBoolean(keys[which], !prefs.getBoolean(keys[which], true)).apply();
+                    updateFeedback(getWindow().getDecorView());
+                    showInteractionFeedback();
+                }).setNegativeButton(R.string.close, null).show();
+    }
+
+    private void chooseUiTheme(Dialog settings) {
+        String[] ids = ScopeUi.THEMES;
+        String[] names = {getString(R.string.ui_dark), getString(R.string.ui_warm),
+                getString(R.string.ui_orange), getString(R.string.ui_cyan)};
+        int[] choice = {Math.max(0, java.util.Arrays.asList(ids).indexOf(ScopeUi.selectedTheme(this)))};
+        new ScopeDialog.Builder(this).setTitle(R.string.ui_theme)
+                .setSingleChoiceItems(names, choice[0], (dialog, which) -> choice[0] = which)
+                .setPositiveButton(R.string.ui_set_default, (dialog, button) -> {
+                    int which = choice[0];
+                    if (ids[which].equals(ScopeUi.selectedTheme(this))) return;
+                    if (recorder != null || finishingVideo || savingPicture) {
+                        showMessage(getString(R.string.finish_recording_first));
+                        return;
+                    }
+                    getSharedPreferences("appearance", MODE_PRIVATE).edit()
+                            .putString("ui_theme", ids[which]).apply();
+                    settings.dismiss();
+                    recreate();
+                }).setNegativeButton(android.R.string.cancel, null).show();
     }
 
     private void chooseMacroMode(Dialog settings) {
@@ -454,11 +713,12 @@ public final class PreviewActivity extends Activity {
             showMessage(getString(R.string.finish_recording_first));
             return;
         }
-        new AlertDialog.Builder(this).setTitle(R.string.macro_mode)
+        new ScopeDialog.Builder(this).setTitle(R.string.macro_mode)
                 .setMessage(R.string.macro_explanation)
                 .setPositiveButton(macro ? R.string.macro_disable : R.string.macro_enable, (dialog, which) -> {
                     preview.setFrozen(false);
                     macro = !macro;
+                    lensCover.setMacro(macro);
                     macroRotated = false;
                     getPreferences(MODE_PRIVATE).edit().putBoolean("macro", macro).apply();
                     if (session != null) session.setStabilize(!macro && preview.stabilize);
@@ -474,7 +734,7 @@ public final class PreviewActivity extends Activity {
         String[] names = {getString(R.string.language_system), "简体中文", "繁體中文", "English"};
         String active = AppLanguage.selected(this);
         int checked = java.util.Arrays.asList(AppLanguage.TAGS).indexOf(active);
-        new AlertDialog.Builder(this).setTitle(R.string.language_title)
+        new ScopeDialog.Builder(this).setTitle(R.string.language_title)
                 .setSingleChoiceItems(names, checked, (dialog, which) -> {
                     dialog.dismiss();
                     if (AppLanguage.TAGS[which].equals(active)) return;
@@ -491,7 +751,7 @@ public final class PreviewActivity extends Activity {
     private void settingsGroup(LinearLayout page, String[] names, Runnable[] actions) {
         LinearLayout group = new LinearLayout(this);
         group.setOrientation(LinearLayout.VERTICAL);
-        group.setBackground(style.shape(ScopeUi.GLASS, 26, ScopeUi.EDGE));
+        group.setBackground(style.shape(style.GLASS, 26, style.EDGE));
         group.setPadding(dp(6), dp(4), dp(6), dp(4));
         for (int i = 0; i < names.length; i++) {
             Button row = style.button(names[i] + "  ›");
@@ -506,6 +766,10 @@ public final class PreviewActivity extends Activity {
     }
 
     private void editProfile(String id) {
+        if (profileOperation || recorder != null || finishingVideo || savingPicture) {
+            showMessage(getString(R.string.finish_recording_first));
+            return;
+        }
         EditText name = new EditText(this);
         name.setSingleLine(true);
         name.setHint(getString(R.string.nickname_hint));
@@ -517,7 +781,7 @@ public final class PreviewActivity extends Activity {
         LinearLayout form = new LinearLayout(this);
         form.setPadding(dp(22), 0, dp(22), 0);
         form.addView(name, new LinearLayout.LayoutParams(-1, -2));
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        ScopeDialog dialog = new ScopeDialog.Builder(this)
                 .setTitle(id == null ? getString(R.string.profile_add) : getString(R.string.profile_edit))
                 .setView(form)
                 .setNegativeButton(getString(R.string.cancel), null)
@@ -539,6 +803,9 @@ public final class PreviewActivity extends Activity {
                     selectProfile(profiles.save(id, nickname));
                     dialog.dismiss();
                 }));
+        dialog.setOnDismissListener(window -> {
+            if (refreshProfileManager != null) refreshProfileManager.run();
+        });
         name.requestFocus();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.show();
@@ -550,12 +817,14 @@ public final class PreviewActivity extends Activity {
         ui.removeCallbacks(galleryPreviewTimeout);
         String activeProfile = profiles.current();
         if (!activeProfile.equals(profile)) selectProfile(activeProfile);
+        updateFeedback(getWindow().getDecorView());
         if (previewRequested) startPreview();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle state) {
         state.putBoolean("previewRequested", previewRequested);
+        state.putBoolean("viewfinderEnabled", viewfinderEnabled);
         state.putBoolean("macroRotated", macroRotated);
         if (selectedEar != null) state.putString("selectedEar", selectedEar.key());
         state.putString("profile", profile);
@@ -579,6 +848,7 @@ public final class PreviewActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_REQUEST) galleryOpen = false;
+        if (requestCode == MASK_PICK && resultCode == RESULT_OK) reloadMask();
     }
 
     @Override
@@ -605,6 +875,7 @@ public final class PreviewActivity extends Activity {
                     finishPhotoBurst();
                     preview.resetReference();
                     preview.setFrame(null, 0);
+                    connectedDevice = false;
                     showConnection(message, getString(R.string.waiting_image));
                 });
             }
@@ -612,19 +883,26 @@ public final class PreviewActivity extends Activity {
             @Override
             public void connected(CameraStream source, Network network) {
                 runOnUiThread(() -> {
-                    if (session == source) earWifi.confirm(network);
+                    if (session != source) return;
+                    earWifi.confirm(network);
+                    connectedDevice = true;
+                    if (!viewfinderEnabled) showConnection(getString(R.string.device_ready),
+                            getString(R.string.idle_battery_hint));
                 });
             }
 
             @Override
             public void frame(CameraStream source, Bitmap image, float rotation) {
                 runOnUiThread(() -> {
-                    if (session != source) return;
+                    if (session != source || !viewfinderEnabled) return;
+                    connectedDevice = true;
                     if (empty.getVisibility() != View.GONE) {
                         showConnection(getString(R.string.live), null);
                         record("进入实时预览");
                     }
                     preview.setFrame(image, rotation);
+                    if (testStarted >= 0 && hardwareCheck != null && image != null)
+                        hardwareCheck.frame(SystemClock.elapsedRealtime(), image.getWidth(), image.getHeight(), rotation);
                     if (recorder != null || photoBurst != null) {
                         CaptureImage capture = preview.currentImage();
                         if (recorder != null) recorder.offer(capture);
@@ -654,20 +932,36 @@ public final class PreviewActivity extends Activity {
                     if (session != source) return;
                     if (reading == null) {
                         showBattery(getString(R.string.battery_unavailable), 0);
-                    } else if (reading.charging) {
-                        showBattery(reading.full ? getString(R.string.battery_full) : getString(R.string.battery_charging, reading.percent),
-                                reading.percent);
                     } else {
-                        showBattery(getString(R.string.battery_estimate, reading.percent, reading.estimatedMinutes()),
-                                reading.percent);
+                        if (testStarted >= 0 && hardwareCheck != null) hardwareCheck.batteryReplies++;
+                        String detail = reading.charging
+                                ? getString(R.string.battery_charging_short, reading.percent)
+                                : getString(R.string.battery_short, reading.percent, reading.estimatedMinutes());
+                        showBattery(detail, reading.percent);
                     }
                 });
             }
         });
         showConnection(getString(R.string.connecting), getString(R.string.waiting_image));
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (viewfinderEnabled) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        session.setPreviewEnabled(viewfinderEnabled);
         session.setStabilize(!macro && preview.stabilize);
         session.start();
+    }
+
+    private void setViewfinder(boolean enabled) {
+        if (recorder != null || finishingVideo || savingPicture) {
+            showMessage(getString(R.string.finish_recording_first));
+            return;
+        }
+        viewfinderEnabled = enabled;
+        if (enabled) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        preview.setFrozen(false);
+        preview.setFrame(null, 0);
+        if (session != null) session.setPreviewEnabled(enabled);
+        showConnection(getString(enabled ? R.string.connecting : R.string.device_ready),
+                getString(enabled ? R.string.waiting_image : R.string.idle_battery_hint));
     }
 
     private void messageWithCorrection(String message) {
@@ -678,6 +972,8 @@ public final class PreviewActivity extends Activity {
 
     private void stopRequestedPreview() {
         previewRequested = false;
+        viewfinderEnabled = false;
+        lensCover.restore(false);
         stopPreview();
         selectedEar = null;
         if (testStarted >= 0) finishTest(getString(R.string.test_preview_stopped));
@@ -689,6 +985,7 @@ public final class PreviewActivity extends Activity {
         stopVideo();
         if (session != null) session.stop();
         session = null;
+        connectedDevice = false;
         earWifi.stop();
         preview.resetReference();
         preview.setFrame(null, 0);
@@ -704,6 +1001,7 @@ public final class PreviewActivity extends Activity {
     }
 
     private void connectEar() {
+        if (profileOperation) return;
         EarWifi.Device last = earWifi.last();
         if (last != null && Build.VERSION.SDK_INT >= 29 && hasWifiPermissions()) {
             previewWith(last);
@@ -718,7 +1016,7 @@ public final class PreviewActivity extends Activity {
             return;
         }
         if (!hasWifiPermissions()) {
-            new AlertDialog.Builder(this).setTitle(getString(R.string.wifi_discover))
+            new ScopeDialog.Builder(this).setTitle(getString(R.string.wifi_discover))
                     .setMessage(getString(R.string.wifi_permissions))
                     .setPositiveButton(getString(R.string.allow_discovery), (dialog, which) ->
                             requestPermissions(EarWifi.permissions(), WIFI_PERMISSIONS))
@@ -747,7 +1045,7 @@ public final class PreviewActivity extends Activity {
                     }
                 }
             }
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this).setTitle(getString(R.string.wifi_choose))
+            ScopeDialog.Builder dialog = new ScopeDialog.Builder(this).setTitle(getString(R.string.wifi_choose))
                     .setNeutralButton(getString(R.string.wifi_settings), (d, which) -> openWifiSettings())
                     .setNegativeButton(getString(R.string.cancel), null)
                     .setPositiveButton(getString(R.string.wifi_rescan), (d, which) -> chooseEar(true));
@@ -807,19 +1105,21 @@ public final class PreviewActivity extends Activity {
     }
 
     private void showWirelessReminder() {
-        new AlertDialog.Builder(this).setTitle(R.string.wireless_title)
+        new ScopeDialog.Builder(this).setTitle(R.string.wireless_title)
                 .setMessage(R.string.wireless_prompt)
                 .setPositiveButton(R.string.wireless_settings, (dialog, which) -> openWifiSettings())
                 .setNegativeButton(R.string.continue_app, null).show();
     }
 
     private void savePicture() {
+        if (profileOperation) return;
         if (savingPicture) return;
         CaptureImage capture = preview.currentImage();
         if (capture == null) {
             showMessage(getString(R.string.wait_for_preview));
             return;
         }
+        AppFeedback.get(this).play(shutter, "shutter");
         savingPicture = true;
         photoBurst = new PhotoBurst(capture, profile, macro, macro ? EarSide.NONE : earSide);
         ui.postDelayed(photoBurstTimeout, PHOTO_BURST_MS);
@@ -901,12 +1201,14 @@ public final class PreviewActivity extends Activity {
     }
 
     private void startVideo() {
+        if (profileOperation) return;
         CaptureImage image = preview.currentImage();
         if (image == null) {
             showMessage(getString(R.string.wait_for_preview));
             return;
         }
         File file = CaptureProvider.newFile(this, profile, macro ? "macro-video" : "video", "mp4");
+        AppFeedback.get(this).play(videoButton, "record-start");
         recorder = new VideoCapture(file, image, macro, error -> runOnUiThread(() -> {
             recorder = null;
             finishingVideo = false;
@@ -924,6 +1226,7 @@ public final class PreviewActivity extends Activity {
 
     private void stopVideo() {
         if (recorder == null) return;
+        AppFeedback.get(this).play(videoButton, "record-stop");
         finishingVideo = true;
         recorder.stop();
         recorder = null;
@@ -944,7 +1247,7 @@ public final class PreviewActivity extends Activity {
     }
 
     private void showHelp() {
-        new AlertDialog.Builder(this).setTitle(getString(R.string.help))
+        new ScopeDialog.Builder(this).setTitle(getString(R.string.help))
                 .setMessage(R.string.help_body)
                 .setPositiveButton(getString(R.string.feedback_action), (dialog, which) -> openFeedback())
                 .setNeutralButton(getString(R.string.privacy), (dialog, which) -> showPrivacy())
@@ -952,12 +1255,20 @@ public final class PreviewActivity extends Activity {
     }
 
     private void showPrivacy() {
-        new AlertDialog.Builder(this).setTitle(getString(R.string.privacy))
+        new ScopeDialog.Builder(this).setTitle(getString(R.string.privacy))
                 .setMessage(R.string.privacy_body)
                 .setPositiveButton(getString(R.string.close), null).show();
     }
 
     private void openFeedback() {
+        new ScopeDialog.Builder(this).setTitle(R.string.feedback)
+                .setMessage(R.string.feedback_help)
+                .setPositiveButton(R.string.feedback_action, (dialog, which) -> openFeedbackLink())
+                .setNeutralButton(R.string.test_copy, (dialog, which) -> copyReport())
+                .setNegativeButton(R.string.cancel, null).show();
+    }
+
+    private void openFeedbackLink() {
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/foreverfine77")));
         } catch (ActivityNotFoundException error) {
@@ -970,16 +1281,32 @@ public final class PreviewActivity extends Activity {
     }
 
     private void startTest() {
+        if (profileOperation || recorder != null || finishingVideo || savingPicture) {
+            showMessage(getString(R.string.finish_recording_first));
+            return;
+        }
+        new ScopeDialog.Builder(this).setTitle(R.string.hardware_check)
+                .setMessage(R.string.hardware_prepare)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.hardware_begin, (dialog, which) -> beginHardwareCheck()).show();
+    }
+
+    private void beginHardwareCheck() {
         if (macro) {
             showMessage(getString(R.string.macro_test_hint));
             return;
         }
         report.setLength(0);
+        hardwareCheck = new HardwareCheck();
         testStarted = SystemClock.elapsedRealtime();
         testPhase = -1;
         lastStatus = "";
         record("微镜记诊断开始 / " + status);
         previewRequested = true;
+        viewfinderEnabled = true;
+        preview.setFrozen(false);
+        lensCover.restore(true);
+        if (session != null) session.setPreviewEnabled(true);
         startPreview();
         updateTest();
     }
@@ -990,7 +1317,7 @@ public final class PreviewActivity extends Activity {
             finishTest(getString(R.string.test_complete, TEST_SECONDS));
             return;
         }
-        int phase = elapsed < 4 ? 0 : elapsed < 12 ? 1 : elapsed < 25 ? 2 : 3;
+        int phase = elapsed < 8 ? 0 : elapsed < 18 ? 1 : elapsed < 26 ? 2 : 3;
         String step;
         switch (phase) {
             case 0: step = getString(R.string.test_target); break;
@@ -1001,7 +1328,6 @@ public final class PreviewActivity extends Activity {
         if (phase != testPhase) {
             testPhase = phase;
             record(step);
-            if (phase == 0 || phase == 2) setStabilize(phase == 2);
         }
         guide.setText(getString(R.string.test_countdown, TEST_SECONDS - elapsed, step));
         ui.postDelayed(testTick, 200);
@@ -1009,11 +1335,45 @@ public final class PreviewActivity extends Activity {
 
     private void finishTest(String reason) {
         ui.removeCallbacks(testTick);
+        boolean completed = testStarted >= 0 && SystemClock.elapsedRealtime() - testStarted >= TEST_SECONDS * 1000L;
+        if (hardwareCheck != null) {
+            String measured = getString(R.string.hardware_measured, hardwareCheck.frames,
+                    hardwareCheck.width, hardwareCheck.height, hardwareCheck.fps(),
+                    hardwareCheck.gapAt(SystemClock.elapsedRealtime()) / 1000f, hardwareCheck.batteryReplies,
+                    hardwareCheck.angleTravel);
+            record(measured);
+        }
         record(reason);
         savedReport = report.toString();
         getPreferences(MODE_PRIVATE).edit().putString("lastReport", savedReport).apply();
         testStarted = -1;
         guide.setText(getString(R.string.test_copy_hint, reason));
+        if (completed && !isFinishing() && !isDestroyed()) showHardwareResult();
+    }
+
+    private void showHardwareResult() {
+        LinearLayout page = new LinearLayout(this);
+        page.setOrientation(LinearLayout.VERTICAL);
+        TextView result = label(getString(R.string.hardware_measured, hardwareCheck.frames,
+                hardwareCheck.width, hardwareCheck.height, hardwareCheck.fps(),
+                hardwareCheck.gapAt(SystemClock.elapsedRealtime()) / 1000f, hardwareCheck.batteryReplies,
+                hardwareCheck.angleTravel), 14, style.TEXT);
+        style.add(page, result, 4);
+        style.add(page, label(getString(hardwareCheck.frames == 0 ? R.string.hardware_no_frames
+                : R.string.hardware_observe), 14, style.MUTED), 12);
+        android.widget.CheckBox clear = new android.widget.CheckBox(this);
+        clear.setText(R.string.hardware_clear); clear.setTextColor(style.TEXT);
+        android.widget.CheckBox light = new android.widget.CheckBox(this);
+        light.setText(R.string.hardware_light); light.setTextColor(style.TEXT);
+        style.add(page, clear, 8); style.add(page, light, 4);
+        new ScopeDialog.Builder(this).setTitle(R.string.hardware_result).setView(page)
+                .setNegativeButton(R.string.close, null)
+                .setPositiveButton(R.string.save, (dialog, which) -> {
+                    savedReport += "\n" + getString(R.string.hardware_clear) + ": " + clear.isChecked()
+                            + "\n" + getString(R.string.hardware_light) + ": " + light.isChecked()
+                            + "\n" + getString(R.string.hardware_observe);
+                    getPreferences(MODE_PRIVATE).edit().putString("lastReport", savedReport).apply();
+                }).show();
     }
 
     private void record(String message) {
@@ -1042,13 +1402,18 @@ public final class PreviewActivity extends Activity {
 
     private final class ImagePreview extends View {
         private static final float MAX_ZOOM = 4f;
-        private static final float CIRCLE_RADIUS_RATIO = .885f;
         private final Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
         private final Paint circle = new Paint(Paint.ANTI_ALIAS_FLAG);
         private final Path mask = new Path();
         private final RectF bounds = new RectF();
         private Bitmap image;
         private long flashUntil;
+        private float shapeProgress;
+        private int frameWidth = getPreferences(MODE_PRIVATE).getInt("frameWidth", 640);
+        private int frameHeight = getPreferences(MODE_PRIVATE).getInt("frameHeight", 480);
+        private final RectF frameBounds = new RectF();
+        private final RectF aperture = new RectF();
+        private final Path aperturePath = new Path();
         private float rotation;
         private boolean stabilize;
         private boolean mirror;
@@ -1078,8 +1443,9 @@ public final class PreviewActivity extends Activity {
                 public boolean onScale(ScaleGestureDetector detector) {
                     float nextZoom = Math.max(1f, Math.min(MAX_ZOOM, zoom * detector.getScaleFactor()));
                     float ratio = nextZoom / zoom;
-                    float centerX = getWidth() / 2f;
-                    float centerY = getHeight() / 2f;
+                    UiGeometry.Lens lens = UiGeometry.lens(getWidth(), getHeight(), style.orange);
+                    float centerX = macro ? getWidth() / 2f : lens.x;
+                    float centerY = macro ? getHeight() / 2f : lens.y;
                     float focusX = detector.getFocusX();
                     float focusY = detector.getFocusY();
                     panX = focusX - centerX + (panX + centerX - lastX) * ratio;
@@ -1115,6 +1481,12 @@ public final class PreviewActivity extends Activity {
             boolean resized = image == null || frame == null
                     || image.getWidth() != frame.getWidth() || image.getHeight() != frame.getHeight();
             image = frame;
+            if (frame != null && (frameWidth != frame.getWidth() || frameHeight != frame.getHeight())) {
+                frameWidth = frame.getWidth();
+                frameHeight = frame.getHeight();
+                getPreferences(MODE_PRIVATE).edit().putInt("frameWidth", frameWidth)
+                        .putInt("frameHeight", frameHeight).apply();
+            }
             rotation = angle;
             if (resized) positionMacroButton();
             if (!isFrozen()) invalidate();
@@ -1138,15 +1510,27 @@ public final class PreviewActivity extends Activity {
             invalidate();
         }
 
+        void updateFrameBounds() {
+            Bitmap source = isFrozen() ? frozenImage.frame : image;
+            int width = source == null ? frameWidth : source.getWidth();
+            int height = source == null ? frameHeight : source.getHeight();
+            if (macroRotated) {
+                int previousWidth = width;
+                width = height;
+                height = previousWidth;
+            }
+            float scale = Math.min((float) getWidth() / Math.max(1, width),
+                    (float) getHeight() / Math.max(1, height));
+            float left = (getWidth() - width * scale) / 2;
+            float top = (getHeight() - height * scale) / 2;
+            frameBounds.set(left, top, getWidth() - left, getHeight() - top);
+        }
+
         void positionMacroButton() {
-            if (rotateMacroButton == null || image == null || !macro) return;
-            int width = macroRotated ? image.getHeight() : image.getWidth();
-            int height = macroRotated ? image.getWidth() : image.getHeight();
-            float scale = Math.min((float) getWidth() / width, (float) getHeight() / height);
-            float right = (getWidth() + width * scale) / 2;
-            float bottom = (getHeight() + height * scale) / 2;
-            rotateMacroButton.setX(right - dp(56));
-            rotateMacroButton.setY(bottom - dp(56));
+            if (rotateMacroButton == null || !macro) return;
+            updateFrameBounds();
+            rotateMacroButton.setX(frameBounds.right - dp(56));
+            rotateMacroButton.setY(frameBounds.bottom - dp(56));
         }
 
         @Override
@@ -1162,16 +1546,13 @@ public final class PreviewActivity extends Activity {
 
         private void clampPan() {
             if (macro) {
-                Bitmap frame = frozenImage.frame;
-                int width = macroRotated ? frame.getHeight() : frame.getWidth();
-                int height = macroRotated ? frame.getWidth() : frame.getHeight();
-                float scale = Math.min((float) getWidth() / width, (float) getHeight() / height);
-                float maxX = Math.max(0, (width * scale * zoom - getWidth()) / 2);
-                float maxY = Math.max(0, (height * scale * zoom - getHeight()) / 2);
+                updateFrameBounds();
+                float maxX = Math.max(0, frameBounds.width() * (zoom - 1f) / 2);
+                float maxY = Math.max(0, frameBounds.height() * (zoom - 1f) / 2);
                 panX = Math.max(-maxX, Math.min(maxX, panX));
                 panY = Math.max(-maxY, Math.min(maxY, panY));
             } else {
-                float max = (zoom - 1f) * Math.min(getWidth(), getHeight()) / 2f * CIRCLE_RADIUS_RATIO;
+                float max = (zoom - 1f) * UiGeometry.lens(getWidth(), getHeight(), style.orange).radius;
                 float distance = (float) Math.hypot(panX, panY);
                 if (distance > max) {
                     panX *= max / distance;
@@ -1194,28 +1575,71 @@ public final class PreviewActivity extends Activity {
         @Override
         protected void onDraw(Canvas canvas) {
             CaptureImage capture = isFrozen() ? frozenImage : currentImage();
-            float centerX = getWidth() / 2f;
-            float centerY = getHeight() / 2f;
-            if (macro && capture != null) {
+            UiGeometry.Lens lens = UiGeometry.lens(getWidth(), getHeight(), style.orange);
+            float centerX = lens.x;
+            float centerY = lens.y;
+            if (macro && shapeProgress > 0) {
+                float radius = lens.radius;
+                updateFrameBounds();
+                float t = shapeProgress;
+                aperture.set((centerX - radius) * (1 - t) + frameBounds.left * t,
+                        (centerY - radius) * (1 - t) + frameBounds.top * t,
+                        (centerX + radius) * (1 - t) + frameBounds.right * t,
+                        (centerY + radius) * (1 - t) + frameBounds.bottom * t);
+                aperturePath.rewind();
+                aperturePath.addRoundRect(aperture, radius * (1 - t), radius * (1 - t), Path.Direction.CW);
                 canvas.save();
-                canvas.clipRect(0, 0, getWidth(), getHeight());
-                canvas.translate(panX, panY);
-                canvas.scale(zoom, zoom, centerX, centerY);
-                if (macroRotated) canvas.rotate(90, centerX, centerY);
-                capture.renderFull(canvas, centerX, centerY, macroRotated ? getHeight() : getWidth(),
-                        macroRotated ? getWidth() : getHeight(), paint, bounds);
+                canvas.clipPath(aperturePath);
+                canvas.drawColor(style.VIEWPORT);
+                if (capture != null) {
+                    canvas.translate(panX, panY);
+                    canvas.scale(zoom, zoom, frameBounds.centerX(), frameBounds.centerY());
+                    if (macroRotated) canvas.rotate(90, frameBounds.centerX(), frameBounds.centerY());
+                    capture.renderFull(canvas, frameBounds.centerX(), frameBounds.centerY(),
+                            macroRotated ? frameBounds.height() : frameBounds.width(),
+                            macroRotated ? frameBounds.width() : frameBounds.height(), paint, bounds);
+                }
                 canvas.restore();
-                if (SystemClock.uptimeMillis() < flashUntil) canvas.drawColor(0x55ffffff);
+                if (style.cyan || style.orange) {
+                    circle.setStyle(Paint.Style.STROKE);
+                    circle.setStrokeWidth(dp(style.cyan ? 6 : 2));
+                    circle.setColor(style.cyan ? style.SURFACE : style.TEXT);
+                    canvas.drawRoundRect(aperture, radius * (1 - t), radius * (1 - t), circle);
+                    circle.setStyle(Paint.Style.FILL);
+                }
+                if (SystemClock.uptimeMillis() < flashUntil) {
+                    circle.setColor(0x55ffffff);
+                    canvas.drawRoundRect(aperture, radius * (1 - t), radius * (1 - t), circle);
+                }
                 return;
             }
             float outer = Math.min(getWidth(), getHeight()) / 2f;
-            float radius = outer * CIRCLE_RADIUS_RATIO;
+            float radius = lens.radius;
+            float rim = style.cyan ? dp(6) : style.orange ? dp(3) : outer * .045f;
             if (radius <= 0) return;
-            circle.setColor(0x197dd3fc);
-            canvas.drawCircle(centerX, centerY, outer * .96f, circle);
-            circle.setColor(0x38ffffff);
-            canvas.drawCircle(centerX, centerY, radius + outer * .045f, circle);
-            circle.setColor(0xff0a0f16);
+            circle.setColor(style.MAT);
+            if (style.orange) {
+                canvas.drawCircle(lens.backX, lens.backY, lens.backRadius, circle);
+                circle.setStyle(Paint.Style.STROKE);
+                circle.setStrokeWidth(dp(2));
+                circle.setColor(style.TEXT);
+                canvas.drawCircle(lens.backX, lens.backY, lens.backRadius, circle);
+                circle.setStyle(Paint.Style.FILL);
+            } else {
+                canvas.drawCircle(centerX, centerY, style.cyan ? radius + rim : outer * .96f, circle);
+            }
+            if (style.orange) {
+                circle.setColor(style.TEXT);
+                canvas.drawCircle(centerX, centerY + dp(4), radius + rim, circle);
+            }
+            circle.setColor(style.cyan ? style.SURFACE : style.light ? style.EDGE : 0x38ffffff);
+            if (!style.light) circle.setShader(new android.graphics.LinearGradient(
+                    centerX-radius, centerY-radius, centerX+radius, centerY+radius,
+                    new int[]{0xffc2edff, 0xff6187a4, 0xffd0edff, 0xff41617c},
+                    null, android.graphics.Shader.TileMode.CLAMP));
+            canvas.drawCircle(centerX, centerY, radius + rim, circle);
+            circle.setShader(null);
+            circle.setColor(style.VIEWPORT);
             canvas.drawCircle(centerX, centerY, radius, circle);
             if (capture != null) {
                 capture.render(canvas, centerX, centerY, 2 * radius, paint, mask, bounds, zoom, panX, panY);
@@ -1224,16 +1648,7 @@ public final class PreviewActivity extends Activity {
                 circle.setColor(0xbfffffff);
                 canvas.drawCircle(centerX, centerY, radius, circle);
             }
-            canvas.save();
-            canvas.translate(centerX, centerY);
-            for (int i = 0; i < 12; i++) {
-                boolean major = i % 3 == 0;
-                circle.setColor(major ? ACCENT : 0x86ffffff);
-                circle.setStrokeWidth(dp(major ? 3 : 1));
-                canvas.drawLine(0, -outer, 0, -outer + dp(major ? 8 : 5), circle);
-                canvas.rotate(30);
-            }
-            canvas.restore();
+
         }
     }
 }

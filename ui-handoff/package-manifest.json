@@ -1,231 +1,343 @@
 {
-  "schemaVersion": "1.0",
-  "entry": "index.html",
+  "appVersion": "0.27",
+  "snapshot": "ba05ccff55f54f43",
+  "date": "2026-11-16",
   "files": [
     {
       "path": "CLAUDE_START.txt",
-      "bytes": 5021,
-      "sha256": "bfe92067cb184114bbd235aab7974e00296336b4e465eb2ec443c80d2afbf141"
+      "sha256": "f8f5ebe4715d137b8a8d914e9f320bdba0e5a4e953d7c5f6fee8317c6499ecc2"
     },
     {
       "path": "CODEX_RETURN.txt",
-      "bytes": 1721,
-      "sha256": "5de6914003a2e8ce36b10b6a9af1b306866dc90b53f66aa67f84cdc3d395cab5"
+      "sha256": "6b12a62771f814aa5176a00d6779b534364225e3e7a77586d003eb97b18e1ca2"
+    },
+    {
+      "path": "index.html",
+      "sha256": "58724a1e772a639cc16bfa8d5392c74558f30e0b7925c6141fbef829ddd1201b"
+    },
+    {
+      "path": "inventory.js",
+      "sha256": "0704299bee7b009b11c7207b96aab27917b55a4cfa9409b5b4b5501c882069f3"
+    },
+    {
+      "path": "inventory.json",
+      "sha256": "3f727bc5939e7bea7ef6e1120026c46c16090725817a400ceb2b49237a09dcc8"
+    },
+    {
+      "path": "QA_REPORT.md",
+      "sha256": "991043d02d35a07c6e2ff8835499ed9870c535f742f9915369bc136a9a631f3e"
+    },
+    {
+      "path": "review.css",
+      "sha256": "434dd3a5ba1c631ad0d3c112f1f9c29097c78e76d9b8882dfe42cb12f8259e4c"
+    },
+    {
+      "path": "review.js",
+      "sha256": "38cab416c899c00e6b4c574235096d3c26f2d649f72d97c62b1b859261f85904"
+    },
+    {
+      "path": "交付说明.md",
+      "sha256": "ee2084d04234e359079f559b5d10373ae9703cbc837e700253e9c7d5b71328d3"
+    },
+    {
+      "path": "文案审核-0.26.csv",
+      "sha256": "374d97a5785221e2bccac9009dbe4188cfe771c75143aaeafad1539397b224c3"
+    },
+    {
+      "path": "文案审核-0.27.csv",
+      "sha256": "c7f57be36d115b45059cf31269b510161d3514c1143f40ce0dd53d7b9a76ff2b"
+    },
+    {
+      "path": "文案审核.csv",
+      "sha256": "703fab61435477a3683cd53a54891a84eeb583e4de15d07511d0e13f0b8a611b"
+    },
+    {
+      "path": "真机验收-0.27.md",
+      "sha256": "8b21260c4a587c32962adde5aea2fec5f00d6c11325f6939889815cc9714bd57"
+    },
+    {
+      "path": "连接与取景流程.md",
+      "sha256": "44172d17bc1f38e25a4d6927b4a5ead60f98f50bab55fc244396ea4bfefc6307"
     },
     {
       "path": "contracts/android-mapping.json",
-      "bytes": 29991,
-      "sha256": "1deee477a3e6075700bda4a7aebc8d595a677ac15bca96e62b6d8ef3f40174e0"
+      "sha256": "518366e4c19887a8e9ecd5c8e124d6215f18453ff3b38d2f02a293dda13cf442"
     },
     {
       "path": "contracts/layout.contract.json",
-      "bytes": 3181,
-      "sha256": "68ef36faf7a13f9301563370fa6569a2fa22563c6847355c0f82479c553fe859"
+      "sha256": "62cd01e995f7f574ad341928ff088a95bb0068ec8407684ba0ea6bae1bfb2229"
     },
     {
       "path": "contracts/required-icons.json",
-      "bytes": 825,
       "sha256": "9b45e047e874e69fa2c7cd3e9504ad9e19f8c96a43b562583bccf87fbcb50816"
     },
     {
       "path": "contracts/return-checklist.json",
-      "bytes": 1001,
       "sha256": "c52383264bdb552e14f7ac63c7323483aacf2a74f0387be1e1c0e526f271ccf4"
     },
     {
       "path": "contracts/review-export.schema.json",
-      "bytes": 895,
       "sha256": "fd3099b45a4c0f6c4df795ee3712b387a0da848bdea1f9e3783b1ff59f6bbc89"
     },
     {
       "path": "contracts/theme-interface.json",
-      "bytes": 1182,
       "sha256": "ddf0b5fa9a52409cee078f7f126091a4a72e02b15a55625f27883f7fcff879c2"
     },
     {
-      "path": "index.html",
-      "bytes": 2176,
-      "sha256": "ead21b9f3009a45c54486d519810cd97694f9bf62cc47129c888b4b96f07acf0"
-    },
-    {
-      "path": "inventory.js",
-      "bytes": 158763,
-      "sha256": "04906e128d4dc5c1508d7bc6557a0492a36a4e6ce79463ed956dbe1bb66bdfc7"
-    },
-    {
-      "path": "inventory.json",
-      "bytes": 211100,
-      "sha256": "e1d6925bfb9539923587202d5173bc68d6aa472acc05de7a4b1faa4a0667d6e3"
-    },
-    {
       "path": "previews/00-review-workbench.png",
-      "bytes": 142437,
-      "sha256": "58058a4bb3361486564fd6991b9f4898a8f7b96bba226a86c64071bcf338dd84"
+      "sha256": "05633285d0d7850936d208d46e570108ea0b4d0893eab4a3f52b21212357d35f"
     },
     {
       "path": "previews/01-macro-skeleton.png",
-      "bytes": 40730,
-      "sha256": "968bc903b8db9ceec9ba167905c296d6ce5a992cffe42986cbb36a00c2140b15"
+      "sha256": "4ed67fc76d2ebec49bd5d861dd61f56be4afaad4b940bb795bb87db052a18246"
     },
     {
       "path": "previews/02-help-skeleton.png",
-      "bytes": 30634,
-      "sha256": "7172d6b225c6ce7cb1901f5ba562d322504b5b5b027eb670ebc14e9c7eac68eb"
+      "sha256": "887f3992b9a9add1d937ae29839affe265467225c6267a5315a3074a39f3574b"
     },
     {
       "path": "previews/03-ear-picker-skeleton.png",
-      "bytes": 21523,
       "sha256": "298e0205e66b6ff033c4bd6437b2e14039c078a2438a74d20637776a313a5f39"
     },
     {
       "path": "previews/04-markup-skeleton.png",
-      "bytes": 22221,
-      "sha256": "a24df7ac8d520cbf10f612e72c692a78e117679d325d89e70f1728a1f155dfef"
+      "sha256": "962de0aeceb21bae6302dd5c232f5bd3e6f7eb33b388c650166c59e9d45c7cad"
     },
     {
       "path": "previews/05-connected-idle-skeleton.png",
-      "bytes": 41701,
-      "sha256": "4073009677fa460360ba3d732cadd52be901f741cb05d85943227963ab33336a"
+      "sha256": "e45518692c8e26ce9b37fe3099b2bf79f350598f6dc8dbb1e13c1da3ed6385c5"
     },
     {
-      "path": "QA_REPORT.md",
-      "bytes": 1940,
-      "sha256": "df1fc9887400869b80d8c950ebb996b4be5ea86687aa3578981293260802e482"
-    },
-    {
-      "path": "references/current-source/AndroidManifest.xml",
-      "bytes": 1682,
-      "sha256": "58c3e42e339ad1502d0022ea0758490262acd17373fa0f7709291f55a8e567ba"
-    },
-    {
-      "path": "references/current-source/GalleryActivity.java",
-      "bytes": 49679,
-      "sha256": "a96cbfd630d79db7c71ee5b8577be3601d6076dc27d8e96c0d00b15769c9f044"
-    },
-    {
-      "path": "references/current-source/PhotoMarkup.java",
-      "bytes": 6468,
-      "sha256": "538eb1a7562ce92deae1ddbba95876f3d9c6370a5cdd94c25a82c3634a97a4f8"
-    },
-    {
-      "path": "references/current-source/PreviewActivity.java",
-      "bytes": 56844,
-      "sha256": "13dd4cccc8d7d90163719b8d13ad0f860591f0fb150a145a62efdae93a756848"
-    },
-    {
-      "path": "references/current-source/ScopeUi.java",
-      "bytes": 22846,
-      "sha256": "4809908dbfa1e9d7e95c7b19bba33a27132f97b1cf8bea9bc8ecea50d13cf6e7"
-    },
-    {
-      "path": "references/current-source/values-en-strings.xml",
-      "bytes": 12557,
-      "sha256": "89111dad53ac5834184091cad70945f9fea0d25e77b5144b6a91f6e5c36646f9"
-    },
-    {
-      "path": "references/current-source/values-strings.xml",
-      "bytes": 12285,
-      "sha256": "274c2c680c4858a4fd57b903e4ffab58ca3f79047044cbd9baa5731e5fcbdf58"
-    },
-    {
-      "path": "references/current-source/values-zh-rTW-strings.xml",
-      "bytes": 12294,
-      "sha256": "3eb00b7dbd39b1946573a885dc2c929ca858832dcd2b1483e7dc3ad9b4577896"
-    },
-    {
-      "path": "references/current-source/VideoPlayback.java",
-      "bytes": 3647,
-      "sha256": "41ba3a1f068da1714ee0ebda1d54d26bbe32fafe4e12affd213d2ede396deefe"
+      "path": "previews/05-photo-paging-current.png",
+      "sha256": "ca8786e3dc80277257914ec84b6857444ef6a0d63749ea27bc6d4790fffae9fa"
     },
     {
       "path": "references/device-phone.png",
-      "bytes": 24762,
       "sha256": "6696df857d5301b202a3582402a928b9794466a9f5493183a51498a040d971a1"
     },
     {
       "path": "references/device.png",
-      "bytes": 5972,
       "sha256": "971e8125a8ec6ea259e9ca1ded384d3b13f59938f87c184c60564040652015da"
     },
     {
-      "path": "review.css",
-      "bytes": 14304,
-      "sha256": "fc4dfa488529856fe109fe2fe282251db3b964a3b3e3d6375a4b4f0dba883290"
+      "path": "references/current-source/AndroidManifest.xml",
+      "sha256": "7e7c5abecf1ba4e002e09bd095faf8d7b799d451e8823ca780182917f2f1c6cb"
     },
     {
-      "path": "review.js",
-      "bytes": 50121,
+      "path": "references/current-source/AppFeedback.java",
+      "sha256": "e93756685f8da2bea1c767dce6472b3fdd02e627ed0e42962e2191a7d941f5e0"
+    },
+    {
+      "path": "references/current-source/AppLanguage.java",
+      "sha256": "f8192d27007adefe7267c93bd34f05b570e33a336b037c4cc7d74cca7bd7aca1"
+    },
+    {
+      "path": "references/current-source/BackgroundRoll.java",
+      "sha256": "4c738ad2454fc165688233c532a9ce581b53bdc1072f2bf1e589b7eaacaabd87"
+    },
+    {
+      "path": "references/current-source/BatteryEstimate.java",
+      "sha256": "e25f66a440a162952e1fcbc5441f4f89f2cba7b23a3781c7349eb3483423d4ac"
+    },
+    {
+      "path": "references/current-source/BatteryReading.java",
+      "sha256": "87462adfb1f67feb3059ccbc46e44e5be93e68378a24e0496d1c7e58045fe725"
+    },
+    {
+      "path": "references/current-source/CameraStream.java",
+      "sha256": "b8e0e0e4f6a53bcb840a82fe41b1b7f757ff6db7a857cbbd28d2f83365e4b117"
+    },
+    {
+      "path": "references/current-source/CaptureImage.java",
+      "sha256": "376f2cde82d594266b2c1b1726c92ce6ee39ff94a71fb59020be6048d8b8206f"
+    },
+    {
+      "path": "references/current-source/CaptureProvider.java",
+      "sha256": "a7567f788a6c899596b6576cf1365f08f270740fa8d84861486383478277d436"
+    },
+    {
+      "path": "references/current-source/CareProfiles.java",
+      "sha256": "96c5eaa757f5d992850ec10d658ca109950a6fd6c06d0451b6a3d49430af99f6"
+    },
+    {
+      "path": "references/current-source/CoverPickerActivity.java",
+      "sha256": "b1222bfab38081f75916b0eaab6d23418e36eb9d77b4e1ecbfdb1fec18c43d59"
+    },
+    {
+      "path": "references/current-source/EarSide.java",
+      "sha256": "5f142c3c4c3d7d0cfe24c6072393cd8f21ac038bba8128c7ccd553a5fa1b1b18"
+    },
+    {
+      "path": "references/current-source/EarWifi.java",
+      "sha256": "6ce9edd34901963cffbc91a4340af02500cff26d0747c3f7ce85c51844710202"
+    },
+    {
+      "path": "references/current-source/GalleryActivity.java",
+      "sha256": "fb493bec91db934d93a5711e28efb09d9d884cb21e006b09f9abae0f807b2e57"
+    },
+    {
+      "path": "references/current-source/HardwareCheck.java",
+      "sha256": "3c10bdc10dce6a5dfbf0d1900a4816f659dfcf71070c3643dd659574b36bbf83"
+    },
+    {
+      "path": "references/current-source/JpegFrames.java",
+      "sha256": "01d6eb92189ab890a9d5ce71c2b247608b0caf37c24521e03dde19d53375b48f"
+    },
+    {
+      "path": "references/current-source/LensCover.java",
+      "sha256": "b764af8be429ef54a26aa05bd7a2d65b11e5bf98e60bcc46d971aab7db0584e2"
+    },
+    {
+      "path": "references/current-source/MaskCropper.java",
+      "sha256": "2146bf1846e18c76044923c81a8632ff30fd5b020a92f8d9fe1a6a7d97144186"
+    },
+    {
+      "path": "references/current-source/PhotoMarkup.java",
+      "sha256": "bae2dda91a0adc371987fe7440c0ba06f639cc87988674f804ad4444259809a0"
+    },
+    {
+      "path": "references/current-source/PhotoPager.java",
+      "sha256": "5eb5ba2ea555076a86c37b0aee0461e50b093694b0e38300d9dc3745c538ab68"
+    },
+    {
+      "path": "references/current-source/PhotoPaging.java",
+      "sha256": "6c3c3f15820eca226e2e943b03c6f91bc456412ee30ed1fbc4d74925d1d3ea3d"
+    },
+    {
+      "path": "references/current-source/PhotoQuality.java",
+      "sha256": "d7aa92d635617e4c40a2b4fc442e3b2d8e66342c4c58752c85ed0ec88534549e"
+    },
+    {
+      "path": "references/current-source/PreviewActivity.java",
+      "sha256": "4381d8002dd3b9789e6f79806e592115450ef113a3e12c878f074b0d972ce90c"
+    },
+    {
+      "path": "references/current-source/ProfileMasks.java",
+      "sha256": "ffe07c73ad1a5674358f89d2e772d8ee5e7023077287949dc08d4b0abe288170"
+    },
+    {
+      "path": "references/current-source/ProfileOrderList.java",
+      "sha256": "6bb4b8b1cd6b50b762a263ffb3a4e2f1b9d2e6dbe769e07a53cea3a621129b8f"
+    },
+    {
+      "path": "references/current-source/RollFilter.java",
+      "sha256": "ce489407a29586df8e91c294939c686d8eb4b3d6f5b8c44f1dd2a07d1c949daa"
+    },
+    {
+      "path": "references/current-source/ScopeDialog.java",
+      "sha256": "7cf4588ff00ed248c262e6d049785d63589539c137d9444a2e563236cebfd137"
+    },
+    {
+      "path": "references/current-source/ScopeUi.java",
+      "sha256": "78c40e27dce726d404cabcd15d823b1322b4b91dfd197bd9b97f26e6233d1dd1"
+    },
+    {
+      "path": "references/current-source/strings-values-en.xml",
+      "sha256": "2e91bb9a49c862bdd57005e66b8b067ad6eb8e04d5dae0a657d0bd123ef5f042"
+    },
+    {
+      "path": "references/current-source/strings-values-zh-rTW.xml",
+      "sha256": "3ec2498c1e9b51c933f8551dcdc0b9cbdbca4da175230b43e0c5c8fa6e12f740"
+    },
+    {
+      "path": "references/current-source/strings-values.xml",
+      "sha256": "adc58ac98bc5f0a447a25680fd9ed77d064f3526c18e153b821b0ad0f5f3cac3"
+    },
+    {
+      "path": "references/current-source/UiGeometry.java",
+      "sha256": "6f11cfb343808c7a83d001a0ba7d8c85e8353aed7d548c46bd3edf6470e553ca"
+    },
+    {
+      "path": "references/current-source/values-en-strings.xml",
+      "sha256": "89111dad53ac5834184091cad70945f9fea0d25e77b5144b6a91f6e5c36646f9"
+    },
+    {
+      "path": "references/current-source/values-strings.xml",
+      "sha256": "274c2c680c4858a4fd57b903e4ffab58ca3f79047044cbd9baa5731e5fcbdf58"
+    },
+    {
+      "path": "references/current-source/values-zh-rTW-strings.xml",
+      "sha256": "3eb00b7dbd39b1946573a885dc2c929ca858832dcd2b1483e7dc3ad9b4577896"
+    },
+    {
+      "path": "references/current-source/VideoCapture.java",
+      "sha256": "9707a38b40de73ff722a10eae0c332ef80d1e248c8f0a547cc6964f2dccaec39"
+    },
+    {
+      "path": "references/current-source/VideoPlayback.java",
+      "sha256": "b504d6eb8cd6fe9ae24edf10c424840dda2244668bc117b69c06303e79aa4c3b"
+    },
+    {
+      "path": "references/current-source/assets/app_icon.png",
+      "sha256": "1621f52490800b7f729dde25099a92f36e83f6745fc9fe6f907eb02bc81fe0b6"
+    },
+    {
+      "path": "references/current-source/assets/deep_ocean.png",
+      "sha256": "b5d46f737ae4ef9b67a93550f48a63e192f403d2be516fa19da9725f9dd98317"
+    },
+    {
+      "path": "references/legacy-before-026/inventory.json",
+      "sha256": "e1d6925bfb9539923587202d5173bc68d6aa472acc05de7a4b1faa4a0667d6e3"
+    },
+    {
+      "path": "references/legacy-before-026/review.js",
       "sha256": "1a4f65b7588ac6ecc30134f5bdc42077080381b2e0f1a66cb48cb97e0d3dc977"
     },
     {
+      "path": "references/legacy-before-026/交付说明.md",
+      "sha256": "d04e7a5963d0258bc88803b38633ed7acbdcdaf5fa31435e43ca5e5eb4c1c6cd"
+    },
+    {
+      "path": "references/legacy-before-026/提示语审核-0.24.md",
+      "sha256": "7a1b313fb93f5949693193b941590203bffc72a73190cf3e242bcb42ef535292"
+    },
+    {
+      "path": "references/legacy-before-026/文案审核.csv",
+      "sha256": "703fab61435477a3683cd53a54891a84eeb583e4de15d07511d0e13f0b8a611b"
+    },
+    {
       "path": "starter-theme/design-decisions.json",
-      "bytes": 712,
       "sha256": "b6deec161cb74e0a08de8b83a4c5822d7485fd36df05ba4ebdac3a8e6a0a0aac"
     },
     {
       "path": "starter-theme/icons.svg",
-      "bytes": 9529,
       "sha256": "d442e0512daf1f49dd802dfe5f4952f2c7765ddc0057062c2302eb413b906fa8"
     },
     {
       "path": "starter-theme/manifest.json",
-      "bytes": 713,
       "sha256": "db9fb5fd02718dc4ae3862e7f6deccb863e9b111cb6f4add647a636a6bb260f2"
     },
     {
       "path": "starter-theme/theme.js",
-      "bytes": 926,
       "sha256": "f388e623a2688dd4e6cbaa7b450da7cb2f9ac432b62804892d4e0a348f730d41"
     },
     {
       "path": "starter-theme/tokens.json",
-      "bytes": 1031,
       "sha256": "9c6c53c5e3ce40f337d927479014de25723e912674168712a2a2735f6541733f"
     },
     {
       "path": "tools/build_inventory.py",
-      "bytes": 27283,
-      "sha256": "80f9176351c5bb6ad4318038cc072b050e8056896aaf5ba819c6d704aa103f7d"
+      "sha256": "bba8d01b67dde649370d6ab63a549e1759fcb132f8390d15decc222fd6dd8d8b"
     },
     {
       "path": "tools/check_theme.py",
-      "bytes": 7013,
       "sha256": "dc13d0d8fcc521e5303471e719112fe06d108e33178afc6015c6011fc6772bd8"
     },
     {
       "path": "tools/csv_to_review.py",
-      "bytes": 2238,
       "sha256": "5323456f714dfd8d15ca0ad2000567a50ea3e651a1e72695797d3bd5c27fc1be"
     },
     {
       "path": "tools/package.py",
-      "bytes": 1399,
       "sha256": "d4aa63472bb81edf4ef6509568c273e1e45aa648930770e354ad82cd7ab5f9fd"
     },
     {
       "path": "tools/qa_browser.mjs",
-      "bytes": 13141,
-      "sha256": "c6cdfdc658d086a4c3b19f562abf75233252d0b35722e5b8d9fe0f1d5c1d001f"
+      "sha256": "3e22fc5ffde159ad71740434b91eca2dc3ab77e4892b48c14941b55a12ac3418"
     },
     {
       "path": "tools/qa_contracts.py",
-      "bytes": 3327,
       "sha256": "b60eaa46e3d77b962d9eec609c86f6011c694e57d04d2d628a25be3609dc3856"
-    },
-    {
-      "path": "交付说明.md",
-      "bytes": 4485,
-      "sha256": "d04e7a5963d0258bc88803b38633ed7acbdcdaf5fa31435e43ca5e5eb4c1c6cd"
-    },
-    {
-      "path": "文案审核.csv",
-      "bytes": 61584,
-      "sha256": "703fab61435477a3683cd53a54891a84eeb583e4de15d07511d0e13f0b8a611b"
-    },
-    {
-      "path": "连接与取景流程.md",
-      "bytes": 2655,
-      "sha256": "e3b15d4bfc00e8e9af604bc7ae9c0724ddc230886385d8b5f78cdb3a5b7afb26"
     }
   ]
 }

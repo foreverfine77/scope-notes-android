@@ -1,5 +1,5 @@
 {
-  "snapshot": "99e2ff073d9684fc",
+  "snapshot": "ba05ccff55f54f43",
   "notice": "主题包是设计输入。当前 Android 为 Java 原生 Views，不能直接运行 HTML/CSS。Codex 按此映射接入并进行真机回归。",
   "tokens": {
     "colors": "ScopeUi constants/backdrop/pill",
@@ -30,7 +30,7 @@
     {
       "action": "settings.open",
       "semanticId": "ic-settings",
-      "currentKind": "gear text",
+      "currentKind": "Canvas 滑杆图标",
       "page": "capture"
     },
     {
@@ -285,35 +285,35 @@
     },
     "CameraStream.run": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 76
+      "line": 81
     },
     "CameraStream.findCameraNetwork": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 102
+      "line": 107
     },
     "CameraStream.receive": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 117
+      "line": 122
     },
     "CameraStream.pollBattery": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 243
+      "line": 262
     },
     "CameraStream.readBoardInfo": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 279
+      "line": 299
     },
     "CameraStream.angle": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 349
+      "line": 369
     },
     "CameraStream.videoCommand": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 354
+      "line": 374
     },
     "CameraStream.send": {
       "path": "android-preview/src/dev/earclean/preview/CameraStream.java",
-      "line": 361
+      "line": 381
     },
     "CaptureProvider.file": {
       "path": "android-preview/src/dev/earclean/preview/CaptureProvider.java",
@@ -347,6 +347,54 @@
       "path": "android-preview/src/dev/earclean/preview/CaptureProvider.java",
       "line": 98
     },
+    "CoverPickerActivity.attachBaseContext": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 25
+    },
+    "CoverPickerActivity.onCreate": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 29
+    },
+    "CoverPickerActivity.select": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 140
+    },
+    "CoverPickerActivity.acceptCrop": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 146
+    },
+    "CoverPickerActivity.onActivityResult": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 152
+    },
+    "CoverPickerActivity.apply": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 158
+    },
+    "CoverPickerActivity.circularCopy": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 184
+    },
+    "CoverPickerActivity.drawCircleImage": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 191
+    },
+    "CoverPickerActivity.onSaveInstanceState": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 207
+    },
+    "CoverPickerActivity.onBackPressed": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 216
+    },
+    "CoverPickerActivity.onDestroy": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 218
+    },
+    "CoverPickerActivity.onDraw": {
+      "path": "android-preview/src/dev/earclean/preview/CoverPickerActivity.java",
+      "line": 227
+    },
     "EarSide.preferences": {
       "path": "android-preview/src/dev/earclean/preview/EarSide.java",
       "line": 47
@@ -377,211 +425,339 @@
     },
     "GalleryActivity.attachBaseContext": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 89
+      "line": 88
     },
     "GalleryActivity.onCreate": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 94
+      "line": 93
     },
     "GalleryActivity.onResume": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 205
+      "line": 212
     },
     "GalleryActivity.onSaveInstanceState": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 211
+      "line": 218
     },
     "GalleryActivity.onBackPressed": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 221
+      "line": 228
     },
     "GalleryActivity.onStop": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 232
+      "line": 239
     },
     "GalleryActivity.onDestroy": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 239
+      "line": 246
     },
     "GalleryActivity.profileFiles": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 244
+      "line": 251
     },
     "GalleryActivity.matchesFilters": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 250
+      "line": 257
     },
     "GalleryActivity.load": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 259
+      "line": 266
     },
     "GalleryActivity.filterDescription": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 289
+      "line": 296
     },
     "GalleryActivity.applyFilters": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 297
+      "line": 304
     },
     "GalleryActivity.chooseFilters": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 310
+      "line": 317
     },
     "GalleryActivity.showTab": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 385
+      "line": 396
     },
     "GalleryActivity.styleTab": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 394
+      "line": 405
     },
     "GalleryActivity.toggle": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 400
+      "line": 411
     },
     "GalleryActivity.updateSelection": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 405
+      "line": 416
     },
     "GalleryActivity.getSections": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 454
+      "line": 465
     },
     "GalleryActivity.getPositionForSection": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 455
+      "line": 466
     },
     "GalleryActivity.getSectionForPosition": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 458
+      "line": 469
     },
     "GalleryActivity.getCount": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 462
+      "line": 473
     },
     "GalleryActivity.getItem": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 463
+      "line": 474
     },
     "GalleryActivity.getItemId": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 464
+      "line": 475
     },
     "GalleryActivity.getViewTypeCount": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 465
+      "line": 476
     },
     "GalleryActivity.getItemViewType": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 466
+      "line": 477
     },
     "GalleryActivity.isEnabled": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 467
+      "line": 478
     },
     "GalleryActivity.areAllItemsEnabled": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 468
+      "line": 479
     },
     "GalleryActivity.getView": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 471
+      "line": 482
     },
     "GalleryActivity.bind": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 498
+      "line": 509
     },
     "GalleryActivity.getOutline": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 879
+      "line": 997
     },
     "GalleryActivity.onMeasure": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 572
+      "line": 583
     },
     "GalleryActivity.stamp": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 581
+      "line": 592
     },
     "GalleryActivity.loadThumbnail": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 587
+      "line": 598
     },
     "GalleryActivity.readThumbnail": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 601
+      "line": 612
     },
     "GalleryActivity.open": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 647
+      "line": 658
+    },
+    "GalleryActivity.navigate": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 682
+    },
+    "GalleryActivity.nextIndex": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 686
+    },
+    "GalleryActivity.applyPhoto": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 692
+    },
+    "GalleryActivity.positionDate": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 706
+    },
+    "GalleryActivity.neighbor": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 753
+    },
+    "GalleryActivity.configure": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 756
+    },
+    "GalleryActivity.changed": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 757
+    },
+    "GalleryActivity.onInitializeAccessibilityNodeInfo": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 765
+    },
+    "GalleryActivity.performAccessibilityAction": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 771
     },
     "GalleryActivity.chooseSide": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 708
+      "line": 819
     },
     "GalleryActivity.editMarkup": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 722
+      "line": 833
     },
     "GalleryActivity.saveMarkupCopy": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 827
+      "line": 939
     },
     "GalleryActivity.chooseMarkupColor": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 846
+      "line": 958
     },
     "GalleryActivity.photoView": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 873
+      "line": 985
+    },
+    "GalleryActivity.configurePhoto": {
+      "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
+      "line": 993
     },
     "GalleryActivity.onStartTrackingTouch": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 937
+      "line": 1057
     },
     "GalleryActivity.onProgressChanged": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 940
+      "line": 1060
     },
     "GalleryActivity.onStopTrackingTouch": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 947
+      "line": 1067
     },
     "GalleryActivity.seek": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 975
+      "line": 1095
     },
     "GalleryActivity.showTime": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 980
+      "line": 1100
     },
     "GalleryActivity.update": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 985
+      "line": 1105
     },
     "GalleryActivity.share": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1001
+      "line": 1121
     },
     "GalleryActivity.confirmDelete": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1021
+      "line": 1141
     },
     "GalleryActivity.label": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1045
+      "line": 1165
     },
     "GalleryActivity.isVideo": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1052
+      "line": 1172
     },
     "GalleryActivity.dp": {
       "path": "android-preview/src/dev/earclean/preview/GalleryActivity.java",
-      "line": 1056
+      "line": 1176
     },
     "JpegFrames.scanOffset": {
       "path": "android-preview/src/dev/earclean/preview/JpegFrames.java",
       "line": 96
+    },
+    "LensCover.updateLabel": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 70
+    },
+    "LensCover.setShape": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 74
+    },
+    "LensCover.diameter": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 80
+    },
+    "LensCover.inside": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 84
+    },
+    "LensCover.onDraw": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 90
+    },
+    "LensCover.onTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 113
+    },
+    "LensCover.performClick": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 145
+    },
+    "LensCover.toggle": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 151
+    },
+    "LensCover.duration": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 182
+    },
+    "LensCover.animateOffset": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 186
+    },
+    "LensCover.animateShape": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 195
+    },
+    "LensCover.animate": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 202
+    },
+    "LensCover.onAnimationEnd": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 209
+    },
+    "LensCover.onDetachedFromWindow": {
+      "path": "android-preview/src/dev/earclean/preview/LensCover.java",
+      "line": 219
+    },
+    "MaskCropper.onScale": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 139
+    },
+    "MaskCropper.diameter": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 154
+    },
+    "MaskCropper.scale": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 155
+    },
+    "MaskCropper.clamp": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 156
+    },
+    "MaskCropper.onSizeChanged": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 163
+    },
+    "MaskCropper.onDraw": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 164
+    },
+    "MaskCropper.drawImage": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 182
+    },
+    "MaskCropper.onTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/MaskCropper.java",
+      "line": 191
     },
     "PhotoMarkup.onSizeChanged": {
       "path": "android-preview/src/dev/earclean/preview/PhotoMarkup.java",
@@ -603,6 +779,38 @@
       "path": "android-preview/src/dev/earclean/preview/PhotoMarkup.java",
       "line": 131
     },
+    "PhotoPager.prefetch": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 50
+    },
+    "PhotoPager.ready": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 73
+    },
+    "PhotoPager.showOffset": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 77
+    },
+    "PhotoPager.onInterceptTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 90
+    },
+    "PhotoPager.onTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 92
+    },
+    "PhotoPager.settle": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 134
+    },
+    "PhotoPager.onAnimationEnd": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 153
+    },
+    "PhotoPager.onDetachedFromWindow": {
+      "path": "android-preview/src/dev/earclean/preview/PhotoPager.java",
+      "line": 165
+    },
     "PhotoQuality.ignore": {
       "path": "android-preview/src/dev/earclean/preview/PhotoQuality.java",
       "line": 37
@@ -613,271 +821,419 @@
     },
     "PreviewActivity.attachBaseContext": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 112
+      "line": 119
     },
     "PreviewActivity.onCreate": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 117
+      "line": 124
+    },
+    "PreviewActivity.canToggle": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 247
+    },
+    "PreviewActivity.changed": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 251
+    },
+    "PreviewActivity.inFrame": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 252
+    },
+    "PreviewActivity.shape": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 256
     },
     "PreviewActivity.addCapture": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 325
+      "line": 395
     },
     "PreviewActivity.selectProfile": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 342
+      "line": 416
     },
     "PreviewActivity.showConnection": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 353
+      "line": 436
     },
     "PreviewActivity.setLeadingIcon": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 367
+      "line": 451
     },
     "PreviewActivity.showBattery": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 372
+      "line": 456
     },
     "PreviewActivity.updateCaptureControls": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 378
+      "line": 464
     },
     "PreviewActivity.showSettings": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 416
+      "line": 507
+    },
+    "PreviewActivity.chooseMaskImage": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 562
+    },
+    "PreviewActivity.showDeviceInfo": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 571
+    },
+    "PreviewActivity.reloadMask": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 577
+    },
+    "PreviewActivity.showProfileManager": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 581
+    },
+    "PreviewActivity.renderProfileRows": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 607
+    },
+    "PreviewActivity.updateFeedback": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 664
+    },
+    "PreviewActivity.showInteractionFeedback": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 672
+    },
+    "PreviewActivity.chooseUiTheme": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 690
     },
     "PreviewActivity.chooseMacroMode": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 452
+      "line": 711
     },
     "PreviewActivity.showLanguages": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 473
+      "line": 733
     },
     "PreviewActivity.settingsGroup": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 491
+      "line": 751
     },
     "PreviewActivity.editProfile": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 508
+      "line": 768
     },
     "PreviewActivity.onStart": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 548
+      "line": 815
     },
     "PreviewActivity.onSaveInstanceState": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 557
+      "line": 825
     },
     "PreviewActivity.onStop": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 567
+      "line": 836
     },
     "PreviewActivity.onActivityResult": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 579
+      "line": 848
     },
     "PreviewActivity.onDestroy": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 585
+      "line": 855
     },
     "PreviewActivity.startPreview": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 591
+      "line": 861
     },
     "PreviewActivity.status": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 597
+      "line": 867
     },
     "PreviewActivity.connected": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 613
+      "line": 884
     },
     "PreviewActivity.frame": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 620
+      "line": 895
     },
     "PreviewActivity.detail": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 640
+      "line": 918
     },
     "PreviewActivity.battery": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 652
+      "line": 930
+    },
+    "PreviewActivity.setViewfinder": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 952
     },
     "PreviewActivity.messageWithCorrection": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 673
+      "line": 967
     },
     "PreviewActivity.stopRequestedPreview": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 679
+      "line": 973
     },
     "PreviewActivity.stopPreview": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 686
+      "line": 982
     },
     "PreviewActivity.hasWifiPermissions": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 699
+      "line": 996
     },
     "PreviewActivity.connectEar": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 706
+      "line": 1003
     },
     "PreviewActivity.chooseEar": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 715
+      "line": 1013
     },
     "PreviewActivity.previewWith": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 766
+      "line": 1064
     },
     "PreviewActivity.openWifiSettings": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 773
+      "line": 1071
     },
     "PreviewActivity.onRequestPermissionsResult": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 781
+      "line": 1079
     },
     "PreviewActivity.setStabilize": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 789
+      "line": 1087
     },
     "PreviewActivity.setEarSide": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 802
+      "line": 1100
     },
     "PreviewActivity.showWirelessReminder": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 809
+      "line": 1107
     },
     "PreviewActivity.savePicture": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 816
+      "line": 1114
     },
     "PreviewActivity.finishPhotoBurst": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 831
+      "line": 1131
     },
     "PreviewActivity.startVideo": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 903
+      "line": 1203
     },
     "PreviewActivity.stopVideo": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 925
+      "line": 1227
     },
     "PreviewActivity.updateRecordingTime": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 934
+      "line": 1237
     },
     "PreviewActivity.hideRecordingTime": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 941
+      "line": 1244
     },
     "PreviewActivity.showHelp": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 946
+      "line": 1249
     },
     "PreviewActivity.showPrivacy": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 954
+      "line": 1257
     },
     "PreviewActivity.openFeedback": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 960
+      "line": 1263
+    },
+    "PreviewActivity.openFeedbackLink": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 1271
     },
     "PreviewActivity.showMessage": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 968
+      "line": 1279
     },
     "PreviewActivity.startTest": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 972
+      "line": 1283
+    },
+    "PreviewActivity.beginHardwareCheck": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 1294
     },
     "PreviewActivity.updateTest": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 987
+      "line": 1314
     },
     "PreviewActivity.finishTest": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1010
+      "line": 1336
+    },
+    "PreviewActivity.showHardwareResult": {
+      "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
+      "line": 1354
     },
     "PreviewActivity.record": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1019
+      "line": 1379
     },
     "PreviewActivity.copyReport": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1025
+      "line": 1385
     },
     "PreviewActivity.label": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1035
+      "line": 1395
     },
     "PreviewActivity.dp": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1039
+      "line": 1399
     },
     "PreviewActivity.onScaleBegin": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1071
+      "line": 1436
     },
     "PreviewActivity.onScale": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1078
+      "line": 1443
     },
     "PreviewActivity.onDown": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1098
+      "line": 1464
     },
     "PreviewActivity.onScroll": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1103
+      "line": 1469
     },
     "PreviewActivity.onTouchEvent": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1153
+      "line": 1537
     },
     "PreviewActivity.clampPan": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1163
+      "line": 1547
     },
     "PreviewActivity.onDraw": {
       "path": "android-preview/src/dev/earclean/preview/PreviewActivity.java",
-      "line": 1195
+      "line": 1576
+    },
+    "ProfileOrderList.run": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 39
+    },
+    "ProfileOrderList.dispatchTouchEvent": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 62
+    },
+    "ProfileOrderList.lift": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 95
+    },
+    "ProfileOrderList.position": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 118
+    },
+    "ProfileOrderList.positionCard": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 149
+    },
+    "ProfileOrderList.finish": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 163
+    },
+    "ProfileOrderList.land": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 185
+    },
+    "ProfileOrderList.onAnimationEnd": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 203
+    },
+    "ProfileOrderList.clearCard": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 208
+    },
+    "ProfileOrderList.onDetachedFromWindow": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 220
+    },
+    "ProfileOrderList.draw": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 241
+    },
+    "ProfileOrderList.setAlpha": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 252
+    },
+    "ProfileOrderList.setColorFilter": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 253
+    },
+    "ProfileOrderList.getOpacity": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 254
+    },
+    "ProfileOrderList.onDraw": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 261
+    },
+    "ProfileOrderList.getAccessibilityClassName": {
+      "path": "android-preview/src/dev/earclean/preview/ProfileOrderList.java",
+      "line": 270
     },
     "RollFilter.signedAxis": {
       "path": "android-preview/src/dev/earclean/preview/RollFilter.java",
       "line": 68
     },
+    "ScopeDialog.show": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeDialog.java",
+      "line": 100
+    },
+    "ScopeDialog.action": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeDialog.java",
+      "line": 142
+    },
+    "ScopeUi.performClick": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+      "line": 185
+    },
     "ScopeUi.drawableStateChanged": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 77
+      "line": 190
+    },
+    "ScopeUi.centerIcon": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+      "line": 249
     },
     "ScopeUi.draw": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 466
+      "line": 700
     },
     "ScopeUi.setAlpha": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 483
+      "line": 726
     },
     "ScopeUi.setColorFilter": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 484
+      "line": 727
+    },
+    "ScopeUi.setTint": {
+      "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
+      "line": 544
     },
     "ScopeUi.getOpacity": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 485
+      "line": 728
     },
     "ScopeUi.onBoundsChange": {
       "path": "android-preview/src/dev/earclean/preview/ScopeUi.java",
-      "line": 450
+      "line": 684
     },
     "VideoCapture.encode": {
       "path": "android-preview/src/dev/earclean/preview/VideoCapture.java",
