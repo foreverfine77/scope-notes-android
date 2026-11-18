@@ -15,6 +15,16 @@
 - [电量观察记录](电量观察记录.md)保存待补充的剩余电量和分钟数读数。
 - [Issues](https://github.com/foreverfine77/scope-notes-android/issues)记录任务、验收条件和测试证据。[Projects](https://github.com/users/foreverfine77/projects/3)跟踪任务进度。
 
+## 界面截图
+
+左起为青色取景首页、橙色取景首页和深海星夜设置页。
+
+<p>
+  <img src="docs/screenshots/cyan-camera.jpg" width="220" alt="青色主题的取景首页">
+  <img src="docs/screenshots/orange-camera.jpg" width="220" alt="橙色主题的取景首页">
+  <img src="docs/screenshots/deep-ocean-settings.jpg" width="220" alt="深海星夜主题的设置页">
+</p>
+
 ## 构建与试用
 
 在仓库根目录使用 PowerShell，准备 JDK 17、Android SDK 的 `android.jar`、Build Tools 和 ADB。将下面的路径替换为本机路径。
