@@ -1,4 +1,4 @@
-# 微镜记 · Scope Notes <img src="docs/app-icon.png" width="40" height="40" alt="微镜记图标" />
+# 微镜记 · Scope Notes <img src="docs/app-icon.png" width="40" height="40" alt="微镜记图标" align="middle" />
 连接 Wi-Fi 可视耳镜的 Android 预览与影像记录工具。支持实时预览、拍照、无声录像、分人档案、年月与耳侧筛选，以及照片标注副本。
 
 当前版本 **v0.27**：[下载 Release](https://github.com/foreverfine77/scope-notes-android/releases/tag/v0.27)。附件提供 Android 安装包、离线 UI 交接包及 SHA-256 校验文件。
